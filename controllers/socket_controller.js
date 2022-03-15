@@ -2,7 +2,7 @@
  * Socket Controller
  */
 
-const debug = require('debug')('chat:socket_controller');
+const debug = require('debug')('kill-the-virus:socket_controller');
 
 // list of socket-ids and their username
 const users = {};

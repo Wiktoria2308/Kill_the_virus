@@ -1,10 +1,9 @@
 #app,
 #start,
-#chat-wrapper {
+#game-wrapper {
 	height: 100vh;
 	width: 100vw;
 }
-
 #app {
 	background-color: aliceblue;
 }
@@ -23,5 +22,87 @@
 	text-align: center;
 }
 
+#game-wrapper {
+	display: flex;
+}
+#game {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	border-right: 1px solid #555;
+}
+#game h2 {
+	background-color: cornflowerblue;
+	padding: 0.5rem 0.75rem;
+	color: white;
+}
+#arena-wrapper {
+	flex-grow: 1;
+	/* overflow-y: scroll; */
+	/* height: calc(100vh - 2.25rem - 2px); */
+}
+#messages {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	list-style: none;
+	padding: 0;
+}
+#messages .message {
+	background-color: lightgray;
+	border-radius: 0.75rem;
+	margin: 0.1rem;
+	padding: 0.5rem 0.75rem;
+	align-self: flex-start;
+}
+#messages .message.you {
+	background-color: cornflowerblue;
+	color: white;
+	align-self: flex-end;
+}
+#messages .notice {
+	color: #555;
+}
+#scoreboard {
+	flex-basis: 20%;
+}
+#scoreboard h2 {
+	background-color: cornflowerblue;
+	padding: 0.5rem 0.75rem;
+	color: white;
+}
+#scoreboard ul {
+	margin: 0;
+	padding: 0.5rem 0.75rem;
+	list-style: none;
+}
 
+#currentScore {
+	text-align: center;
+	color: red;
+	font-size: xx-large;
+	font-weight: 600;
+}
 
+#reactiontimes {
+	text-align: center;
+	margin: 0.5rem 0.75rem;
+	font-size: large;
+}
+
+#you-time {
+	color: #13CE13;
+	font-size: larger;
+	font-weight: 600;
+}
+
+#opponent-time {
+	color: #CD14CD;
+	font-size: larger;
+	font-weight: 600;
+}
+
+#reactiontimes div {
+	background-color: #D5E8D4;
+	border: 1px solid #A2C790;
+}
