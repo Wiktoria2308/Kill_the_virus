@@ -37,18 +37,19 @@
 	color: white;
 }
 #arena-wrapper {
+	margin: 1rem 1.5rem;
 	flex-grow: 1;
 	display: grid;
 	grid-template-rows: repeat(5, 1fr);
 	grid-template-columns: repeat(5, 1fr);
-  	background-color: #2196F3;
-  	padding: 10px;
+  	background-color: #979797;
+  	padding: 2px;
 	/* overflow-y: scroll; */
 	/* height: calc(100vh - 2.25rem - 2px); */
 }
 #arena-wrapper > div {
-	background-color: rgba(255, 255, 255, 0.8);
-	border: 1px solid rgba(0, 0, 0, 0.8);
+	background-color: #F5F5F5;
+	/* border: 1px solid rgba(0, 0, 0, 0.8); */
 	padding: 2rem;
 	font-size: 30px;
 	text-align: center;
