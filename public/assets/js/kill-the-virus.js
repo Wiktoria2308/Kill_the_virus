@@ -30,6 +30,7 @@ function startTimer() {
  //  todo: take paused time as user reaction time
   function pauseTimer() {
 	clearInterval(timerInterval);
+	countReaction();
   }
   
  // todo:  reset timer after every round
@@ -38,6 +39,12 @@ function startTimer() {
 	elapsedTime = 0;
   }
  
+  function countReaction() {
+	  let minutes = parseInt(you_minutes.innerHTML);
+	  let seconds = parseInt(you_seconds.innerHTML);
+	  let milliseconds = parseInt(you_milliseconds.innerHTML);
+	  let totalmilliseconds = (minutes * 60000) + (seconds * 1000) + milliseconds;
+  }
  
  // Convert time to a format of minutes, seconds, and milliseconds
  function countTime(time) {
