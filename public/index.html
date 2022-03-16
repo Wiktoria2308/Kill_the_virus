@@ -36,7 +36,7 @@
                 <h2 id="game-title">Kill the Virus</h2>
                 <div id="arena-wrapper">
                     <!-- game arena will go here -->
-                    <div class="grid-item"><img src="./assets/images/virus.jpg" alt="" width="50px" onclick="pauseTimer()"></div>
+                    <div class="grid-item"><img src="./assets/images/virus.jpg" alt="virus" width="50px" id="virus-image"></div>
                     <div class="grid-item">2</div>
                     <div class="grid-item">3</div>
                     <div class="grid-item">4</div>
@@ -69,15 +69,15 @@
             <div id="scoreboard">
                 <h2>Scoreboard</h2>
                 <div id="currentScore">
-                    <span id="you-score">3</span> - <span id="opponent-score">1</span>
+                    <span id="you-score">0</span> - <span id="opponent-score">0</span>
                 </div>
                 <div id="reactiontimes">
                     <div id="you-reactiontime" class="mb-4">
                         <div>
-                            <span>You</span>
+                            <span id="username-badge">You</span>
                         </div>
                         <div id="you-time">
-                            <span id="you-minutes">00</span>:<span id="you-seconds">01</span>.<span id="you-milliseconds">532</span>
+                            <span id="you-minutes">00</span>:<span id="you-seconds">01</span>:<span id="you-milliseconds">532</span>
                         </div>
                     </div>
                     <div id="opponent-reactiontime">
@@ -85,7 +85,7 @@
                             <span>Bus-Bengan</span>
                         </div>
                         <div id="opponent-time">
-                            <span id="opponent-minutes">00</span>:<span id="opponent-seconds">13</span>.<span id="opponent-milliseconds">370</span>
+                            <span id="opponent-minutes">00</span>:<span id="opponent-seconds">13</span>:<span id="opponent-milliseconds">370</span>
                         </div>
                     </div>
                 </div>

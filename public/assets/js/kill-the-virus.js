@@ -7,13 +7,18 @@ const button = document.querySelector('.btn-primary');
 const waiting = document.querySelector('#waiting')
 
 let username = null;
+let room = null;
 
+let your_score = document.querySelector('#you-score');
+let opponent_score = document.querySelector('#oppenent-score');
+let username_badge = document.querySelector('#username-badge');
 let you_minutes = document.querySelector('#you-minutes');
 let you_seconds = document.querySelector('#you-seconds');
 let you_milliseconds = document.querySelector('#you-milliseconds');
 let opponent_minutess = document.querySelector('#opponent-minutes');
 let opponent_seconds = document.querySelector('#opponent-seconds');
 let opponent_milliseconds = document.querySelector('#opponent-milliseconds');
+let virusImage = document.querySelector('#virus-image');
 
 let startTime;
 let elapsedTime = 0;
@@ -39,13 +44,17 @@ function pauseTimer() {
 function resetTimer() {
     clearInterval(timerInterval);
     elapsedTime = 0;
+	you_minutes.innerHTML = "00";
+    you_seconds.innerHTML = "00";
+    you_milliseconds.innerHTML = "00";
 }
 
+let totalmilliseconds = null;
 function countReaction() {
     let minutes = parseInt(you_minutes.innerHTML);
     let seconds = parseInt(you_seconds.innerHTML);
     let milliseconds = parseInt(you_milliseconds.innerHTML);
-    let totalmilliseconds = (minutes * 60000) + (seconds * 1000) + milliseconds;
+    totalmilliseconds = (minutes * 60000) + (seconds * 1000) + milliseconds;
 }
 
 // Convert time to a format of minutes, seconds, and milliseconds
@@ -72,16 +81,28 @@ function countTime(time) {
     you_milliseconds.innerHTML = formattedMS;
 }
 
+socket.on('users:score', (players) => {
+	if(players[0].username === username){
+		your_score.innerHTML = players[0].score;
+		opponent_score.innerHTML = players[1].score;
+	}
+	else {
+		opponent_score.innerHTML = players[0].score;
+		your_score.innerHTML = players[1].score;
+	}
+});
+
 
 // get username from form and show chat
 usernameForm.addEventListener('submit', e => {
     e.preventDefault();
 
     username = usernameForm.username.value;
+	username_badge.innerHTML = username;
 
     socket.emit('user:joined', username, (status) => {
         // we've received acknowledgement from the server
-        console.log("Server acknowledged that user joined", status);
+        console.log("Server acknowledged that user joined", status); 
 
         // hiding button 'Play' and showing text that user needs to wait for another user
         button.classList.add('hide')
@@ -91,19 +112,40 @@ usernameForm.addEventListener('submit', e => {
         if (!status.waiting) {
             startEl.classList.add('hide');
             gameWrapperEl.classList.remove('hide');
-
+			startTimer();
             // if it is the first user we 'listening' for the second user and only when we get the answer hiding start screen
         } else {
             socket.on('user:ready', () => {
                 startEl.classList.add('hide');
                 gameWrapperEl.classList.remove('hide');
+				startTimer();
             })
         }
-
     });
 
-    // start timer when starting the game  
-    //  added to see how it works
-    startTimer();
-
 });
+
+// send reaction time to server
+virusImage.addEventListener('click', e => {
+	e.preventDefault();
+
+	
+	pauseTimer();
+
+	countReaction();
+
+	if (!totalmilliseconds) {
+		return;
+	}
+
+	let reactionTime = {
+		username,
+		totalmilliseconds,
+	}
+
+	// send reactionTime to server
+	socket.emit('user:reaction', reactionTime);
+
+	// clear timer
+	// resetTimer();
+}, {once : true});  // user can click only once on the virus

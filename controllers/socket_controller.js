@@ -4,6 +4,8 @@
 
 const debug = require('debug')('kill-the-virus:socket_controller');
 
+let io = null; // socket.io server instance
+
 // list of socket-ids and their username
 const users = {};
 const rooms = [];
@@ -12,10 +14,44 @@ const rooms = [];
 let room = {
     id: null,
     users: {},
-    waiting: true
+    waiting: true,
 }
 
-module.exports = function(socket) {
+const two_players = [];
+
+const handleReactionTime = function(data) {
+
+    if(two_players.length === 0) {
+        data.score = 0;
+        two_players.push(data);
+    }
+    if(two_players.length === 1) {
+        if(two_players[0].username !== data.username){
+            data.score = 0;
+            two_players.push(data);
+        }
+    }
+   
+    if(two_players.length === 2) {
+        if(two_players[0].totalmilliseconds < two_players[1].totalmilliseconds){
+            two_players[0].score++;
+            // io.in(this.id).emit('users:score', two_players);  ???
+        }
+        else {
+            two_players[1].score++;
+            // io.in(this.id).emit('users:score', two_players);  ???
+        }
+    }
+    console.log('array two players', two_players);
+    
+
+}
+
+
+
+module.exports = function(socket, _io) {
+    io = _io; // it must be to be possible to emit
+
     // debug('a new client has connected', socket.id);
 
     // handle user disconnect
@@ -29,6 +65,10 @@ module.exports = function(socket) {
         delete users[socket.id];
     });
 
+
+    socket.on('user:reaction', handleReactionTime);
+
+
     // handle user joined
     socket.on('user:joined', function(username, callback) {
 
@@ -38,10 +78,10 @@ module.exports = function(socket) {
         } else {
             room.waiting = false;
         }
+        //join room 
+        this.join(room.id);
 
         room.users[this.id] = username;
-
-        this.join(room.id);
 
         debug(`User ${username} with socket id ${socket.id} joined`);
 
@@ -50,13 +90,15 @@ module.exports = function(socket) {
             users: room.users,
             waiting: room.waiting
         });
-
+       
         // confirm join
         if (room.waiting == false) {
             this.broadcast.to(room.id).emit('user:ready')
                 // pushin room to all rooms array
             rooms.push(room);
+            this.emit('user:room', room.id);
             // clear room variable
+            
             room = {
                 id: null,
                 users: {},
@@ -64,6 +106,5 @@ module.exports = function(socket) {
             };
         }
     });
-
 
 }
