@@ -6,36 +6,65 @@ const debug = require('debug')('kill-the-virus:socket_controller');
 
 // list of socket-ids and their username
 const users = {};
+const rooms = [];
+
+// creating a temporary storage for room
+let room = {
+    id: null,
+    users: {},
+    waiting: true
+}
 
 module.exports = function(socket) {
-	debug('a new client has connected', socket.id);
+    // debug('a new client has connected', socket.id);
 
-	// handle user disconnect
-	socket.on('disconnect', function() {
-		debug(`Client ${socket.id} disconnected :(`);
+    // handle user disconnect
+    socket.on('disconnect', function() {
+        debug(`Client ${socket.id} disconnected :(`);
 
-		// let everyone connected know that user has disconnected
-		this.broadcast.emit('user:disconnected', users[socket.id]);
+        // let everyone connected know that user has disconnected
+        this.broadcast.emit('user:disconnected', users[socket.id]);
 
-		// remove user from list of connected users
-		delete users[socket.id];
-	});
+        // remove user from list of connected users
+        delete users[socket.id];
+    });
 
-	// handle user joined
-	socket.on('user:joined', function(username, callback) {
-		// associate socket id with username
-		users[socket.id] = username;
+    // handle user joined
+    socket.on('user:joined', function(username, callback) {
 
-		debug(`User ${username} with socket id ${socket.id} joined`);
+        // if there is no room creating a new room with id equal to the first users id
+        if (!room.id) {
+            room.id = this.id;
+        } else {
+            room.waiting = false;
+        }
 
-		// let everyone know that someone has connected to the chat
-		socket.broadcast.emit('user:connected', username);
+        room.users[this.id] = username;
 
-		// confirm join
-		callback({
-			success: true,
-		});
-	});
+        this.join(room.id);
+
+        debug(`User ${username} with socket id ${socket.id} joined`);
+
+        callback({
+            success: true,
+            users: room.users,
+            waiting: room.waiting
+        });
+
+        // confirm join
+        if (room.waiting == false) {
+            this.broadcast.to(room.id).emit('user:ready')
+                // pushin room to all rooms array
+            rooms.push(room);
+            // clear room variable
+            room = {
+                id: null,
+                users: {},
+                waiting: true
+            };
+        }
+
+    });
 
 
 }
