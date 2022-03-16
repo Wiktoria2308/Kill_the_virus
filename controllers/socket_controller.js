@@ -63,7 +63,6 @@ module.exports = function(socket) {
                 waiting: true
             };
         }
-
     });
 
 
