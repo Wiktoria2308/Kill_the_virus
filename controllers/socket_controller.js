@@ -22,11 +22,27 @@ module.exports = function(socket) {
     socket.on('disconnect', function() {
         debug(`Client ${socket.id} disconnected :(`);
 
-        // let everyone connected know that user has disconnected
-        this.broadcast.emit('user:disconnected', users[socket.id]);
+        // find the room that this socket is part of
+        const room = rooms.find(room => room.users.hasOwnProperty(this.id));
+
+        // if socket was not in a room, don't broadcast disconnect
+        if (!room) {
+            return;
+        }
+
+        debug(rooms)
+        debug(room.id)
+
+        // let everyone in the room know that this user has disconnected
+        this.broadcast.to(room.id).emit('user:disconnected');
+        debug('1111')
+        this.emit('user:disconnected')
+        debug('222')
+        socket.emit('user:disconnected')
+        debug('33333')
 
         // remove user from list of connected users
-        delete users[socket.id];
+        // delete users[socket.id];
     });
 
     // handle user joined
@@ -44,6 +60,11 @@ module.exports = function(socket) {
         this.join(room.id);
 
         debug(`User ${username} with socket id ${socket.id} joined`);
+
+        this.broadcast.to(room.id).emit('user:disconnected');
+        this.emit('user:disconnected')
+        socket.emit('user:disconnected')
+        debug('message emitted');
 
         callback({
             success: true,
@@ -64,6 +85,4 @@ module.exports = function(socket) {
             };
         }
     });
-
-
 }

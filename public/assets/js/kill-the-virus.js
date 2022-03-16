@@ -4,7 +4,10 @@ const startEl = document.querySelector('#start');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
 const button = document.querySelector('.btn-primary');
-const waiting = document.querySelector('#waiting')
+const waiting_label = document.querySelector('#waiting');
+const disonnected_label = document.querySelector('#disconnected');
+const opponent_disconnected_label = document.querySelector('#oponent_disconnected');
+
 
 let username = null;
 
@@ -85,7 +88,7 @@ usernameForm.addEventListener('submit', e => {
 
         // hiding button 'Play' and showing text that user needs to wait for another user
         button.classList.add('hide')
-        waiting.classList.remove('hide')
+        waiting_label.classList.remove('hide')
 
         // if it is the second user we hiding the start screen
         if (!status.waiting) {
@@ -106,4 +109,22 @@ usernameForm.addEventListener('submit', e => {
     //  added to see how it works
     startTimer();
 
+});
+
+// listen for when a user disconnects
+socket.on('user:disconnected', () => {
+    console.log('username')
+        // startEl.classList.remove('hide');
+        // gameWrapperEl.classList.add('hide');
+        // opponent_disconnected_label.classList.remove('hide');
+        // button.classList.remove('hide');
+});
+
+// listen for when we're disconnected
+socket.on('disconnect', (reason) => {
+    if (reason === 'io server disconnect') {
+        // reconnect to the server
+        socket.connect();
+    }
+    addNoticeToChat(`You were disconnected. Reason: ${reason} 😳`);
 });
