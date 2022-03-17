@@ -16,7 +16,7 @@ let opponent_badge = document.querySelector('#opponent-badge');
 let you_minutes = document.querySelector('#you-minutes');
 let you_seconds = document.querySelector('#you-seconds');
 let you_milliseconds = document.querySelector('#you-milliseconds');
-let opponent_minutess = document.querySelector('#opponent-minutes');
+let opponent_minutes = document.querySelector('#opponent-minutes');
 let opponent_seconds = document.querySelector('#opponent-seconds');
 let opponent_milliseconds = document.querySelector('#opponent-milliseconds');
 let virusImage = document.querySelector('#virus-image');
@@ -80,6 +80,10 @@ function countTime(time) {
     you_minutes.innerHTML = formattedMM;
     you_seconds.innerHTML = formattedSS;
     you_milliseconds.innerHTML = formattedMS;
+
+	// opponent_minutes.innerHTML = formattedMM;
+    // opponent_seconds.innerHTML = formattedSS;
+    // opponent_milliseconds.innerHTML = formattedMS;
 }
 // listen for users names to add opponent name to game
 socket.on('users:names', (users) => {

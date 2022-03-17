@@ -17,6 +17,7 @@ let room = {
     waiting: true,
 }
 
+// this works only for one room
 let two_players = [];
 
 const handleReactionTime = function(data) {
@@ -41,17 +42,16 @@ const handleReactionTime = function(data) {
             // send score to both users
             io.in(roomId).emit('users:score',two_players);
             // empty players array 
-            two_players = [];
+            console.log('two players',two_players);
         }
         else if(two_players[1].totalmilliseconds < two_players[0].totalmilliseconds) {
             two_players[1].score++;
               // send score to both users
               io.in(roomId).emit('users:score',two_players);
               // empty players array 
-              two_players = [];
+              console.log('two players',two_players);
         }
     }
-    
 }
 
 
@@ -89,7 +89,7 @@ module.exports = function(socket, _io) {
         this.join(room.id);
         // declare room id for players
         roomId = room.id;
-        
+
         room.users[this.id] = username;
 
         debug(`User ${username} with socket id ${socket.id} joined`);
@@ -105,7 +105,7 @@ module.exports = function(socket, _io) {
             this.broadcast.to(room.id).emit('user:ready')
                 // pushin room to all rooms array
             rooms.push(room);
-
+            console.log('rooms', rooms)
             // send users names to clients to show opponent user name 
             io.in(room.id).emit('users:names', room.users);
             // clear room variable
