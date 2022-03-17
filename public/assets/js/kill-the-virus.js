@@ -3,10 +3,9 @@ const socket = io();
 const startEl = document.querySelector('#start');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
-const button = document.querySelector('.btn-primary');
+const start_button = document.querySelector('.btn-primary');
 const waiting_label = document.querySelector('#waiting');
-const disonnected_label = document.querySelector('#disconnected');
-const opponent_disconnected_label = document.querySelector('#oponent_disconnected');
+const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 
 
 let username = null;
@@ -86,22 +85,18 @@ usernameForm.addEventListener('submit', e => {
         // we've received acknowledgement from the server
         console.log("Server acknowledged that user joined", status);
 
-        // hiding button 'Play' and showing text that user needs to wait for another user
-        button.classList.add('hide')
-        waiting_label.classList.remove('hide')
+        // hiding start_button 'Play' and showing text that user needs to wait for another user
+        start_button.classList.add('hide');
+        waiting_label.classList.remove('hide');
+        opponent_disconnected_label.classList.add('hide');
 
-        // if it is the second user we hiding the start screen
-        if (!status.waiting) {
+        // if it is the second user and we don't need to wait, we hiding the start screen
+        if (!status.waiting_opponent) {
             startEl.classList.add('hide');
             gameWrapperEl.classList.remove('hide');
-
-            // if it is the first user we 'listening' for the second user and only when we get the answer hiding start screen
-        } else {
-            socket.on('user:ready', () => {
-                startEl.classList.add('hide');
-                gameWrapperEl.classList.remove('hide');
-            })
         }
+
+        usernameForm.username.value = '';
 
     });
 
@@ -111,13 +106,22 @@ usernameForm.addEventListener('submit', e => {
 
 });
 
-// listen for when a user disconnects
+// the first user listening when the opponent will be found
+socket.on('user:ready', () => {
+    console.log('user ready!!!');
+    startEl.classList.add('hide');
+    gameWrapperEl.classList.remove('hide');
+    start_button.classList.remove('hide');
+});
+
+// listen if opponent disconnects; if it happens - showing the start screen again and start a new game in a new room
 socket.on('user:disconnected', () => {
-    console.log('username')
-        // startEl.classList.remove('hide');
-        // gameWrapperEl.classList.add('hide');
-        // opponent_disconnected_label.classList.remove('hide');
-        // button.classList.remove('hide');
+    console.log("Opponent disconnected!")
+    gameWrapperEl.classList.add('hide');
+    startEl.classList.remove('hide');
+    start_button.classList.remove('hide');
+    waiting_label.classList.add('hide')
+    opponent_disconnected_label.classList.remove('hide');
 });
 
 // listen for when we're disconnected
@@ -126,5 +130,4 @@ socket.on('disconnect', (reason) => {
         // reconnect to the server
         socket.connect();
     }
-    addNoticeToChat(`You were disconnected. Reason: ${reason} 😳`);
 });
