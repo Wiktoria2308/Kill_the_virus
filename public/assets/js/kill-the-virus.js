@@ -81,6 +81,7 @@ function countTime(time) {
     you_seconds.innerHTML = formattedSS;
     you_milliseconds.innerHTML = formattedMS;
 }
+// listen for users names to add opponent name to game
 socket.on('users:names', (users) => {
 	for (const key in users) {
 		if(users[key] !== username){
@@ -89,6 +90,8 @@ socket.on('users:names', (users) => {
 	}
 });
 
+
+// listen for users score and show them in game
 socket.on('users:score', (players) => {
 	if(players[0].username === username){
 		your_score.innerHTML = players[0].score;
