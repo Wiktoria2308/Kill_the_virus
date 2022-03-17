@@ -4,6 +4,8 @@
 
 const debug = require('debug')('kill-the-virus:socket_controller');
 
+let io = null; // socket.io server instance
+
 // Grid arena is set to be 5 x 5. This function returns a random number between 1 and 5.
 // Function will be called twice to get x/y position.
 const getRandomGridPosition = () => {
@@ -25,7 +27,9 @@ let roomName = null;
 // a 'toggler' for a status of a waiting opponent 
 let waiting_opponent = true;
 
-module.exports = function(socket) {
+module.exports = function(socket, _io) {
+    io = _io;
+    
     // debug('a new client has connected', socket.id);
 
     // handle user disconnect
