@@ -5,7 +5,6 @@
 const debug = require('debug')('kill-the-virus:socket_controller');
 
 let io = null; // socket.io server instance
-let roomId = null;
 // list of socket-ids and their username
 const users = {};
 const rooms = [];
@@ -17,28 +16,35 @@ let room = {
     waiting: true,
 }
 
-
+// who wins ?
 const handleReactionTime = function(data) {
 
     // find the room that this socket is part of
 	 const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
     
+     // add user data to room
     if(room.player_1 === undefined) {
         data.score = 0;
         room.player_1 = data;
     }
+    // add second user data to room , check if user is not already asigned
     if(room.player_1 && room.player_2 === undefined && room.player_1.username !== data.username){
         data.score = 0;
         room.player_2 = data;
     }
     
+
+    // temporary storage for users data
     let players = [];
     let player1 = {};
     let player2 = {};
+
+    // if two users clicked on virus then check which one was faster 
     if(room.player_1 !== undefined && room.player_2 !== undefined){
         console.log('room', room);  // it works yuupppi!!!
         if(room.player_1.totalmilliseconds < room.player_2.totalmilliseconds){
             room.player_1.score++;
+            //  save users score information in array and send it to users
             player1.username = room.player_1.username;
             player1.score = room.player_1.score;
             players.push(player1);
@@ -54,6 +60,7 @@ const handleReactionTime = function(data) {
         }
         else if(room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
             room.player_2.score ++;
+             //  save users score information in array and send it to users
             player1.username = room.player_1.username;
             player1.score = room.player_1.score;
             players.push(player1);
