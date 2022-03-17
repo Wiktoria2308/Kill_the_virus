@@ -108,6 +108,7 @@ socket.on('users:score', (players) => {
 		opponent_score.innerHTML = players[0].score;
 		your_score.innerHTML = players[1].score;
 	}
+    console.log(players);
 });
 
 // get username from form and show chat
@@ -130,15 +131,9 @@ usernameForm.addEventListener('submit', e => {
         if (!status.waiting_opponent) {
             startEl.classList.add('hide');
             gameWrapperEl.classList.remove('hide');
-			startTimer();
-            // if it is the first user we 'listening' for the second user and only when we get the answer hiding start screen
         } 
-
-        usernameForm.username.value = '';
-
+            usernameForm.username.value = '';
     });
-    startTimer();
-
 });
 // the first user listening when the opponent will be found
 socket.on('user:ready', () => {
@@ -178,7 +173,7 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     setTimeout(() => {
         virusImageEl.classList.remove('hide');
     }, randomDelay)
-
+    startTimer();
 });
 // send reaction time to server
 virusImage.addEventListener('click', e => {

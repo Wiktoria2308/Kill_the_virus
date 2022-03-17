@@ -45,7 +45,7 @@ const handleReactionTime = function(data) {
     let player1 = {};
     let player2 = {};
     if(room.player_1 !== undefined && room.player_2 !== undefined){
-        console.log('room', room);  // it works yuupppi!!!
+        // console.log('room', room);  // it works yuupppi!!!
         if(room.player_1.totalmilliseconds < room.player_2.totalmilliseconds){
             room.player_1.score++;
             player1.username = room.player_1.username;
@@ -60,6 +60,7 @@ const handleReactionTime = function(data) {
             io.in(room.id).emit('users:score', players);
             console.log('players', players);
             players = [];
+            console.log('room, player 1 wins', room);  // it works yuupppi!!!
         }
         else if(room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
             room.player_2.score ++;
@@ -75,6 +76,7 @@ const handleReactionTime = function(data) {
             io.in(room.id).emit('users:score', players);
             console.log('players', players);
             players = [];
+            console.log('room, player 2 wins', room);  // it works yuupppi!!!
         }
     }
 }
@@ -98,7 +100,7 @@ module.exports = function(socket, _io) {
         }
 
         // let everyone in the room know that this user has disconnected
-        this.broadcast.to(room).emit('user:disconnected');;
+        this.broadcast.to(room.id).emit('user:disconnected');;
 
         // remove a room because we need to start a new game
         rooms.splice(rooms.indexOf(room), 1);
@@ -132,12 +134,11 @@ module.exports = function(socket, _io) {
             console.log('There is no such room');
             return;
         }
+            // join user to this room
+            this.join(room.id);    
 
         // associate socket id with username and store it in a room oject in the rooms array
         room.users[this.id] = username;
-
-        // join user to this room
-        this.join(room);
 
         debug(`User ${username} with socket id ${socket.id} joined`);
 
@@ -152,10 +153,12 @@ module.exports = function(socket, _io) {
         if (!waiting_opponent) {
             console.log(room);
             // emit that a second user is ready to the first user
-            this.broadcast.to(room).emit('user:ready');
+            this.broadcast.to(room.id).emit('user:ready');
             // discard the temporary variables
             waiting_opponent = true;
             roomName = null;
+            // send users names to clients to show opponent user name 
+            io.in(room.id).emit('users:names', room.users);
         };
     });
 
@@ -164,7 +167,7 @@ module.exports = function(socket, _io) {
         const room = rooms.find(id => id.users[this.id]);
         
         // Emit to specific room
-        io.to(room).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
+        io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
     });
        
 }
