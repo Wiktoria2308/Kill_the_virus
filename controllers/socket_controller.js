@@ -29,7 +29,7 @@ let waiting_opponent = true;
 
 module.exports = function(socket, _io) {
     io = _io;
-    
+
     // debug('a new client has connected', socket.id);
 
     // handle user disconnect
@@ -92,6 +92,7 @@ module.exports = function(socket, _io) {
 
         // if we don't need to wait an opponent anymore:
         if (!waiting_opponent) {
+            console.log(room);
             // emit that a second user is ready to the first user
             this.broadcast.to(room).emit('user:ready');
             // discard the temporary variables
@@ -99,4 +100,12 @@ module.exports = function(socket, _io) {
             roomName = null;
         };
     });
+
+    socket.on('players:ready', function() {
+        // Find room
+        const room = rooms.find(id => id.users[this.id]);
+        
+        // Emit to specific room
+        io.to(room).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
+    })
 }

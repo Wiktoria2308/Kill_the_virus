@@ -7,6 +7,7 @@ const start_button = document.querySelector('.btn-primary');
 const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 
+const virusImageEl = document.querySelector('#virus-image');
 
 let username = null;
 
@@ -111,6 +112,7 @@ socket.on('user:ready', () => {
     startEl.classList.add('hide');
     gameWrapperEl.classList.remove('hide');
     start_button.classList.remove('hide');
+    socket.emit('players:ready');
 });
 
 // listen if opponent disconnects; if it happens - showing the start screen again and start a new game in a new room
@@ -129,4 +131,18 @@ socket.on('disconnect', (reason) => {
         // reconnect to the server
         socket.connect();
     }
+});
+
+// Listen for when game is ready to start
+socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
+
+    // Position virus image on grid
+    virusImageEl.style.gridRow = randomPositionX;
+    virusImageEl.style.gridColumn = randomPositionY;
+
+    // Display virus after delay
+    setTimeout(() => {
+        virusImageEl.classList.remove('hide');
+    }, randomDelay)
+
 });
