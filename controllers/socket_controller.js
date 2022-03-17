@@ -79,6 +79,7 @@ const handleReactionTime = function(data) {
             console.log('room, player 2 wins', room);  // it works yuupppi!!!
         }
     }
+    console.log(rooms);
 }
 
 
