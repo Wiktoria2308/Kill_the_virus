@@ -37,44 +37,21 @@
 	color: white;
 }
 #arena-wrapper {
+	border: 2px solid #979797;
 	margin: 1rem 1.5rem;
 	flex-grow: 1;
 	display: grid;
 	grid-template-rows: repeat(5, 1fr);
 	grid-template-columns: repeat(5, 1fr);
-  	background-color: #979797;
+  	background-color: #F5F5F5;
   	padding: 2px;
 	/* overflow-y: scroll; */
 	/* height: calc(100vh - 2.25rem - 2px); */
 }
-#arena-wrapper > div {
-	background-color: #F5F5F5;
-	/* border: 1px solid rgba(0, 0, 0, 0.8); */
-	padding: 2rem;
-	font-size: 30px;
-	text-align: center;
-}
-#messages {
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: column;
-	list-style: none;
-	padding: 0;
-}
-#messages .message {
-	background-color: lightgray;
-	border-radius: 0.75rem;
-	margin: 0.1rem;
-	padding: 0.5rem 0.75rem;
-	align-self: flex-start;
-}
-#messages .message.you {
-	background-color: cornflowerblue;
-	color: white;
-	align-self: flex-end;
-}
-#messages .notice {
-	color: #555;
+
+#virus-image {
+	grid-column: 1;
+	grid-row: 1;
 }
 #scoreboard {
 	flex-basis: 20%;

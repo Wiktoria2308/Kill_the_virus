@@ -72,31 +72,6 @@ function countTime(time) {
     you_milliseconds.innerHTML = formattedMS;
 }
 
-function getRandomIntInclusive(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function getRandomVirusPosition(){
-
-	// Random 0-5 seconds delay
-	setTimeout(() => {
-
-		// Get random number between 1-25
-		let randomNumber = getRandomIntInclusive(1, 25);
-
-		// Get random grid item
-		const gridItemEl = document.querySelector(`#item-${randomNumber}`);
-
-        console.log(gridItemEl);
-
-		// Add virus image to grid item
-		gridItemEl.innerHTML = `<img id="virus-image" src="./assets/images/virus.jpg" alt="virus" width="50px" onclick="pauseTimer()">`
-
-	  }, Math.floor(Math.random() * 5000));
-}
-
 // get username from form and show chat
 usernameForm.addEventListener('submit', e => {
     e.preventDefault();
@@ -123,8 +98,6 @@ usernameForm.addEventListener('submit', e => {
                 gameWrapperEl.classList.remove('hide');
             })
         }
-
-		getRandomVirusPosition();
 
     });
 

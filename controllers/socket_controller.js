@@ -4,6 +4,17 @@
 
 const debug = require('debug')('kill-the-virus:socket_controller');
 
+// Grid arena is set to be 5 x 5. This function returns a random number between 1 and 5.
+// Function will be called twice to get x/y position.
+const getRandomGridPosition = () => {
+    return Math.floor(Math.random() * 5) + 1;
+}
+
+// Virus image is set to appear anytime between 1 and 5 seconds. This function returns a random number between 1000 and 5000 (1 second = 1000 milliseconds).
+const getRandomDelay = () => {
+    return Math.floor(Math.random() * (5000 - 1000)) + 1000;
+}
+
 // list of socket-ids and their username
 const users = {};
 const rooms = [];
