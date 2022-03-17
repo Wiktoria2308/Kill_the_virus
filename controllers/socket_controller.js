@@ -17,39 +17,55 @@ let room = {
     waiting: true,
 }
 
-// this works only for one room
-let two_players = [];
 
 const handleReactionTime = function(data) {
 
-    // if two players array is empty add first player with his reaction time
-    if(two_players.length === 0) {
+    // find the room that this socket is part of
+	 const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
+    
+    if(room.player_1 === undefined) {
         data.score = 0;
-        two_players.push(data);
+        room.player_1 = data;
     }
-    // if there is already one player in array check if this player are not already in array if not add him
-    if(two_players.length === 1 && two_players.length !== 2) {
-        if(two_players[0].username !== data.username){
-            data.score = 0;
-            two_players.push(data);
-        }
+    if(room.player_1 && room.player_2 === undefined && room.player_1.username !== data.username){
+        data.score = 0;
+        room.player_2 = data;
     }
-
-    // if there is two players in array check their reaction time and check which one won 
-    if(two_players.length === 2) {
-        if(two_players[0].totalmilliseconds < two_players[1].totalmilliseconds){
-            two_players[0].score++;
+    
+    let players = [];
+    let player1 = {};
+    let player2 = {};
+    if(room.player_1 !== undefined && room.player_2 !== undefined){
+        console.log('room', room);  // it works yuupppi!!!
+        if(room.player_1.totalmilliseconds < room.player_2.totalmilliseconds){
+            room.player_1.score++;
+            player1.username = room.player_1.username;
+            player1.score = room.player_1.score;
+            players.push(player1);
+            player1 = {};
+            player2.username = room.player_2.username;
+            player2.score = room.player_2.score;
+            players.push(player2);
+            player2 = {};
             // send score to both users
-            io.in(roomId).emit('users:score',two_players);
-            // empty players array 
-            console.log('two players',two_players);
+            io.in(room.id).emit('users:score', players);
+            console.log('players', players);
+            players = [];
         }
-        else if(two_players[1].totalmilliseconds < two_players[0].totalmilliseconds) {
-            two_players[1].score++;
-              // send score to both users
-              io.in(roomId).emit('users:score',two_players);
-              // empty players array 
-              console.log('two players',two_players);
+        else if(room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
+            room.player_2.score ++;
+            player1.username = room.player_1.username;
+            player1.score = room.player_1.score;
+            players.push(player1);
+            player1 = {};
+            player2.username = room.player_2.username;
+            player2.score = room.player_2.score;
+            players.push(player2);
+            player2 = {};
+            // send score to both users
+            io.in(room.id).emit('users:score', players);
+            console.log('players', players);
+            players = [];
         }
     }
 }
@@ -105,7 +121,6 @@ module.exports = function(socket, _io) {
             this.broadcast.to(room.id).emit('user:ready')
                 // pushin room to all rooms array
             rooms.push(room);
-            console.log('rooms', rooms)
             // send users names to clients to show opponent user name 
             io.in(room.id).emit('users:names', room.users);
             // clear room variable
