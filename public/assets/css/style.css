@@ -97,7 +97,8 @@
 	border: 1px solid #A2C790;
 }
 
-#you-minutes, #you-seconds, #you-milliseconds {
+/* #you-minutes, #you-seconds, #you-milliseconds { */
+	#you-time span, #opponent-time span {
 	/* important with this font family */
 	font-family: "Roboto Mono", monospace;	
 	font-size: larger;

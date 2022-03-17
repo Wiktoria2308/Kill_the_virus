@@ -37,7 +37,7 @@
                 <h2 id="game-title">Kill the Virus</h2>
                 <div id="arena-wrapper">
                     <!-- game arena will go here -->
-                    <img id="virus-image" src="./assets/images/virus.jpg" alt="virus image" width="50px" onclick="pauseTimer()" class="hide">
+                    <img id="virus-image" src="./assets/images/virus.jpg" alt="virus image" width="50px" class="hide" id="virus-image">
                 </div>
                 <!-- /#arena-wrapper -->
             </div>
@@ -46,23 +46,23 @@
             <div id="scoreboard">
                 <h2>Scoreboard</h2>
                 <div id="currentScore">
-                    <span id="you-score">3</span> - <span id="opponent-score">1</span>
+                    <span id="you-score">0</span> - <span id="opponent-score">0</span>
                 </div>
                 <div id="reactiontimes">
                     <div id="you-reactiontime" class="mb-4">
                         <div>
-                            <span>You</span>
+                            <span id="username-badge">You</span>
                         </div>
                         <div id="you-time">
-                            <span id="you-minutes">00</span>:<span id="you-seconds">01</span>.<span id="you-milliseconds">532</span>
+                            <span id="you-minutes">00</span>:<span id="you-seconds">01</span>:<span id="you-milliseconds">532</span>
                         </div>
                     </div>
                     <div id="opponent-reactiontime">
                         <div>
-                            <span>Bus-Bengan</span>
+                            <span id="opponent-badge">Opponent</span>
                         </div>
                         <div id="opponent-time">
-                            <span id="opponent-minutes">00</span>:<span id="opponent-seconds">13</span>.<span id="opponent-milliseconds">370</span>
+                            <span id="opponent-minutes">00</span>:<span id="opponent-seconds">00</span>:<span id="opponent-milliseconds">00</span>
                         </div>
                     </div>
                 </div>
