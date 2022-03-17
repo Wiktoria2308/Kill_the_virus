@@ -29,24 +29,29 @@ let waiting_opponent = true;
 
 const handleReactionTime = function(data) {
 
+    debug('data', data)
+
     // find the room that this socket is part of
-	 const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
-    
-    if(room.player_1 === undefined) {
+    const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
+
+    // this.broadcast.to(room.id).emit('user:opponent_time', data.paused_time);
+    io.in(room.id).emit('user:opponent_time', data.paused_time);
+
+    if (room.player_1 === undefined) {
         data.points = 0;
         room.player_1 = data;
     }
-    if(room.player_1 && room.player_2 === undefined && room.player_1.username !== data.username){
+    if (room.player_1 && room.player_2 === undefined && room.player_1.username !== data.username) {
         data.points = 0;
         room.player_2 = data;
     }
-    
+
     let players = [];
     let player1 = {};
     let player2 = {};
-    if(room.player_1 !== undefined && room.player_2 !== undefined){
+    if (room.player_1 !== undefined && room.player_2 !== undefined) {
         // console.log('room', room);  // it works yuupppi!!!
-        if(room.player_1.totalmilliseconds < room.player_2.totalmilliseconds){
+        if (room.player_1.totalmilliseconds < room.player_2.totalmilliseconds) {
             room.player_1.points++;
             player1.username = room.player_1.username;
             player1.points = room.player_1.points;
@@ -60,10 +65,9 @@ const handleReactionTime = function(data) {
             io.in(room.id).emit('users:score', players);
             console.log('players', players);
             players = [];
-            console.log('room, player 1 wins', room);  // it works yuupppi!!!
-        }
-        else if(room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
-            room.player_2.points ++;
+            console.log('room, player 1 wins', room); // it works yuupppi!!!
+        } else if (room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
+            room.player_2.points++;
             player1.username = room.player_1.username;
             player1.points = room.player_1.points;
             players.push(player1);
@@ -76,7 +80,7 @@ const handleReactionTime = function(data) {
             io.in(room.id).emit('users:score', players);
             console.log('players', players);
             players = [];
-            console.log('room, player 2 wins', room);  // it works yuupppi!!!
+            console.log('room, player 2 wins', room); // it works yuupppi!!!
         }
     }
 }
@@ -100,7 +104,7 @@ module.exports = function(socket, _io) {
         }
 
         // let everyone in the room know that this user has disconnected
-        this.broadcast.to(room.id).emit('user:disconnected');;
+        this.broadcast.to(room.id).emit('user:disconnected');
 
         // remove a room because we need to start a new game
         rooms.splice(rooms.indexOf(room), 1);
@@ -134,8 +138,8 @@ module.exports = function(socket, _io) {
             console.log('There is no such room');
             return;
         }
-            // join user to this room
-            this.join(room.id);    
+        // join user to this room
+        this.join(room.id);
 
         // associate socket id with username and store it in a room oject in the rooms array
         room.users[this.id] = username;
@@ -165,9 +169,9 @@ module.exports = function(socket, _io) {
     socket.on('players:ready', function() {
         // Find room
         const room = rooms.find(id => id.users[this.id]);
-        
+
         // Emit to specific room
         io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
     });
-       
+
 }

@@ -48,17 +48,20 @@ function pauseTimer() {
 function resetTimer() {
     clearInterval(timerInterval);
     elapsedTime = 0;
-	you_minutes.innerHTML = "00";
+    you_minutes.innerHTML = "00";
     you_seconds.innerHTML = "00";
     you_milliseconds.innerHTML = "00";
 }
 
 let totalmilliseconds = null;
+let paused_time = null;
+
 function countReaction() {
     let minutes = parseInt(you_minutes.innerHTML);
     let seconds = parseInt(you_seconds.innerHTML);
     let milliseconds = parseInt(you_milliseconds.innerHTML);
     totalmilliseconds = (minutes * 60000) + (seconds * 1000) + milliseconds;
+    paused_time = you_minutes.innerHTML + ':' + you_seconds.innerHTML + ':' + you_milliseconds.innerHTML;
 }
 
 // Convert time to a format of minutes, seconds, and milliseconds
@@ -84,30 +87,29 @@ function countTime(time) {
     you_seconds.innerHTML = formattedSS;
     you_milliseconds.innerHTML = formattedMS;
 
-	// opponent_minutes.innerHTML = formattedMM;
-    // opponent_seconds.innerHTML = formattedSS;
-    // opponent_milliseconds.innerHTML = formattedMS;
+    opponent_minutes.innerHTML = formattedMM;
+    opponent_seconds.innerHTML = formattedSS;
+    opponent_milliseconds.innerHTML = formattedMS;
 }
 // listen for users names to add opponent name to game
 socket.on('users:names', (users) => {
-	for (const key in users) {
-		if(users[key] !== username){
-			opponent_badge.innerHTML = users[key];
-		}
-	}
+    for (const key in users) {
+        if (users[key] !== username) {
+            opponent_badge.innerHTML = users[key];
+        }
+    }
 });
 
 
 // listen for users score and show them in game
 socket.on('users:score', (players) => {
-	if(players[0].username === username){
-		your_score.innerHTML = players[0].points;
-		opponent_score.innerHTML = players[1].points;
-	}
-	else if (players[1].username === username){
-		opponent_score.innerHTML = players[0].points;
-		your_score.innerHTML = players[1].points;
-	}
+    if (players[0].username === username) {
+        your_score.innerHTML = players[0].points;
+        opponent_score.innerHTML = players[1].points;
+    } else if (players[1].username === username) {
+        opponent_score.innerHTML = players[0].points;
+        your_score.innerHTML = players[1].points;
+    }
     console.log(players);
 });
 
@@ -116,11 +118,11 @@ usernameForm.addEventListener('submit', e => {
     e.preventDefault();
 
     username = usernameForm.username.value;
-	username_badge.innerHTML = username;
+    username_badge.innerHTML = username;
 
     socket.emit('user:joined', username, (status) => {
         // we've received acknowledgement from the server
-        console.log("Server acknowledged that user joined", status); 
+        console.log("Server acknowledged that user joined", status);
 
         // hiding start_button 'Play' and showing text that user needs to wait for another user
         start_button.classList.add('hide');
@@ -131,8 +133,8 @@ usernameForm.addEventListener('submit', e => {
         if (!status.waiting_opponent) {
             startEl.classList.add('hide');
             gameWrapperEl.classList.remove('hide');
-        } 
-            usernameForm.username.value = '';
+        }
+        usernameForm.username.value = '';
     });
 });
 // the first user listening when the opponent will be found
@@ -175,26 +177,32 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     }, randomDelay)
     startTimer();
 });
+
+socket.on('user:opponent_time', (paused_time_opponent) => {
+    console.log('opponent paused at ', paused_time_opponent)
+})
+
 // send reaction time to server
 virusImage.addEventListener('click', e => {
-	e.preventDefault();
+    e.preventDefault();
 
-	pauseTimer();
+    pauseTimer();
 
-	countReaction();
+    countReaction();
 
-	if (!totalmilliseconds) {
-		return;
-	}
+    if (!totalmilliseconds) {
+        return;
+    }
 
-	let reactionTime = {
-		username,
-		totalmilliseconds,
-	}
+    let reactionTime = {
+        username,
+        totalmilliseconds,
+        paused_time
+    }
 
-	// send reactionTime to server
-	socket.emit('user:reaction', reactionTime);
+    // send reactionTime to server
+    socket.emit('user:reaction', reactionTime);
 
-	// clear timer
-	// resetTimer();
-}, {once : true});  // user can click only once on the virus
+    // clear timer
+    // resetTimer();
+}, { once: true }); // user can click only once on the virus
