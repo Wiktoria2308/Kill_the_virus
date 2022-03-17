@@ -33,11 +33,11 @@ const handleReactionTime = function(data) {
 	 const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
     
     if(room.player_1 === undefined) {
-        data.score = 0;
+        data.points = 0;
         room.player_1 = data;
     }
     if(room.player_1 && room.player_2 === undefined && room.player_1.username !== data.username){
-        data.score = 0;
+        data.points = 0;
         room.player_2 = data;
     }
     
@@ -47,13 +47,13 @@ const handleReactionTime = function(data) {
     if(room.player_1 !== undefined && room.player_2 !== undefined){
         // console.log('room', room);  // it works yuupppi!!!
         if(room.player_1.totalmilliseconds < room.player_2.totalmilliseconds){
-            room.player_1.score++;
+            room.player_1.points++;
             player1.username = room.player_1.username;
-            player1.score = room.player_1.score;
+            player1.points = room.player_1.points;
             players.push(player1);
             player1 = {};
             player2.username = room.player_2.username;
-            player2.score = room.player_2.score;
+            player2.points = room.player_2.points;
             players.push(player2);
             player2 = {};
             // send score to both users
@@ -63,13 +63,13 @@ const handleReactionTime = function(data) {
             console.log('room, player 1 wins', room);  // it works yuupppi!!!
         }
         else if(room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
-            room.player_2.score ++;
+            room.player_2.points ++;
             player1.username = room.player_1.username;
-            player1.score = room.player_1.score;
+            player1.points = room.player_1.points;
             players.push(player1);
             player1 = {};
             player2.username = room.player_2.username;
-            player2.score = room.player_2.score;
+            player2.points = room.player_2.points;
             players.push(player2);
             player2 = {};
             // send score to both users

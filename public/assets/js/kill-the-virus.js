@@ -101,12 +101,12 @@ socket.on('users:names', (users) => {
 // listen for users score and show them in game
 socket.on('users:score', (players) => {
 	if(players[0].username === username){
-		your_score.innerHTML = players[0].score;
-		opponent_score.innerHTML = players[1].score;
+		your_score.innerHTML = players[0].points;
+		opponent_score.innerHTML = players[1].points;
 	}
 	else if (players[1].username === username){
-		opponent_score.innerHTML = players[0].score;
-		your_score.innerHTML = players[1].score;
+		opponent_score.innerHTML = players[0].points;
+		your_score.innerHTML = players[1].points;
 	}
     console.log(players);
 });
