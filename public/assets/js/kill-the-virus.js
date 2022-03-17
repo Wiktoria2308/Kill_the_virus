@@ -10,8 +10,9 @@ let username = null;
 let room = null;
 
 let your_score = document.querySelector('#you-score');
-let opponent_score = document.querySelector('#oppenent-score');
+let opponent_score = document.querySelector('#opponent-score');
 let username_badge = document.querySelector('#username-badge');
+let opponent_badge = document.querySelector('#opponent-badge');
 let you_minutes = document.querySelector('#you-minutes');
 let you_seconds = document.querySelector('#you-seconds');
 let you_milliseconds = document.querySelector('#you-milliseconds');
@@ -80,18 +81,24 @@ function countTime(time) {
     you_seconds.innerHTML = formattedSS;
     you_milliseconds.innerHTML = formattedMS;
 }
+socket.on('users:names', (users) => {
+	for (const key in users) {
+		if(users[key] !== username){
+			opponent_badge.innerHTML = users[key];
+		}
+	}
+});
 
 socket.on('users:score', (players) => {
 	if(players[0].username === username){
 		your_score.innerHTML = players[0].score;
 		opponent_score.innerHTML = players[1].score;
 	}
-	else {
+	else if (players[1].username === username){
 		opponent_score.innerHTML = players[0].score;
 		your_score.innerHTML = players[1].score;
 	}
 });
-
 
 // get username from form and show chat
 usernameForm.addEventListener('submit', e => {
@@ -121,6 +128,7 @@ usernameForm.addEventListener('submit', e => {
 				startTimer();
             })
         }
+
     });
 
 });
@@ -129,7 +137,6 @@ usernameForm.addEventListener('submit', e => {
 virusImage.addEventListener('click', e => {
 	e.preventDefault();
 
-	
 	pauseTimer();
 
 	countReaction();
