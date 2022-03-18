@@ -1,6 +1,7 @@
 #app,
 #start,
-#game-wrapper {
+#game-wrapper,
+#lobby-wrapper {
 	height: 100vh;
 	width: 100vw;
 }
@@ -22,19 +23,23 @@
 	text-align: center;
 }
 
-#game-wrapper {
+#game-wrapper,
+#lobby-wrapper {
 	display: flex;
 }
-#game {
+#game,
+#lobby {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
 	border-right: 1px solid #555;
 }
-#game h2 {
+#game h2,
+#lobby h2 {
 	background-color: cornflowerblue;
 	padding: 0.5rem 0.75rem;
 	color: white;
+	margin: 0;
 }
 #arena-wrapper {
 	border: 2px solid #979797;
@@ -74,7 +79,8 @@
 	font-weight: 600;
 }
 
-#reactiontimes {
+#reactiontimes,
+#highscore-reactiontime {
 	text-align: center;
 	margin: 0.5rem 0.75rem;
 	font-size: large;
@@ -98,8 +104,62 @@
 }
 
 /* #you-minutes, #you-seconds, #you-milliseconds { */
-	#you-time span, #opponent-time span {
+	#you-time span, #opponent-time span, #player-time span {
 	/* important with this font family */
 	font-family: "Roboto Mono", monospace;	
 	font-size: larger;
+}
+
+#games-wrapper {
+	border: 2px solid #979797;
+	margin: 1rem 1.5rem;
+	flex-grow: 1;
+	overflow-y: scroll;
+	background-color: #F5F5F5;
+  	padding: 2px;
+}
+
+.lobby-title {
+	color: cornflowerblue;
+	font-weight: 600;
+	margin: 0.5rem 0.75rem;
+}
+
+#highscore {
+	flex-basis: 30%;
+}
+
+#highscore h2 {
+	background-color: cornflowerblue;
+	padding: 0.5rem 0.75rem;
+	color: white;
+}
+
+#highscore h3 {
+	text-align: center;
+}
+
+#highscore-reactiontime div {
+	background-color: #e8e7d4;
+	border: 1px solid #c7b590;
+}
+
+#player-time {
+	color: #cece13;
+	font-size: larger;
+	font-weight: 600;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+#lobby-header {
+	display: flex;
+	justify-content: space-between;
+	background-color: cornflowerblue;
+}
+
+#lobby-header button {
+	margin: 0.5rem 0.75rem;
 }
