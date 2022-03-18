@@ -155,9 +155,14 @@ socket.on('disconnect', (reason) => {
     }
 });
 
+socket.on('game:end', (result) => {
+    // virusImageEl.classList.add('hide');  funkar inte 
+    resetTimer();
+    window.alert("The winner is: "+ result.winner); // this is temporary just to show winner
+});
+
 // Listen for when game is ready to start
 socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
-
     // Position virus image on grid
     virusImageEl.style.gridRow = randomPositionX;
     virusImageEl.style.gridColumn = randomPositionY;
@@ -167,10 +172,11 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
         virusImageEl.classList.remove('hide');
     }, randomDelay);
     resetTimer();
-    resetTimer();
     startTimer(you_minutes, you_seconds, you_milliseconds);
-    startTimer_opponent(opponent_minutes, opponent_seconds, opponent_milliseconds)
+    startTimer_opponent(opponent_minutes, opponent_seconds, opponent_milliseconds);
+  
 });
+
 
 // listen when our opponent will send us his time amd then update his time on our side
 socket.on('user:opponent_time', (paused_time_opponent) => {
@@ -181,9 +187,9 @@ socket.on('user:opponent_time', (paused_time_opponent) => {
     opponent_milliseconds.innerHTML = paused_time_opponent.split(':')[2];
 })
 
-virusImage.addEventListener('click', handleClick );
+// virusImage.addEventListener('click', handleClick );
 // send reaction time to server
-function handleClick() {
+virusImage.addEventListener('click', e => {
     e.preventDefault();
 
     //hide image when clicked
@@ -206,7 +212,7 @@ function handleClick() {
     // send reactionTime to server
     socket.emit('user:reaction', reactionTime);
 
-} 
+} );
 
 
 // get username from form and show chat
