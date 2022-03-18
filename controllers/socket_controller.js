@@ -173,4 +173,25 @@ module.exports = function(socket, _io) {
         io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
     });
 
+    socket.on('game:round', function() {
+        // Get room information
+        const room = rooms.find(id => id.users[this.id]);
+
+        /**
+         * @todo Finish code when rounds and winner/loser data is known
+         */
+
+        // Test data
+        let rounds = 10;
+        let winner = 'Alice'
+        let winnerPoints = 10
+        let loserPoints = 3
+
+        if (rounds === 10) {
+            io.to(room.id).emit('game:victory', winner, winnerPoints, loserPoints);
+        } else {
+            // Game continues
+        }
+    })
+
 }

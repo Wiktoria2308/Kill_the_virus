@@ -2,6 +2,8 @@ const socket = io();
 
 const startEl = document.querySelector('#start');
 const lobbyEl = document.querySelector('#lobby-wrapper');
+const winnerEl = document.querySelector('#victory');
+const winnerMsgEl = document.querySelector('#winner-body');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
 const start_button = document.querySelector('.btn-primary');
@@ -174,6 +176,19 @@ socket.on('user:opponent_time', (paused_time_opponent) => {
     opponent_milliseconds.innerHTML = paused_time_opponent.split(':')[2];
 })
 
+// listen when a player has won the game
+socket.on('game:victory', (winner, winnerPoints, loserPoints) => {
+    virusImageEl.classList.add('hide');
+    winnerEl.classList.remove('hide');
+
+    winnerMsgEl.innerHTML = 
+    `
+        <p>
+            The winner is ${winner} with ${winnerPoints} - ${loserPoints} points
+        </p>
+    `
+})
+
 // send reaction time to server
 virusImage.addEventListener('click', e => {
     e.preventDefault();
@@ -194,6 +209,11 @@ virusImage.addEventListener('click', e => {
 
     // send reactionTime to server
     socket.emit('user:reaction', reactionTime);
+
+    /** 
+     * @todo Move 'game:round' where necessary
+    */
+    socket.emit('game:round');
 
     // clear timer
     // resetTimer();
