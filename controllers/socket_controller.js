@@ -159,8 +159,8 @@ module.exports = function(socket, _io) {
     });
 
     socket.on('game:round', function() {
-        // Get room information
-        const room = rooms.find(id => id.users[this.id]);
+        // Find room
+        const room = rooms.find(room => room.users.find(user => user.id === this.id));
 
         /**
          * @todo Finish code when rounds and winner/loser data is known
