@@ -109,13 +109,12 @@ function countTime(time, user_min, user_sec, user_ms) {
 }
 // listen for users names to add opponent name to game
 socket.on('users:names', (user1, user2) => {
-    if(user1 === username) {
+    if (user1 === username) {
         opponent_badge.innerHTML = user2;
+    } else {
+        opponent_badge.innerHTML = user1;
     }
-    else {
-     opponent_badge.innerHTML = user1;
-    }
- });
+});
 
 
 // listen for users score and show them in game
@@ -166,16 +165,16 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     virusImageEl.classList.add('hide');
     winnerEl.classList.remove('hide');
 
-    winnerMsgEl.innerHTML = 
-    `
+    winnerMsgEl.innerHTML =
+        `
         <p>
             The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!
         </p>
     `
-    // If it's a tie
-    if(winner == 'remis') {
-        winnerMsgEl.innerHTML = 
-    `
+        // If it's a tie
+    if (winner == 'remis') {
+        winnerMsgEl.innerHTML =
+            `
         <p>
             ${loserOrTiePoints}-${loserOrTiePoints}, it's a tie!
         </p>
@@ -190,13 +189,17 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     virusImageEl.style.gridColumn = randomPositionY;
 
     // Display virus after delay
-    setTimeout(() => {
+    let virusTimeout = setTimeout(() => {
         virusImageEl.classList.remove('hide');
     }, randomDelay);
+
+    socket.on('game:end', () => {
+        clearTimeout(virusTimeout)
+    })
     resetTimer();
     startTimer(you_minutes, you_seconds, you_milliseconds);
     startTimer_opponent(opponent_minutes, opponent_seconds, opponent_milliseconds);
-  
+
 });
 
 
@@ -234,7 +237,7 @@ virusImage.addEventListener('click', e => {
     // send reactionTime to server
     socket.emit('user:reaction', reactionTime);
 
-} );
+});
 
 
 // get username from form and show chat
