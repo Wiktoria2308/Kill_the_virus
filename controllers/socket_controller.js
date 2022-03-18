@@ -37,26 +37,54 @@ const handleReactionTime = function(data) {
 
     //find user and add data to user
     const user = room.users.find(user => user.id === this.id);
-    user.totalmilliseconds.push(data.totalmilliseconds);
+    let total = data.totalmilliseconds;
     user.totalmillisecondsNow = data.totalmilliseconds;
- 
+    user.totalmilliseconds.push(total);
+    console.log('room before', user.totalmilliseconds)
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !==10) {
+        room.rounds ++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
             room.users[0].pointsNow++;
             players = [{username: room.users[0].username, points:room.users[0].pointsNow},{username: room.users[1].username, points:room.users[1].pointsNow} ];
             io.in(room.id).emit('users:score', players);
             room.users[0].totalmillisecondsNow = 0;
             room.users[1].totalmillisecondsNow = 0;
-  
+            // Emit to specific room
+        io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
+            console.log('rounds', room.rounds);
         } else if (room.users[0].totalmillisecondsNow > room.users[1].totalmillisecondsNow) {
             room.users[1].pointsNow++;
             players = [{username: room.users[0].username, points:room.users[0].pointsNow},{username: room.users[1].username, points:room.users[1].pointsNow} ];
             io.in(room.id).emit('users:score', players);
             room.users[0].totalmillisecondsNow = 0;
             room.users[1].totalmillisecondsNow = 0;
+            // Emit to specific room
+        io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
+        console.log('rounds', room.rounds);
         }
-    }
+        }
+        if(room.rounds === 10){
+            let gameResultat = {};
+            gameResultat[room.users[0].username]= room.users[0].pointsNow;
+            gameResultat[room.users[1].username]= room.users[1].pointsNow;
+            room.score.push(gameResultat);
+            console.log(room.score);
+            if(room.users[0].pointsNow > room.users[1].pointsNow){
+                gameResultat.winner = room.users[0].username;
+            }
+            if(room.users[0].pointsNow < room.users[1].pointsNow){
+                gameResultat.winner = room.users[1].username;
+            }
+            if(room.users[0].pointsNow === room.users[1].pointsNow){
+                gameResultat.winner = 'remis';
+            }
+            io.to(room.id).emit('game:end', gameResultat);
+            room.users[0].pointsNow = 0;
+            room.users[1].pointsNow = 0;
+            // room.rounds = 0;
+        }
+    console.log('room now', room.users)
 }
 
 
@@ -98,7 +126,8 @@ module.exports = function(socket, _io) {
             let room = {
                 id: roomName,
                 users: [],
-                score: []
+                rounds: 0,
+                score: [],
             };
             // push a new room to all rooms array
             rooms.push(room);
