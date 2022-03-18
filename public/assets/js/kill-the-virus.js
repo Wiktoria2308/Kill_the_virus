@@ -1,9 +1,12 @@
 const socket = io();
 
 const startEl = document.querySelector('#start');
+const lobbyEl = document.querySelector('#lobby-wrapper');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
 const start_button = document.querySelector('.btn-primary');
+const lobbyBtn = document.querySelector('#lobby-button');
+const backBtn = document.querySelector('#back-button')
 const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 
@@ -219,4 +222,16 @@ usernameForm.addEventListener('submit', e => {
         }
         usernameForm.username.value = '';
     });
+});
+
+// Show lobby view when clicking on 'game lobby' button
+lobbyBtn.addEventListener('click', () => {
+    startEl.classList.add('hide');
+    lobbyEl.classList.remove('hide');
+});
+
+// Show start view when clicking on 'go back' button in lobby view
+backBtn.addEventListener('click', () => {
+    lobbyEl.classList.add('hide');
+    startEl.classList.remove('hide');
 });
