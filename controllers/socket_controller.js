@@ -29,13 +29,11 @@ let waiting_opponent = true;
 
 const handleReactionTime = function(data) {
 
-    debug('data', data)
-
     // find the room that this socket is part of
     const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
 
-    // this.broadcast.to(room.id).emit('user:opponent_time', data.paused_time);
-    io.in(room.id).emit('user:opponent_time', data.paused_time);
+    // sending the time when a user clicked on virus to his opponent
+    this.broadcast.to(room.id).emit('user:opponent_time', data.paused_time);
 
     if (room.player_1 === undefined) {
         data.points = 0;
@@ -102,8 +100,8 @@ module.exports = function(socket, _io) {
         if (!room) {
             return;
         }
-
-        // let everyone in the room know that this user has disconnected
+        debug('room id', room.id)
+            // let everyone in the room know that this user has disconnected
         this.broadcast.to(room.id).emit('user:disconnected');
 
         // remove a room because we need to start a new game
@@ -120,7 +118,7 @@ module.exports = function(socket, _io) {
 
         // if there is no room creating a new room with id equal to the first users id
         if (!roomName) {
-            roomName = this.id;
+            roomName = 'room_' + this.id;
             let room = {
                 id: roomName,
                 users: {}
@@ -138,7 +136,8 @@ module.exports = function(socket, _io) {
             console.log('There is no such room');
             return;
         }
-        // join user to this room
+        debug('roomid', room.id)
+            // join user to this room
         this.join(room.id);
 
         // associate socket id with username and store it in a room oject in the rooms array
