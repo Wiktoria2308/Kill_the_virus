@@ -157,10 +157,30 @@ socket.on('disconnect', (reason) => {
     }
 });
 
-socket.on('game:end', (result) => {
+// listen for when the game has ended
+socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     // virusImageEl.classList.add('hide');  funkar inte 
     resetTimer();
-    window.alert("The winner is: "+ result.winner); // this is temporary just to show winner
+    // window.alert("The winner is: "+ result.winner); // this is temporary just to show winner
+
+    virusImageEl.classList.add('hide');
+    winnerEl.classList.remove('hide');
+
+    winnerMsgEl.innerHTML = 
+    `
+        <p>
+            The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!
+        </p>
+    `
+    // If it's a tie
+    if(winner == 'remis') {
+        winnerMsgEl.innerHTML = 
+    `
+        <p>
+            ${loserOrTiePoints}-${loserOrTiePoints}, it's a tie!
+        </p>
+    `
+    }
 });
 
 // Listen for when game is ready to start
@@ -189,19 +209,7 @@ socket.on('user:opponent_time', (paused_time_opponent) => {
     opponent_milliseconds.innerHTML = paused_time_opponent.split(':')[2];
 })
 
-// listen when a player has won the game
-socket.on('game:victory', (winner, winnerPoints, loserPoints) => {
-    virusImageEl.classList.add('hide');
-    winnerEl.classList.remove('hide');
-
-    winnerMsgEl.innerHTML = 
-    `
-        <p>
-            The winner is ${winner} with ${winnerPoints} - ${loserPoints} points
-        </p>
-    `
-})
-
+// virusImage.addEventListener('click', handleClick );
 // send reaction time to server
 virusImage.addEventListener('click', e => {
     e.preventDefault();
@@ -226,14 +234,8 @@ virusImage.addEventListener('click', e => {
     // send reactionTime to server
     socket.emit('user:reaction', reactionTime);
 
-    /** 
-     * @todo Move 'game:round' where necessary
-    */
-    socket.emit('game:round');
+} );
 
-    // clear timer
-    // resetTimer();
-}, { once: true }); // user can click only once on the virus
 
 // get username from form and show chat
 usernameForm.addEventListener('submit', e => {

@@ -64,7 +64,10 @@ const handleReactionTime = function(data) {
         console.log('rounds', room.rounds);
         }
         }
-        if(room.rounds === 10){
+        /**
+         * @todo remember to change rounds back to 10
+         */
+        if(room.rounds === 2){
             let gameResultat = {};
             gameResultat[room.users[0].username]= room.users[0].pointsNow;
             gameResultat[room.users[1].username]= room.users[1].pointsNow;
@@ -72,14 +75,24 @@ const handleReactionTime = function(data) {
             console.log(room.score);
             if(room.users[0].pointsNow > room.users[1].pointsNow){
                 gameResultat.winner = room.users[0].username;
+                gameResultat.loser = room.users[1].username;
             }
             if(room.users[0].pointsNow < room.users[1].pointsNow){
                 gameResultat.winner = room.users[1].username;
+                gameResultat.loser = room.users[0].username;
             }
             if(room.users[0].pointsNow === room.users[1].pointsNow){
                 gameResultat.winner = 'remis';
+                gameResultat.loser = room.users[0].username;
             }
-            io.to(room.id).emit('game:end', gameResultat);
+            
+            let data = {
+                winnerPoints: gameResultat[gameResultat.winner],
+                loserOrTiePoints: gameResultat[gameResultat.loser]
+            }
+
+            // io.to(room.id).emit('game:end', gameResultat);
+            io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
             room.users[0].pointsNow = 0;
             room.users[1].pointsNow = 0;
             // room.rounds = 0;
@@ -187,25 +200,24 @@ module.exports = function(socket, _io) {
         io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
     });
 
-    socket.on('game:round', function() {
-        // Find room
-        const room = rooms.find(room => room.users.find(user => user.id === this.id));
+    // socket.on('game:round', function() {
+    //     // Find room
+    //     const room = rooms.find(room => room.users.find(user => user.id === this.id));
 
-        /**
-         * @todo Finish code when rounds and winner/loser data is known
-         */
+    //     /**
+    //      * @todo Finish code when rounds and winner/loser data is known
+    //      */
 
-        // Test data
-        let rounds = 10;
-        let winner = 'Alice'
-        let winnerPoints = 10
-        let loserPoints = 3
+    //     // Test data
+    //     let rounds = 10;
+    //     let winner = 'Alice'
+    //     let winnerPoints = 10
+    //     let loserPoints = 3
 
-        if (rounds === 10) {
-            io.to(room.id).emit('game:victory', winner, winnerPoints, loserPoints);
-        } else {
-            // Game continues
-        }
-    })
-
+    //     if (rounds === 10) {
+    //         io.to(room.id).emit('game:victory', winner, winnerPoints, loserPoints);
+    //     } else {
+    //         // Game continues
+    //     }
+    // })
 }
