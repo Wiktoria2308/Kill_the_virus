@@ -64,10 +64,7 @@ const handleReactionTime = function(data) {
         console.log('rounds', room.rounds);
         }
         }
-        /**
-         * @todo remember to change rounds back to 10
-         */
-        if(room.rounds === 2){
+        if(room.rounds === 10){
             let gameResultat = {};
             gameResultat[room.users[0].username]= room.users[0].pointsNow;
             gameResultat[room.users[1].username]= room.users[1].pointsNow;
