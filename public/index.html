@@ -19,7 +19,7 @@
 <body>
     <div id="app">
 
-        <div id="start" class="container">
+        <div id="start" class="container hide"><!-- @todo: remove class hide -->
             <form id="username-form">
                 <div class="mb-3">
                     <input type="text" id="username" class="form-control form-control-lg" required placeholder="Enter username">
@@ -31,13 +31,27 @@
             <!-- /#username-form -->
         </div>
         <!-- /#start -->
-
-        <div id="game-wrapper" class="hide">
+        <div id="game-wrapper"><!-- @todo: add class hide -->
             <div id="game">
                 <h2 id="game-title">Kill the Virus</h2>
                 <div id="arena-wrapper">
                     <!-- game arena will go here -->
                     <img id="virus-image" src="./assets/images/virus.jpg" alt="virus image" width="50px" class="hide">
+                    <div id="victory"><!-- @todo: add class hide -->
+                        <h2>Winner</h2>
+                        <div id="winner-body">
+                            <p id="winner">
+                                The winner is <span id="winner">${winner}</span>
+                            </p>
+                            <p id="points">
+                                with <span id="score">${points}</span> points
+                            </p>
+                        </div>
+                        <div id="winner-footer">
+                            <button type="button" class="btn btn-primary btn-lg">Play again</button>
+                        </div>
+                    </div>
+                    <!-- /#victory -->
                 </div>
                 <!-- /#arena-wrapper -->
             </div>
