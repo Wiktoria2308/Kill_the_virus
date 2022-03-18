@@ -48,6 +48,8 @@ const handleReactionTime = function(data) {
             io.in(room.id).emit('users:score', players);
             room.users[0].totalmillisecondsNow = 0;
             room.users[1].totalmillisecondsNow = 0;
+            // Emit to specific room
+        io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
   
         } else if (room.users[0].totalmillisecondsNow > room.users[1].totalmillisecondsNow) {
             room.users[1].pointsNow++;
@@ -55,6 +57,8 @@ const handleReactionTime = function(data) {
             io.in(room.id).emit('users:score', players);
             room.users[0].totalmillisecondsNow = 0;
             room.users[1].totalmillisecondsNow = 0;
+            // Emit to specific room
+        io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
         }
     }
 }

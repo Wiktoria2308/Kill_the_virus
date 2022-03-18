@@ -64,6 +64,10 @@ function resetTimer() {
     you_minutes.innerHTML = "00";
     you_seconds.innerHTML = "00";
     you_milliseconds.innerHTML = "00";
+    clearInterval(timerInterval_opponent);
+    opponent_minutes.innerHTML = "00";
+    opponent_seconds.innerHTML = "00";
+    opponent_milliseconds.innerHTML = "00";
 }
 
 let totalmilliseconds = null;
@@ -161,7 +165,9 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     // Display virus after delay
     setTimeout(() => {
         virusImageEl.classList.remove('hide');
-    }, randomDelay)
+    }, randomDelay);
+    resetTimer();
+    resetTimer();
     startTimer(you_minutes, you_seconds, you_milliseconds);
     startTimer_opponent(opponent_minutes, opponent_seconds, opponent_milliseconds)
 });
@@ -175,9 +181,13 @@ socket.on('user:opponent_time', (paused_time_opponent) => {
     opponent_milliseconds.innerHTML = paused_time_opponent.split(':')[2];
 })
 
+virusImage.addEventListener('click', handleClick );
 // send reaction time to server
-virusImage.addEventListener('click', e => {
+function handleClick() {
     e.preventDefault();
+
+    //hide image when clicked
+    virusImageEl.classList.add('hide');
 
     pauseTimer();
 
@@ -196,9 +206,8 @@ virusImage.addEventListener('click', e => {
     // send reactionTime to server
     socket.emit('user:reaction', reactionTime);
 
-    // clear timer
-    // resetTimer();
-}, { once: true }); // user can click only once on the virus
+} 
+
 
 // get username from form and show chat
 usernameForm.addEventListener('submit', e => {
