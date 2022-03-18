@@ -40,49 +40,49 @@
                     <div>
                         <button type="button" id="back-button" class="btn btn-primary">Go back</button>
                     </div>
-                    
+
                 </div>
                 <div id="games-wrapper">
                     <!-- current games table will go here -->
                     <h3 class="lobby-title">Current games</h3>
                     <table class="table table-striped">
                         <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Players</th>
-                            <th scope="col">Score</th>
-                          </tr>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Players</th>
+                                <th scope="col">Score</th>
+                            </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>
-                                <span id="${username}">Alice</span> vs. <span id="${username}">Bobby</span>
-                            </td>
-                            <td>
-                                <span id="${score}">3</span> - <span id="${score}">0</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td>
-                                <span id="${username}">Cynthia</span> vs. <span id="${username}">David</span>
-                            </td>
-                            <td>
-                                <span id="${score}">5</span> - <span id="${score}">5</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td>
-                                <span id="${username}">Eddy</span> vs. <span id="${username}">Freddy</span>
-                            </td>
-                            <td>
-                                <span id="${score}">0</span> - <span id="${score}">8</span>
-                            </td>
-                          </tr>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>
+                                    <span id="${username}">Alice</span> vs. <span id="${username}">Bobby</span>
+                                </td>
+                                <td>
+                                    <span id="${score}">3</span> - <span id="${score}">0</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>
+                                    <span id="${username}">Cynthia</span> vs. <span id="${username}">David</span>
+                                </td>
+                                <td>
+                                    <span id="${score}">5</span> - <span id="${score}">5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td>
+                                    <span id="${username}">Eddy</span> vs. <span id="${username}">Freddy</span>
+                                </td>
+                                <td>
+                                    <span id="${score}">0</span> - <span id="${score}">8</span>
+                                </td>
+                            </tr>
                         </tbody>
-                      </table>
+                    </table>
                 </div>
                 <!-- /#games-wrapper -->
             </div>
@@ -91,28 +91,28 @@
             <div id="highscore">
                 <h2>Highscore</h2>
                 <h3 class="lobby-title">Fastest average reaction time</h3>
-                    <div id="highscore-reactiontime">
-                        <div id="player-reactiontime" class="mb-4">
-                            <div>
-                                <span id="player-badge">${Username}</span>
-                            </div>
-                            <div id="player-time">
-                                <span id="you-minutes">00</span>:<span id="you-seconds">01</span>:<span id="you-milliseconds">532</span>
-                            </div>
+                <div id="highscore-reactiontime">
+                    <div id="player-reactiontime" class="mb-4">
+                        <div>
+                            <span id="player-badge">${Username}</span>
+                        </div>
+                        <div id="player-time">
+                            <span id="player-minutes">00</span>:<span id="player-seconds">00</span>:<span id="player-milliseconds">00</span>
                         </div>
                     </div>
-                    <!-- most recent games table will go here -->
-                    <h3 class="lobby-title">Most recent games</h3>
-                    <table class="table table-striped">
-                        <thead>
-                          <tr>
+                </div>
+                <!-- most recent games table will go here -->
+                <h3 class="lobby-title">Most recent games</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
                             <th scope="col">#</th>
                             <th scope="col">Players</th>
                             <th scope="col">Score</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
                             <th scope="row">1</th>
                             <td>
                                 <span id="${username}" class="bold">Alice</span> vs. <span id="${username}">Bobby</span>
@@ -120,8 +120,8 @@
                             <td>
                                 <span id="${score}" class="bold">10</span> - <span id="${score}">0</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">2</th>
                             <td>
                                 <span id="${username}" class="bold">Cynthia</span> vs. <span id="${username}">David</span>
@@ -129,8 +129,8 @@
                             <td>
                                 <span id="${score}" class="bold">10</span> - <span id="${score}">5</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">3</th>
                             <td>
                                 <span id="${username}">Eddy</span> vs. <span id="${username}" class="bold">Freddy</span>
@@ -138,8 +138,8 @@
                             <td>
                                 <span id="${score}">2</span> - <span id="${score}" class="bold">10</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">4</th>
                             <td>
                                 <span id="${username}" class="bold">Grace</span> vs. <span id="${username}">Henry</span>
@@ -147,8 +147,8 @@
                             <td>
                                 <span id="${score}" class="bold">10</span> - <span id="${score}">8</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">5</th>
                             <td>
                                 <span id="${username}" class="bold">Isabella</span> vs. <span id="${username}">James</span>
@@ -156,8 +156,8 @@
                             <td>
                                 <span id="${score}" class="bold">10</span> - <span id="${score}">10</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">6</th>
                             <td>
                                 <span id="${username}">Kennedy</span> vs. <span id="${username}" class="bold">Liam</span>
@@ -165,8 +165,8 @@
                             <td>
                                 <span id="${score}">6</span> - <span id="${score}" class="bold">10</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">7</th>
                             <td>
                                 <span id="${username}" class="bold">Mia</span> vs. <span id="${username}">Noah</span>
@@ -174,8 +174,8 @@
                             <td>
                                 <span id="${score}" class="bold">10</span> - <span id="${score}">8</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">8</th>
                             <td>
                                 <span id="${username}">Olivia</span> vs. <span id="${username}" class="bold">Penelope</span>
@@ -183,8 +183,8 @@
                             <td>
                                 <span id="${score}">5</span> - <span id="${score}" class="bold">10</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">9</th>
                             <td>
                                 <span id="${username}">Quinn</span> vs. <span id="${username}" class="bold">Ryan</span>
@@ -192,8 +192,8 @@
                             <td>
                                 <span id="${score}">6</span> - <span id="${score}" class="bold">10</span>
                             </td>
-                          </tr>
-                          <tr>
+                        </tr>
+                        <tr>
                             <th scope="row">10</th>
                             <td>
                                 <span id="${username}" class="bold">Sebastian</span> vs. <span id="${username}">Taylor</span>
@@ -201,9 +201,9 @@
                             <td>
                                 <span id="${score}" class="bold">10</span> - <span id="${score}">3</span>
                             </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <!-- /#highscore -->
         </div>
@@ -241,7 +241,7 @@
                             <span id="username-badge">You</span>
                         </div>
                         <div id="you-time">
-                            <span id="you-minutes">00</span>:<span id="you-seconds">01</span>:<span id="you-milliseconds">532</span>
+                            <span id="you-minutes">00</span>:<span id="you-seconds">00</span>:<span id="you-milliseconds">00</span>
                         </div>
                     </div>
                     <div id="opponent-reactiontime">
