@@ -30,53 +30,55 @@ let waiting_opponent = true;
 const handleReactionTime = function(data) {
 
     // find the room that this socket is part of
-	 const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
-    
-    if(room.player_1 === undefined) {
-        data.score = 0;
+    const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
+
+    // sending the time when a user clicked on virus to his opponent
+    this.broadcast.to(room.id).emit('user:opponent_time', data.paused_time);
+
+    if (room.player_1 === undefined) {
+        data.points = 0;
         room.player_1 = data;
     }
-    if(room.player_1 && room.player_2 === undefined && room.player_1.username !== data.username){
-        data.score = 0;
+    if (room.player_1 && room.player_2 === undefined && room.player_1.username !== data.username) {
+        data.points = 0;
         room.player_2 = data;
     }
-    
+
     let players = [];
     let player1 = {};
     let player2 = {};
-    if(room.player_1 !== undefined && room.player_2 !== undefined){
+    if (room.player_1 !== undefined && room.player_2 !== undefined) {
         // console.log('room', room);  // it works yuupppi!!!
-        if(room.player_1.totalmilliseconds < room.player_2.totalmilliseconds){
-            room.player_1.score++;
+        if (room.player_1.totalmilliseconds < room.player_2.totalmilliseconds) {
+            room.player_1.points++;
             player1.username = room.player_1.username;
-            player1.score = room.player_1.score;
+            player1.points = room.player_1.points;
             players.push(player1);
             player1 = {};
             player2.username = room.player_2.username;
-            player2.score = room.player_2.score;
+            player2.points = room.player_2.points;
             players.push(player2);
             player2 = {};
             // send score to both users
             io.in(room.id).emit('users:score', players);
             console.log('players', players);
             players = [];
-            console.log('room, player 1 wins', room);  // it works yuupppi!!!
-        }
-        else if(room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
-            room.player_2.score ++;
+            console.log('room, player 1 wins', room); // it works yuupppi!!!
+        } else if (room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
+            room.player_2.points++;
             player1.username = room.player_1.username;
-            player1.score = room.player_1.score;
+            player1.points = room.player_1.points;
             players.push(player1);
             player1 = {};
             player2.username = room.player_2.username;
-            player2.score = room.player_2.score;
+            player2.points = room.player_2.points;
             players.push(player2);
             player2 = {};
             // send score to both users
             io.in(room.id).emit('users:score', players);
             console.log('players', players);
             players = [];
-            console.log('room, player 2 wins', room);  // it works yuupppi!!!
+            console.log('room, player 2 wins', room); // it works yuupppi!!!
         }
     }
 }
@@ -98,9 +100,9 @@ module.exports = function(socket, _io) {
         if (!room) {
             return;
         }
-
-        // let everyone in the room know that this user has disconnected
-        this.broadcast.to(room.id).emit('user:disconnected');;
+        debug('room id', room.id)
+            // let everyone in the room know that this user has disconnected
+        this.broadcast.to(room.id).emit('user:disconnected');
 
         // remove a room because we need to start a new game
         rooms.splice(rooms.indexOf(room), 1);
@@ -116,7 +118,7 @@ module.exports = function(socket, _io) {
 
         // if there is no room creating a new room with id equal to the first users id
         if (!roomName) {
-            roomName = this.id;
+            roomName = 'room_' + this.id;
             let room = {
                 id: roomName,
                 users: {}
@@ -134,8 +136,9 @@ module.exports = function(socket, _io) {
             console.log('There is no such room');
             return;
         }
+        debug('roomid', room.id)
             // join user to this room
-            this.join(room.id);    
+        this.join(room.id);
 
         // associate socket id with username and store it in a room oject in the rooms array
         room.users[this.id] = username;
@@ -165,9 +168,9 @@ module.exports = function(socket, _io) {
     socket.on('players:ready', function() {
         // Find room
         const room = rooms.find(id => id.users[this.id]);
-        
+
         // Emit to specific room
         io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
     });
-       
+
 }

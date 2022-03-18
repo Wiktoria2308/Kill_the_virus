@@ -1,9 +1,12 @@
 const socket = io();
 
 const startEl = document.querySelector('#start');
+const lobbyEl = document.querySelector('#lobby-wrapper');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
 const start_button = document.querySelector('.btn-primary');
+const lobbyBtn = document.querySelector('#lobby-button');
+const backBtn = document.querySelector('#back-button')
 const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 
@@ -27,13 +30,23 @@ let virusImage = document.querySelector('#virus-image');
 let startTime;
 let elapsedTime = 0;
 let timerInterval;
+let timerInterval_opponent;
 
 // function to start timer
-function startTimer() {
+function startTimer(user_min, user_sec, user_ms) {
     startTime = Date.now() - elapsedTime;
     timerInterval = setInterval(function printTime() {
         elapsedTime = Date.now() - startTime;
-        countTime(elapsedTime);
+        countTime(elapsedTime, user_min, user_sec, user_ms);
+    }, 10);
+}
+
+// function to start timer for opponent. Changed both timers with extra arguments, because need to use function 'countTime' for both timers
+function startTimer_opponent(user_min, user_sec, user_ms) {
+    startTime = Date.now() - elapsedTime;
+    timerInterval_opponent = setInterval(function printTime() {
+        elapsedTime = Date.now() - startTime;
+        countTime(elapsedTime, user_min, user_sec, user_ms);
     }, 10);
 }
 
@@ -48,21 +61,24 @@ function pauseTimer() {
 function resetTimer() {
     clearInterval(timerInterval);
     elapsedTime = 0;
-	you_minutes.innerHTML = "00";
+    you_minutes.innerHTML = "00";
     you_seconds.innerHTML = "00";
     you_milliseconds.innerHTML = "00";
 }
 
 let totalmilliseconds = null;
+let paused_time = null; //getting the time when we pressed on virus
+
 function countReaction() {
     let minutes = parseInt(you_minutes.innerHTML);
     let seconds = parseInt(you_seconds.innerHTML);
     let milliseconds = parseInt(you_milliseconds.innerHTML);
     totalmilliseconds = (minutes * 60000) + (seconds * 1000) + milliseconds;
+    paused_time = you_minutes.innerHTML + ':' + you_seconds.innerHTML + ':' + you_milliseconds.innerHTML;
 }
 
 // Convert time to a format of minutes, seconds, and milliseconds
-function countTime(time) {
+function countTime(time, user_min, user_sec, user_ms) {
 
     let diffInHrs = time / 3600000;
     let hh = Math.floor(diffInHrs);
@@ -80,61 +96,33 @@ function countTime(time) {
     let formattedSS = ss.toString().padStart(2, "0");
     let formattedMS = ms.toString().padStart(2, "0");
 
-    you_minutes.innerHTML = formattedMM;
-    you_seconds.innerHTML = formattedSS;
-    you_milliseconds.innerHTML = formattedMS;
+    user_min.innerHTML = formattedMM;
+    user_sec.innerHTML = formattedSS;
+    user_ms.innerHTML = formattedMS;
 
-	// opponent_minutes.innerHTML = formattedMM;
-    // opponent_seconds.innerHTML = formattedSS;
-    // opponent_milliseconds.innerHTML = formattedMS;
 }
 // listen for users names to add opponent name to game
 socket.on('users:names', (users) => {
-	for (const key in users) {
-		if(users[key] !== username){
-			opponent_badge.innerHTML = users[key];
-		}
-	}
+    for (const key in users) {
+        if (users[key] !== username) {
+            opponent_badge.innerHTML = users[key];
+        }
+    }
 });
 
 
 // listen for users score and show them in game
 socket.on('users:score', (players) => {
-	if(players[0].username === username){
-		your_score.innerHTML = players[0].score;
-		opponent_score.innerHTML = players[1].score;
-	}
-	else if (players[1].username === username){
-		opponent_score.innerHTML = players[0].score;
-		your_score.innerHTML = players[1].score;
-	}
+    if (players[0].username === username) {
+        your_score.innerHTML = players[0].points;
+        opponent_score.innerHTML = players[1].points;
+    } else if (players[1].username === username) {
+        opponent_score.innerHTML = players[0].points;
+        your_score.innerHTML = players[1].points;
+    }
     console.log(players);
 });
 
-// get username from form and show chat
-usernameForm.addEventListener('submit', e => {
-    e.preventDefault();
-
-    username = usernameForm.username.value;
-	username_badge.innerHTML = username;
-
-    socket.emit('user:joined', username, (status) => {
-        // we've received acknowledgement from the server
-        console.log("Server acknowledged that user joined", status); 
-
-        // hiding start_button 'Play' and showing text that user needs to wait for another user
-        start_button.classList.add('hide');
-        waiting_label.classList.remove('hide');
-        opponent_disconnected_label.classList.add('hide');
-
-        // if it is the second user and we don't need to wait, we hiding the start screen
-        if (!status.waiting_opponent) {
-            startEl.classList.add('hide');
-            gameWrapperEl.classList.remove('hide');
-        } 
-            usernameForm.username.value = '';
-    });
-});
 // the first user listening when the opponent will be found
 socket.on('user:ready', () => {
     console.log('user ready!!!');
@@ -173,28 +161,77 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     setTimeout(() => {
         virusImageEl.classList.remove('hide');
     }, randomDelay)
-    startTimer();
+    startTimer(you_minutes, you_seconds, you_milliseconds);
+    startTimer_opponent(opponent_minutes, opponent_seconds, opponent_milliseconds)
 });
+
+// listen when our opponent will send us his time amd then update his time on our side
+socket.on('user:opponent_time', (paused_time_opponent) => {
+    clearInterval(timerInterval_opponent);
+    console.log('opponent paused at ', paused_time_opponent);
+    opponent_minutes.innerHTML = paused_time_opponent.split(':')[0];
+    opponent_seconds.innerHTML = paused_time_opponent.split(':')[1];
+    opponent_milliseconds.innerHTML = paused_time_opponent.split(':')[2];
+})
+
 // send reaction time to server
 virusImage.addEventListener('click', e => {
-	e.preventDefault();
+    e.preventDefault();
 
-	pauseTimer();
+    pauseTimer();
 
-	countReaction();
+    countReaction();
 
-	if (!totalmilliseconds) {
-		return;
-	}
+    if (!totalmilliseconds) {
+        return;
+    }
 
-	let reactionTime = {
-		username,
-		totalmilliseconds,
-	}
+    let reactionTime = {
+        username,
+        totalmilliseconds,
+        paused_time
+    }
 
-	// send reactionTime to server
-	socket.emit('user:reaction', reactionTime);
+    // send reactionTime to server
+    socket.emit('user:reaction', reactionTime);
 
-	// clear timer
-	// resetTimer();
-}, {once : true});  // user can click only once on the virus
+    // clear timer
+    // resetTimer();
+}, { once: true }); // user can click only once on the virus
+
+// get username from form and show chat
+usernameForm.addEventListener('submit', e => {
+    e.preventDefault();
+
+    username = usernameForm.username.value;
+    username_badge.innerHTML = username;
+
+    socket.emit('user:joined', username, (status) => {
+        // we've received acknowledgement from the server
+        console.log("Server acknowledged that user joined", status);
+
+        // hiding start_button 'Play' and showing text that user needs to wait for another user
+        start_button.classList.add('hide');
+        waiting_label.classList.remove('hide');
+        opponent_disconnected_label.classList.add('hide');
+
+        // if it is the second user and we don't need to wait, we hiding the start screen
+        if (!status.waiting_opponent) {
+            startEl.classList.add('hide');
+            gameWrapperEl.classList.remove('hide');
+        }
+        usernameForm.username.value = '';
+    });
+});
+
+// Show lobby view when clicking on 'game lobby' button
+lobbyBtn.addEventListener('click', () => {
+    startEl.classList.add('hide');
+    lobbyEl.classList.remove('hide');
+});
+
+// Show start view when clicking on 'go back' button in lobby view
+backBtn.addEventListener('click', () => {
+    lobbyEl.classList.add('hide');
+    startEl.classList.remove('hide');
+});
