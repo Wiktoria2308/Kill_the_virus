@@ -99,12 +99,13 @@ function countTime(time, user_min, user_sec, user_ms) {
 
 }
 // listen for users names to add opponent name to game
-socket.on('users:names', (users) => {
-    for (const key in users) {
-        if (users[key] !== username) {
-            opponent_badge.innerHTML = users[key];
-        }
-    }
+socket.on('users:names', (user1, user2) => {
+   if(user1 === username) {
+       opponent_badge.innerHTML = user2;
+   }
+   else {
+    opponent_badge.innerHTML = user1;
+   }
 });
 
 
