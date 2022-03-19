@@ -13,6 +13,8 @@ const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 const games_now = document.querySelector('#games_now');
 
+const play_again = document.querySelector('#play-again');
+const winner_heading = document.querySelector('#winner-heading');
 const virusImageEl = document.querySelector('#virus-image');
 
 let username = null;
@@ -167,12 +169,11 @@ socket.on('disconnect', (reason) => {
 
 // listen for when the game has ended
 socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
-    resetTimer();
     // window.alert("The winner is: "+ result.winner); // this is temporary just to show winner
-
+    play_again.classList.remove('hide');
     virusImageEl.classList.add('hide');
     winnerEl.classList.remove('hide');
-
+    winner_heading.innerHTML = "Winner";
     winnerMsgEl.innerHTML =
         `
         <p>
@@ -193,7 +194,7 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
 
 // Listen for when game is ready to start
 socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
-   setTimeout(() => {
+   let timerTimeout = setTimeout(() => {
     resetTimer();
    }, 1000);
     // Position virus image on grid
@@ -209,6 +210,7 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     // stop displaying virus after game ends
     socket.on('game:end', () => {
         clearTimeout(virusTimeout)
+        clearInterval(timerTimeout);
     })
 });
 
@@ -255,6 +257,30 @@ virusImage.addEventListener('click', e => {
 
     // send reactionTime to server
     socket.emit('user:reaction', reactionTime);
+});
+
+
+socket.on('users:ready_again', () => {
+    winnerEl.classList.add('hide');
+    your_score.innerHTML = 0;
+    opponent_score.innerHTML = 0;
+    waiting_label.classList.add('hide');
+    socket.emit('players:ready');
+});
+
+// send information that opponet wants to play again
+play_again.addEventListener('click', e => {
+    socket.emit('user:play_again', username, (status) => {
+        winnerMsgEl.innerHTML = "Waiting for opponent...";
+        play_again.classList.add('hide');
+        winner_heading.innerHTML = "Play again";
+        if (!status.playAgainOneUser) {
+            winnerEl.classList.add('hide');
+            your_score.innerHTML = 0;
+            opponent_score.innerHTML = 0;
+            waiting_label.classList.add('hide');
+        }
+    });
 });
 
 

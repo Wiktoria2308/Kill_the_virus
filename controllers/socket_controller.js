@@ -26,7 +26,8 @@ let roomName = null;
 // a 'toggler' for a status of a waiting opponent 
 let waiting_opponent = true;
 
-
+let play_again = null;
+let playAgainOneUser = true;
 
 const handleReactionTime = function(data) {
 
@@ -42,7 +43,7 @@ const handleReactionTime = function(data) {
     user.totalmilliseconds.push(total);
     // console.log('room before', user.totalmilliseconds)
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
             room.users[0].pointsNow++;
@@ -64,7 +65,7 @@ const handleReactionTime = function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    if (room.rounds === 10) {
+    if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
@@ -92,11 +93,12 @@ const handleReactionTime = function(data) {
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
         room.users[0].pointsNow = 0;
         room.users[1].pointsNow = 0;
-        // room.rounds = 0;
+        room.rounds = 0;
     }
-    // console.log('room now', room.users)
+    console.log('room now', room)
     io.emit('game:create_game_in_lobby', rooms);
 }
+
 
 
 module.exports = function(socket, _io) {
@@ -124,10 +126,31 @@ module.exports = function(socket, _io) {
         io.emit('game:create_game_in_lobby', rooms);
     });
 
-
     // listen for user reaction time 
     socket.on('user:reaction', handleReactionTime);
 
+    socket.on('user:play_again', function(username, callback) {
+        const room = rooms.find(room => room.users.find(user => user.id === this.id));
+        // this.broadcast.to(room.id).emit('users:play_again');
+        // const user = room.users.find(user => user.id === this.id);
+        if(!play_again){
+            play_again = username;
+        }
+        else {
+            playAgainOneUser = false;
+        }
+        callback({
+            success: true,
+            playAgainOneUser
+        });
+
+        if(!playAgainOneUser) {
+            playAgainOneUser = true;
+            play_again = null;
+            this.broadcast.to(room.id).emit('users:ready_again');
+        }
+
+    });
 
     // handle user joined
     socket.on('user:joined', function(username, callback) {
@@ -193,30 +216,10 @@ module.exports = function(socket, _io) {
     socket.on('players:ready', function() {
         // Find room
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
-
         io.emit('game:create_game_in_lobby', rooms);
         // Emit to specific room
         io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
     });
 
-    // socket.on('game:round', function() {
-    //     // Find room
-    //     const room = rooms.find(room => room.users.find(user => user.id === this.id));
-
-    //     /**
-    //      * @todo Finish code when rounds and winner/loser data is known
-    //      */
-
-    //     // Test data
-    //     let rounds = 10;
-    //     let winner = 'Alice'
-    //     let winnerPoints = 10
-    //     let loserPoints = 3
-
-    //     if (rounds === 10) {
-    //         io.to(room.id).emit('game:victory', winner, winnerPoints, loserPoints);
-    //     } else {
-    //         // Game continues
-    //     }
-    // })
+    
 }
