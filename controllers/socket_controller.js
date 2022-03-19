@@ -103,7 +103,7 @@ const handleReactionTime = function(data) {
             points_1: room.users[0].pointsNow,
             points_2: room.users[1].pointsNow,
             winner: gameResultat.winner,
-            id: room.id
+            id: Date.now()
         }
 
         console.log(room.users, gameResultat)

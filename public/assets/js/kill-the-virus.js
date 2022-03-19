@@ -258,19 +258,19 @@ socket.on('lobby:show_recent_games', (games) => {
         roomEl.innerHTML = `<tr>
         <th scope="row">${i+1}</th>
         <td>
-            <span id="${game.id}_user1">${game.user_1}</span> vs. <span id="${game.id}_user2">${game.user_2}</span>
+            <span id="user1_${game.id}">${game.user_1}</span> vs. <span id="user2_${game.id}">${game.user_2}</span>
         </td>
         <td>
-            <span id="${game.id}_points1">${game.points_1}</span> - <span id="${game.id}_points2">${game.points_2}</span>
+            <span id="points1_${game.id}">${game.points_1}</span> - <span id="points2_${game.id}">${game.points_2}</span>
         </td>
     </tr>`;
         recent_games.appendChild(roomEl);
         if (game.winner === game.user_1) {
-            document.querySelector(`#${game.id}_user1`).classList.add('bold');
-            document.querySelector(`#${game.id}_points1`).classList.add('bold');
+            document.querySelector(`#user1_${game.id}`).classList.add('bold');
+            document.querySelector(`#points1_${game.id}`).classList.add('bold');
         } else if (game.winner === game.user_2) {
-            document.querySelector(`#${game.id}_user2`).classList.add('bold');
-            document.querySelector(`#${game.id}_points2`).classList.add('bold');
+            document.querySelector(`#user2_${game.id}`).classList.add('bold');
+            document.querySelector(`#points2_${game.id}`).classList.add('bold');
         }
     }
 });
