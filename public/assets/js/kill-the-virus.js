@@ -251,17 +251,27 @@ socket.on('lobby:show_recent_games', (games) => {
     recent_games.innerHTML = '';
     for (let i = 0; i < 10; i++) {
         let game = games[i]
+        if (!game) {
+            return
+        };
         const roomEl = document.createElement('tr');
         roomEl.innerHTML = `<tr>
         <th scope="row">${i+1}</th>
         <td>
-            <span>${game.winner}</span> vs. <span>${game.loser}</span>
+            <span id="${game.id}_user1">${game.user_1}</span> vs. <span id="${game.id}_user2">${game.user_2}</span>
         </td>
         <td>
-            <span>${games[game.winner]}</span> - <span>${games[game.loser]}</span>
+            <span id="${game.id}_points1">${game.points_1}</span> - <span id="${game.id}_points2">${game.points_2}</span>
         </td>
     </tr>`;
         recent_games.appendChild(roomEl);
+        if (game.winner === game.user_1) {
+            document.querySelector(`#${game.id}_user1`).classList.add('bold');
+            document.querySelector(`#${game.id}_points1`).classList.add('bold');
+        } else if (game.winner === game.user_2) {
+            document.querySelector(`#${game.id}_user2`).classList.add('bold');
+            document.querySelector(`#${game.id}_points2`).classList.add('bold');
+        }
     }
 });
 

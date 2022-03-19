@@ -67,7 +67,8 @@ const handleReactionTime = function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    if (room.rounds === 10) {
+    // if (room.rounds === 10) {
+    if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
@@ -96,7 +97,17 @@ const handleReactionTime = function(data) {
 
         // update recent games in lobby
         // todo: save recent games on DB and show it to user from DB
-        recent_games.unshift(gameResultat);
+        let game = {
+            user_1: room.users[0].username,
+            user_2: room.users[1].username,
+            points_1: room.users[0].pointsNow,
+            points_2: room.users[1].pointsNow,
+            winner: gameResultat.winner,
+            id: room.id
+        }
+
+        console.log(room.users, gameResultat)
+        recent_games.unshift(game);
         io.emit('lobby:show_recent_games', recent_games);
 
         // io.to(room.id).emit('game:end', gameResultat);
