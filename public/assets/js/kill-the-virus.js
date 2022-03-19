@@ -176,9 +176,10 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     winnerMsgEl.innerHTML =
         `
         <p>
-            The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!
+            The winner is ${winner} with ${winnerPoints} points!
         </p>
     `
+    // The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!  
         // If it's a tie
     if (winner == 'remis') {
         winnerMsgEl.innerHTML =
@@ -192,23 +193,23 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
 
 // Listen for when game is ready to start
 socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
+   setTimeout(() => {
+    resetTimer();
+   }, 1000);
     // Position virus image on grid
     virusImageEl.style.gridRow = randomPositionX;
     virusImageEl.style.gridColumn = randomPositionY;
-
     // Display virus after delay
     let virusTimeout = setTimeout(() => {
         virusImageEl.classList.remove('hide');
+        startTimer(you_minutes, you_seconds, you_milliseconds);
+        startTimer_opponent(opponent_minutes, opponent_seconds, opponent_milliseconds);
     }, randomDelay);
 
     // stop displaying virus after game ends
     socket.on('game:end', () => {
         clearTimeout(virusTimeout)
     })
-    resetTimer();
-    startTimer(you_minutes, you_seconds, you_milliseconds);
-    startTimer_opponent(opponent_minutes, opponent_seconds, opponent_milliseconds);
-
 });
 
 
@@ -254,7 +255,6 @@ virusImage.addEventListener('click', e => {
 
     // send reactionTime to server
     socket.emit('user:reaction', reactionTime);
-
 });
 
 
