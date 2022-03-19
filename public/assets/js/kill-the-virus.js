@@ -11,6 +11,7 @@ const lobbyBtn = document.querySelector('#lobby-button');
 const backBtn = document.querySelector('#back-button')
 const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
+const games_now = document.querySelector('#games_now');
 
 const virusImageEl = document.querySelector('#virus-image');
 
@@ -107,6 +108,17 @@ function countTime(time, user_min, user_sec, user_ms) {
     user_ms.innerHTML = formattedMS;
 
 }
+
+// creating row for games in lobby
+function createTableRow(room, i) {
+    return `<th scope="row">${i}</th>
+        <td>
+            <span>${room.users[0].username}</span> vs. <span>${room.users[1].username}</span>
+        </td>
+        <td id='points_${room.id}'>
+            <span>${room.users[0].pointsNow}</span> - <span>${room.users[1].pointsNow}</span>
+        </td>`;
+}
 // listen for users names to add opponent name to game
 socket.on('users:names', (user1, user2) => {
     if (user1 === username) {
@@ -115,7 +127,6 @@ socket.on('users:names', (user1, user2) => {
         opponent_badge.innerHTML = user1;
     }
 });
-
 
 // listen for users score and show them in game
 socket.on('users:score', (players) => {
@@ -126,12 +137,11 @@ socket.on('users:score', (players) => {
         opponent_score.innerHTML = players[0].points;
         your_score.innerHTML = players[1].points;
     }
-    console.log(players);
+    // console.log(players);
 });
 
 // the first user listening when the opponent will be found
 socket.on('user:ready', () => {
-    console.log('user ready!!!');
     startEl.classList.add('hide');
     gameWrapperEl.classList.remove('hide');
     start_button.classList.remove('hide');
@@ -140,7 +150,6 @@ socket.on('user:ready', () => {
 
 // listen if opponent disconnects; if it happens - showing the start screen again and start a new game in a new room
 socket.on('user:disconnected', () => {
-    console.log("Opponent disconnected!")
     gameWrapperEl.classList.add('hide');
     startEl.classList.remove('hide');
     start_button.classList.remove('hide');
@@ -158,7 +167,6 @@ socket.on('disconnect', (reason) => {
 
 // listen for when the game has ended
 socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
-    // virusImageEl.classList.add('hide');  funkar inte 
     resetTimer();
     // window.alert("The winner is: "+ result.winner); // this is temporary just to show winner
 
@@ -193,6 +201,7 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
         virusImageEl.classList.remove('hide');
     }, randomDelay);
 
+    // stop displaying virus after game ends
     socket.on('game:end', () => {
         clearTimeout(virusTimeout)
     })
@@ -206,13 +215,22 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
 // listen when our opponent will send us his time amd then update his time on our side
 socket.on('user:opponent_time', (paused_time_opponent) => {
     clearInterval(timerInterval_opponent);
-    console.log('opponent paused at ', paused_time_opponent);
     opponent_minutes.innerHTML = paused_time_opponent.split(':')[0];
     opponent_seconds.innerHTML = paused_time_opponent.split(':')[1];
     opponent_milliseconds.innerHTML = paused_time_opponent.split(':')[2];
 })
 
-// virusImage.addEventListener('click', handleClick );
+// create/update games i=and results in lobby in real time
+socket.on('game:create_game_in_lobby', (rooms) => {
+    games_now.innerHTML = '';
+    for (let i = 0; i < rooms.length; i++) {
+        const roomEl = document.createElement('tr');
+        roomEl.setAttribute('id', `${rooms[i].id}`);
+        roomEl.innerHTML = createTableRow(rooms[i], i + 1);
+        games_now.appendChild(roomEl);
+    }
+})
+
 // send reaction time to server
 virusImage.addEventListener('click', e => {
     e.preventDefault();
@@ -249,7 +267,7 @@ usernameForm.addEventListener('submit', e => {
 
     socket.emit('user:joined', username, (status) => {
         // we've received acknowledgement from the server
-        console.log("Server acknowledged that user joined", status);
+        // console.log("Server acknowledged that user joined", status);
 
         // hiding start_button 'Play' and showing text that user needs to wait for another user
         start_button.classList.add('hide');
