@@ -12,6 +12,7 @@ const backBtn = document.querySelector('#back-button')
 const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 const games_now = document.querySelector('#games_now');
+const recent_games = document.querySelector('#recent_games');
 
 const virusImageEl = document.querySelector('#virus-image');
 // let virusImage = document.querySelector('#virus-image');
@@ -223,7 +224,7 @@ socket.on('user:opponent_time', (paused_time_opponent) => {
 })
 
 // create/update games i=and results in lobby in real time
-socket.on('game:create_game_in_lobby', (rooms) => {
+socket.on('lobby:add_room_to_list', (rooms) => {
     games_now.innerHTML = '';
     for (let i = 0; i < rooms.length; i++) {
         const roomEl = document.createElement('tr');
@@ -234,11 +235,32 @@ socket.on('game:create_game_in_lobby', (rooms) => {
 })
 
 // update fastest time in real time
-socket.on('game:create_highscore_lobby', (username, highscore_time) => {
+// todo: save highscore in DB and show it to users from DB
+socket.on('lobby:show_highscore', (username, highscore_time) => {
     highscore_username.innerHTML = username;
     highscore_min.innerHTML = highscore_time[0];
     highscore_sec.innerHTML = highscore_time[1];
     highscore_ms.innerHTML = highscore_time[2];
+});
+
+// update recent games in lobby
+// todo: save recent games on DB and show it to user from DB
+socket.on('lobby:show_recent_games', (games) => {
+    recent_games.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+        let game = games[i]
+        const roomEl = document.createElement('tr');
+        roomEl.innerHTML = `<tr>
+        <th scope="row">${i+1}</th>
+        <td>
+            <span>${game.winner}</span> vs. <span>${game.loser}</span>
+        </td>
+        <td>
+            <span>${games[game.winner]}</span> - <span>${games[game.loser]}</span>
+        </td>
+    </tr>`;
+        recent_games.appendChild(roomEl);
+    }
 });
 
 // send reaction time to server

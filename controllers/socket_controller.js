@@ -27,6 +27,7 @@ let roomName = null;
 let waiting_opponent = true;
 
 let highscore = 0;
+let recent_games = []
 
 const handleReactionTime = function(data) {
 
@@ -65,11 +66,11 @@ const handleReactionTime = function(data) {
         }
     }
     if (room.rounds === 10) {
+
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
         room.score.push(gameResultat);
-        // console.log(room.score);
         if (room.users[0].pointsNow > room.users[1].pointsNow) {
             gameResultat.winner = room.users[0].username;
             gameResultat.loser = room.users[1].username;
@@ -88,6 +89,15 @@ const handleReactionTime = function(data) {
             loserOrTiePoints: gameResultat[gameResultat.loser]
         }
 
+        // console.log(gameResultat)
+        // got this:
+        // { hh: 1, ss: 9, winner: 'ss', loser: 'hh' }
+
+        // update recent games in lobby
+        // todo: save recent games on DB and show it to user from DB
+        recent_games.unshift(gameResultat);
+        io.emit('lobby:show_recent_games', recent_games);
+
         // io.to(room.id).emit('game:end', gameResultat);
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
         room.users[0].pointsNow = 0;
@@ -97,14 +107,15 @@ const handleReactionTime = function(data) {
     // console.log('room now', room.users)
 
     // get time on every click and compare it to highscore
+    // todo: save highscore in DB and show it to users from DB
     if (highscore === 0) {
         highscore = data.totalmilliseconds;
-        io.emit('game:create_highscore_lobby', data.username, data.paused_time);
+        io.emit('lobby:show_highscore', data.username, data.paused_time);
     } else if (data.totalmilliseconds < highscore) {
         highscore = data.totalmilliseconds;
-        io.emit('game:create_highscore_lobby', data.username, data.paused_time);
+        io.emit('lobby:show_highscore', data.username, data.paused_time);
     }
-    io.emit('game:create_game_in_lobby', rooms);
+    io.emit('lobby:add_room_to_list', rooms);
 }
 
 
@@ -130,7 +141,7 @@ module.exports = function(socket, _io) {
         // remove a room because we need to start a new game
         rooms.splice(rooms.indexOf(room), 1);
 
-        io.emit('game:create_game_in_lobby', rooms);
+        io.emit('lobby:add_room_to_list', rooms);
     });
 
 
@@ -203,7 +214,7 @@ module.exports = function(socket, _io) {
         // Find room
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
 
-        io.emit('game:create_game_in_lobby', rooms);
+        io.emit('lobby:add_room_to_list', rooms);
         // Emit to specific room
         io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
     });
