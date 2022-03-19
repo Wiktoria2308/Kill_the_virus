@@ -96,7 +96,7 @@ const handleReactionTime = function(data) {
     }
     // console.log('room now', room.users)
 
-    // get fastest time
+    // get time on every click and compare it to highscore
     if (highscore === 0) {
         highscore = data.totalmilliseconds;
         io.emit('game:create_highscore_lobby', data.username, data.paused_time);

@@ -37,6 +37,7 @@ let startTime;
 let elapsedTime = 0;
 let timerInterval;
 let timerInterval_opponent;
+let totalmilliseconds = null;
 
 // function to start timer
 function startTimer(user_min, user_sec, user_ms) {
@@ -76,15 +77,12 @@ function resetTimer() {
     opponent_milliseconds.innerHTML = "00";
 }
 
-let totalmilliseconds = null;
-// let paused_time = null; //getting the time when we pressed on virus
-
+// convert reaction time to mmilliseconds
 function countReaction() {
     let minutes = parseInt(you_minutes.innerHTML);
     let seconds = parseInt(you_seconds.innerHTML);
     let milliseconds = parseInt(you_milliseconds.innerHTML);
     totalmilliseconds = (minutes * 60000) + (seconds * 1000) + milliseconds;
-    // paused_time = you_minutes.innerHTML + ':' + you_seconds.innerHTML + ':' + you_milliseconds.innerHTML;
 }
 
 // Convert time to a format of minutes, seconds, and milliseconds
