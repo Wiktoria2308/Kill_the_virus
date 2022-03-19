@@ -26,7 +26,7 @@ let roomName = null;
 // a 'toggler' for a status of a waiting opponent 
 let waiting_opponent = true;
 
-
+let highscore = 0;
 
 const handleReactionTime = function(data) {
 
@@ -95,6 +95,15 @@ const handleReactionTime = function(data) {
         // room.rounds = 0;
     }
     // console.log('room now', room.users)
+
+    // get fastest time
+    if (highscore === 0) {
+        highscore = data.totalmilliseconds;
+        io.emit('game:create_highscore_lobby', data.username, data.paused_time);
+    } else if (data.totalmilliseconds < highscore) {
+        highscore = data.totalmilliseconds;
+        io.emit('game:create_highscore_lobby', data.username, data.paused_time);
+    }
     io.emit('game:create_game_in_lobby', rooms);
 }
 

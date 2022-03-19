@@ -14,9 +14,7 @@ const opponent_disconnected_label = document.querySelector('#opponent_disconnect
 const games_now = document.querySelector('#games_now');
 
 const virusImageEl = document.querySelector('#virus-image');
-
-let username = null;
-let room = null;
+// let virusImage = document.querySelector('#virus-image');
 
 let your_score = document.querySelector('#you-score');
 let opponent_score = document.querySelector('#opponent-score');
@@ -28,8 +26,13 @@ let you_milliseconds = document.querySelector('#you-milliseconds');
 let opponent_minutes = document.querySelector('#opponent-minutes');
 let opponent_seconds = document.querySelector('#opponent-seconds');
 let opponent_milliseconds = document.querySelector('#opponent-milliseconds');
-let virusImage = document.querySelector('#virus-image');
+let highscore_min = document.querySelector('#player-minutes');
+let highscore_sec = document.querySelector('#player-seconds');
+let highscore_ms = document.querySelector('#player-milliseconds');
+let highscore_username = document.querySelector('#player-badge');
 
+let username = null;
+let room = null;
 let startTime;
 let elapsedTime = 0;
 let timerInterval;
@@ -74,14 +77,14 @@ function resetTimer() {
 }
 
 let totalmilliseconds = null;
-let paused_time = null; //getting the time when we pressed on virus
+// let paused_time = null; //getting the time when we pressed on virus
 
 function countReaction() {
     let minutes = parseInt(you_minutes.innerHTML);
     let seconds = parseInt(you_seconds.innerHTML);
     let milliseconds = parseInt(you_milliseconds.innerHTML);
     totalmilliseconds = (minutes * 60000) + (seconds * 1000) + milliseconds;
-    paused_time = you_minutes.innerHTML + ':' + you_seconds.innerHTML + ':' + you_milliseconds.innerHTML;
+    // paused_time = you_minutes.innerHTML + ':' + you_seconds.innerHTML + ':' + you_milliseconds.innerHTML;
 }
 
 // Convert time to a format of minutes, seconds, and milliseconds
@@ -179,7 +182,7 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
             The winner is ${winner} with ${winnerPoints} points!
         </p>
     `
-    // The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!  
+        // The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!  
         // If it's a tie
     if (winner == 'remis') {
         winnerMsgEl.innerHTML =
@@ -193,9 +196,9 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
 
 // Listen for when game is ready to start
 socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
-   setTimeout(() => {
-    resetTimer();
-   }, 1000);
+    setTimeout(() => {
+        resetTimer();
+    }, 1000);
     // Position virus image on grid
     virusImageEl.style.gridRow = randomPositionX;
     virusImageEl.style.gridColumn = randomPositionY;
@@ -216,9 +219,9 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
 // listen when our opponent will send us his time amd then update his time on our side
 socket.on('user:opponent_time', (paused_time_opponent) => {
     clearInterval(timerInterval_opponent);
-    opponent_minutes.innerHTML = paused_time_opponent.split(':')[0];
-    opponent_seconds.innerHTML = paused_time_opponent.split(':')[1];
-    opponent_milliseconds.innerHTML = paused_time_opponent.split(':')[2];
+    opponent_minutes.innerHTML = paused_time_opponent[0];
+    opponent_seconds.innerHTML = paused_time_opponent[1];
+    opponent_milliseconds.innerHTML = paused_time_opponent[2];
 })
 
 // create/update games i=and results in lobby in real time
@@ -232,8 +235,16 @@ socket.on('game:create_game_in_lobby', (rooms) => {
     }
 })
 
+// update fastest time in real time
+socket.on('game:create_highscore_lobby', (username, highscore_time) => {
+    highscore_username.innerHTML = username;
+    highscore_min.innerHTML = highscore_time[0];
+    highscore_sec.innerHTML = highscore_time[1];
+    highscore_ms.innerHTML = highscore_time[2];
+});
+
 // send reaction time to server
-virusImage.addEventListener('click', e => {
+virusImageEl.addEventListener('click', e => {
     e.preventDefault();
 
     //hide image when clicked
@@ -250,7 +261,7 @@ virusImage.addEventListener('click', e => {
     let reactionTime = {
         username,
         totalmilliseconds,
-        paused_time
+        paused_time: [you_minutes.innerHTML, you_seconds.innerHTML, you_milliseconds.innerHTML]
     }
 
     // send reactionTime to server
