@@ -3,6 +3,7 @@
  */
 
 const debug = require('debug')('kill-the-virus:socket_controller');
+const models = require('../models');
 
 let io = null; // socket.io server instance
 
@@ -31,7 +32,7 @@ let recent_games = []
 let play_again = null;
 let playAgainOneUser = true;
 
-const handleReactionTime = function(data) {
+const handleReactionTime = async function(data) {
 
     // find the room that this socket is part of
     const room = rooms.find(room => room.users.find(user => user.id === this.id));
@@ -72,20 +73,22 @@ const handleReactionTime = function(data) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
-        room.score.push(gameResultat);
         if (room.users[0].pointsNow > room.users[1].pointsNow) {
             gameResultat.winner = room.users[0].username;
             gameResultat.loser = room.users[1].username;
+            room.score.push(gameResultat);
         }
         if (room.users[0].pointsNow < room.users[1].pointsNow) {
             gameResultat.winner = room.users[1].username;
             gameResultat.loser = room.users[0].username;
+            room.score.push(gameResultat);
         }
         if (room.users[0].pointsNow === room.users[1].pointsNow) {
             gameResultat.winner = 'remis';
             gameResultat.loser = room.users[0].username;
+            room.score.push(gameResultat);
         }
-
+        console.log(room);
         let data = {
             winnerPoints: gameResultat[gameResultat.winner],
             loserOrTiePoints: gameResultat[gameResultat.loser]
@@ -98,15 +101,25 @@ const handleReactionTime = function(data) {
         // update recent games in lobby
         // todo: save recent games on DB and show it to user from DB
         let game = {
-            user_1: room.users[0].username,
-            user_2: room.users[1].username,
-            points_1: room.users[0].pointsNow,
-            points_2: room.users[1].pointsNow,
-            winner: gameResultat.winner,
-            id: 'game_id_' + Date.now()
-        }
+                user_1: room.users[0].username,
+                user_2: room.users[1].username,
+                points_1: room.users[0].pointsNow,
+                points_2: room.users[1].pointsNow,
+                winner: gameResultat.winner,
+                id: 'game_id_' + Date.now()
+            }
+            // save match in database
+        try {
+            const match = new models.Match({
+                ...game,
+            });
+            await match.save();
 
-        console.log(room.users, gameResultat)
+            debug("Successfully saved highscore in the database.", game);
+        } catch (e) {
+            debug("Could not save highscore in the database.", game);
+            // this.emit('chat:notice', { message: "Could not save your message in the database." });
+        }
         recent_games.unshift(game);
         io.emit('lobby:show_recent_games', recent_games);
 
