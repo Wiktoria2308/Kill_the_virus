@@ -36,20 +36,20 @@ let playAgainOneUser = true;
 /**
  * Get games from database
  */
- const getGames = async () => {
-	const res = await models.Match.find();
-	// res.forEach(match => {
-	// 	match.push({
-	// 		id: room._id.toString(),
-	// 		name: room.name,
-	// 		users: {},
-	// 	});
-	// })
-	console.log(res);
+const getGames = async () => {
+    const res = await models.Match.find();
+    // res.forEach(match => {
+    // 	match.push({
+    // 		id: room._id.toString(),
+    // 		name: room.name,
+    // 		users: {},
+    // 	});
+    // })
+    console.log(res);
 }
 
 
-const handleReactionTime = async function(data) {
+const handleReactionTime = async function (data) {
 
     // find the room that this socket is part of
     const room = rooms.find(room => room.users.find(user => user.id === this.id));
@@ -125,24 +125,22 @@ const handleReactionTime = async function(data) {
             winner: gameResultat.winner,
             id: Date.now()
         }
-       
+
         recent_games.unshift(game);
         io.emit('lobby:show_recent_games', recent_games);
-//  save match in database
- try {
-    const match = new models.Match({
-        ...game,
-    });
-    await match.save();
+        //  save match in database
+        try {
+            const match = new models.Match({
+                ...game,
+            });
+            await match.save();
 
-    debug("Successfully saved highscore in the database.", game);
-} catch (e) {
-    debug("Could not save highscore in the database.", game);
-    // this.emit('chat:notice', { message: "Could not save your message in the database." });
-}
-getGames();
-
-
+            debug("Successfully saved highscore in the database.", game);
+        } catch (e) {
+            debug("Could not save highscore in the database.", game);
+            // this.emit('chat:notice', { message: "Could not save your message in the database." });
+        }
+        getGames();
         // io.to(room.id).emit('game:end', gameResultat);
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
         room.users[0].pointsNow = 0;
@@ -164,13 +162,13 @@ getGames();
 
 }
 
-module.exports = function(socket, _io) {
+module.exports = function (socket, _io) {
     io = _io; // it must be to be possible to emit
 
     // debug('a new client has connected', socket.id);
 
     // handle user disconnect
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function () {
         // debug(`Client ${socket.id} disconnected :(`);
 
         // find the room that this socket is part of
@@ -192,7 +190,7 @@ module.exports = function(socket, _io) {
     // listen for user reaction time 
     socket.on('user:reaction', handleReactionTime);
 
-    socket.on('user:play_again', function(username, callback) {
+    socket.on('user:play_again', function (username, callback) {
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
         // this.broadcast.to(room.id).emit('users:play_again');
         // const user = room.users.find(user => user.id === this.id);
@@ -215,7 +213,7 @@ module.exports = function(socket, _io) {
     });
 
     // handle user joined
-    socket.on('user:joined', function(username, callback) {
+    socket.on('user:joined', function (username, callback) {
 
         // if there is no room creating a new room with id equal to the first users id
         if (!roomName) {
@@ -275,7 +273,7 @@ module.exports = function(socket, _io) {
         };
     });
 
-    socket.on('players:ready', function() {
+    socket.on('players:ready', function () {
         // Find room
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
 
