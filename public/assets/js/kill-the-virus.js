@@ -8,7 +8,10 @@ const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
 const start_button = document.querySelector('.btn-primary');
 const lobbyBtn = document.querySelector('#lobby-button');
-const backBtn = document.querySelector('#back-button')
+const lobbyBtnAgain = document.querySelector('#again-lobby-button');
+const backBtn = document.querySelector('#back-button');
+const changeBtn = document.querySelector('#change-opponent');
+const backToRoomBtn = document.querySelector('#back-to-room-button');
 const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 const games_now = document.querySelector('#games_now');
@@ -35,7 +38,7 @@ let highscore_ms = document.querySelector('#player-milliseconds');
 let highscore_username = document.querySelector('#player-badge');
 
 let username = null;
-let room = null;
+// let room = null;
 let startTime;
 let elapsedTime = 0;
 let timerInterval;
@@ -213,7 +216,10 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     socket.on('game:end', () => {
         clearTimeout(virusTimeout)
         clearInterval(timerTimeout);
-    })
+    });
+
+    backBtn.classList.remove('hide');
+    backToRoomBtn.classList.add('hide');
 });
 
 
@@ -309,6 +315,10 @@ socket.on('users:ready_again', () => {
     socket.emit('players:ready');
 });
 
+socket.on('game:change_opponent', () => {
+    play_again.classList.add('hide');
+})
+
 // send information that opponet wants to play again
 play_again.addEventListener('click', e => {
     socket.emit('user:play_again', username, (status) => {
@@ -323,7 +333,6 @@ play_again.addEventListener('click', e => {
         }
     });
 });
-
 
 // get username from form and show chat
 usernameForm.addEventListener('submit', e => {
@@ -340,6 +349,7 @@ usernameForm.addEventListener('submit', e => {
         start_button.classList.add('hide');
         waiting_label.classList.remove('hide');
         opponent_disconnected_label.classList.add('hide');
+        play_again.classList.remove('hide');
 
         // if it is the second user and we don't need to wait, we hiding the start screen
         if (!status.waiting_opponent) {
@@ -360,4 +370,24 @@ lobbyBtn.addEventListener('click', () => {
 backBtn.addEventListener('click', () => {
     lobbyEl.classList.add('hide');
     startEl.classList.remove('hide');
+});
+
+// Show lobby view when clicking on 'game lobby' button from game (if user wants to stay in the same room)
+lobbyBtnAgain.addEventListener('click', () => {
+    startEl.classList.add('hide');
+    lobbyEl.classList.remove('hide');
+    backBtn.classList.add('hide');
+    backToRoomBtn.classList.remove('hide');
+});
+
+backToRoomBtn.addEventListener('click', e => {
+    lobbyEl.classList.add('hide');
+});
+
+changeBtn.addEventListener('click', () => {
+    socket.emit('game:leave');
+    startEl.classList.remove('hide');
+    start_button.classList.remove('hide');
+    waiting_label.classList.add('hide');
+    winnerEl.classList.add('hide');
 });

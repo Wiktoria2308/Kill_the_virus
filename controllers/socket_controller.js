@@ -103,7 +103,7 @@ const handleReactionTime = function(data) {
             points_1: room.users[0].pointsNow,
             points_2: room.users[1].pointsNow,
             winner: gameResultat.winner,
-            id: Date.now()
+            id: 'game_id_' + Date.now()
         }
 
         console.log(room.users, gameResultat)
@@ -112,8 +112,7 @@ const handleReactionTime = function(data) {
 
         // io.to(room.id).emit('game:end', gameResultat);
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
-        room.users[0].pointsNow = 0;
-        room.users[1].pointsNow = 0;
+
         room.rounds = 0;
     }
     // console.log('room now', room.users)
@@ -128,6 +127,8 @@ const handleReactionTime = function(data) {
         io.emit('lobby:show_highscore', data.username, data.paused_time);
     }
     io.emit('lobby:add_room_to_list', rooms);
+    room.users[0].pointsNow = 0;
+    room.users[1].pointsNow = 0;
 }
 
 module.exports = function(socket, _io) {
@@ -250,5 +251,13 @@ module.exports = function(socket, _io) {
         io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
     });
 
-
+    socket.on('game:leave', () => {
+        const room = rooms.find(room => room.users.find(user => user.id === socket.id));
+        if (!room) {
+            return;
+        }
+        io.in(room.id).emit('game:change_opponent');
+        rooms.splice(rooms.indexOf(room), 1);
+        io.emit('lobby:add_room_to_list', rooms);
+    })
 }
