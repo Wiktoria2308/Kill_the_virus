@@ -19,8 +19,8 @@
  
  // Set up the models we want to use in our app
  const models = {}
-//  models.Message = require('./Message');
-//  models.Room = require('./Room');
+ models.Highscore = require('./Highscore');
+ models.Match = require('./Match');
  
  // Export all the things
  module.exports = {
