@@ -72,20 +72,22 @@ const handleReactionTime = function(data) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
-        room.score.push(gameResultat);
         if (room.users[0].pointsNow > room.users[1].pointsNow) {
             gameResultat.winner = room.users[0].username;
             gameResultat.loser = room.users[1].username;
+            room.score.push(gameResultat);
         }
         if (room.users[0].pointsNow < room.users[1].pointsNow) {
             gameResultat.winner = room.users[1].username;
             gameResultat.loser = room.users[0].username;
+            room.score.push(gameResultat);
         }
         if (room.users[0].pointsNow === room.users[1].pointsNow) {
             gameResultat.winner = 'remis';
             gameResultat.loser = room.users[0].username;
+            room.score.push(gameResultat);
         }
-
+        console.log(room);
         let data = {
             winnerPoints: gameResultat[gameResultat.winner],
             loserOrTiePoints: gameResultat[gameResultat.loser]
@@ -105,8 +107,6 @@ const handleReactionTime = function(data) {
             winner: gameResultat.winner,
             id: Date.now()
         }
-
-        console.log(room.users, gameResultat)
         recent_games.unshift(game);
         io.emit('lobby:show_recent_games', recent_games);
 
