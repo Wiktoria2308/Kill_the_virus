@@ -32,6 +32,23 @@ let recent_games = []
 let play_again = null;
 let playAgainOneUser = true;
 
+
+/**
+ * Get games from database
+ */
+ const getGames = async () => {
+	const res = await models.Match.find();
+	// res.forEach(match => {
+	// 	match.push({
+	// 		id: room._id.toString(),
+	// 		name: room.name,
+	// 		users: {},
+	// 	});
+	// })
+	console.log(res);
+}
+
+
 const handleReactionTime = async function(data) {
 
     // find the room that this socket is part of
@@ -88,7 +105,7 @@ const handleReactionTime = async function(data) {
             gameResultat.loser = room.users[0].username;
             room.score.push(gameResultat);
         }
-        console.log(room);
+        // console.log(room);
         let data = {
             winnerPoints: gameResultat[gameResultat.winner],
             loserOrTiePoints: gameResultat[gameResultat.loser]
@@ -108,20 +125,23 @@ const handleReactionTime = async function(data) {
             winner: gameResultat.winner,
             id: Date.now()
         }
-        // save match in database
-        try {
-            const match = new models.Match({
-                ...game,
-            });
-            await match.save();
-    
-            debug("Successfully saved highscore in the database.", game);
-        } catch (e) {
-            debug("Could not save highscore in the database.", game);
-            // this.emit('chat:notice', { message: "Could not save your message in the database." });
-        }
+       
         recent_games.unshift(game);
         io.emit('lobby:show_recent_games', recent_games);
+//  save match in database
+ try {
+    const match = new models.Match({
+        ...game,
+    });
+    await match.save();
+
+    debug("Successfully saved highscore in the database.", game);
+} catch (e) {
+    debug("Could not save highscore in the database.", game);
+    // this.emit('chat:notice', { message: "Could not save your message in the database." });
+}
+getGames();
+
 
         // io.to(room.id).emit('game:end', gameResultat);
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
