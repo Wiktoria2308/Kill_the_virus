@@ -115,10 +115,11 @@ const handleReactionTime = async function(data) {
             });
             await match.save();
 
-            debug("Successfully saved highscore in the database.", game);
+            debug("Successfully saved match in the database.", game);
         } catch (e) {
-            debug("Could not save highscore in the database.", game);
-            // this.emit('chat:notice', { message: "Could not save your message in the database." });
+            debug("Could not save match in the database.", game);
+            debug(e)
+                // this.emit('chat:notice', { message: "Could not save your message in the database." });
         }
         recent_games.unshift(game);
         io.emit('lobby:show_recent_games', recent_games);
