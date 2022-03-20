@@ -32,7 +32,7 @@ let recent_games = []
 let play_again = null;
 let playAgainOneUser = true;
 
-const handleReactionTime = function(data) {
+const handleReactionTime = async function(data) {
 
     // find the room that this socket is part of
     const room = rooms.find(room => room.users.find(user => user.id === this.id));
@@ -108,6 +108,18 @@ const handleReactionTime = function(data) {
             winner: gameResultat.winner,
             id: Date.now()
         }
+        // save match in database
+        try {
+            const match = new models.Match({
+                ...game,
+            });
+            await match.save();
+    
+            debug("Successfully saved highscore in the database.", game);
+        } catch (e) {
+            debug("Could not save highscore in the database.", game);
+            // this.emit('chat:notice', { message: "Could not save your message in the database." });
+        }
         recent_games.unshift(game);
         io.emit('lobby:show_recent_games', recent_games);
 
@@ -129,6 +141,7 @@ const handleReactionTime = function(data) {
         io.emit('lobby:show_highscore', data.username, data.paused_time);
     }
     io.emit('lobby:add_room_to_list', rooms);
+
 }
 
 module.exports = function(socket, _io) {
