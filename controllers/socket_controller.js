@@ -7,6 +7,22 @@ const models = require('../models');
 
 let io = null; // socket.io server instance
 
+// list of socket-ids and their username
+const rooms = [];
+
+// creating a temporary variabel with a name for room
+let roomName = null;
+
+// a 'toggler' for a status of a waiting opponent 
+let waiting_opponent = true;
+
+// let recent_games = [];
+let play_again = null;
+let playAgainOneUser = true;
+
+let highscore = {};
+let recent_games = [];
+
 // Grid arena is set to be 5 x 5. This function returns a random number between 1 and 5.
 // Function will be called twice to get x/y position.
 const getRandomGridPosition = () => {
@@ -18,24 +34,37 @@ const getRandomDelay = () => {
     return Math.floor(Math.random() * (5000 - 1000)) + 1000;
 }
 
-// list of socket-ids and their username
-const rooms = [];
+const getGames = async() => {
+    const res = await models.Match.find();
+    res.forEach(match => {
+        recent_games.unshift({
+            user_1: match.user_1,
+            user_2: match.user_2,
+            points_1: match.points_1,
+            points_2: match.points_2,
+            winner: match.winner,
+            id: match.id,
+        });
+    })
+}
+getGames();
 
-// creating a temporary variabel with a name for room
-let roomName = null;
-
-// a 'toggler' for a status of a waiting opponent 
-let waiting_opponent = true;
-
-let highscore = 0;
-let recent_games = []
-let play_again = null;
-let playAgainOneUser = true;
+const getHighscore = async() => {
+    const res = await models.Highscore.find();
+    let score = res[res.length - 1];
+    highscore.username = score.username;
+    highscore.min = score.min;
+    highscore.sec = score.sec;
+    highscore.ms = score.ms;
+    highscore.totalmilliseconds = score.totalmilliseconds;
+}
+getHighscore();
 
 const handleReactionTime = async function(data) {
 
     // find the room that this socket is part of
     const room = rooms.find(room => room.users.find(user => user.id === this.id));
+
     // sending the time when a user clicked on virus to his opponent
     this.broadcast.to(room.id).emit('user:opponent_time', data.paused_time);
 
@@ -44,9 +73,9 @@ const handleReactionTime = async function(data) {
     let total = data.totalmilliseconds;
     user.totalmillisecondsNow = data.totalmilliseconds;
     user.totalmilliseconds.push(total);
-    // console.log('room before', user.totalmilliseconds)
+
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
             room.users[0].pointsNow++;
@@ -68,8 +97,8 @@ const handleReactionTime = async function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    // if (room.rounds === 10) {
-    if (room.rounds === 2) {
+    if (room.rounds === 10) {
+        // if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
@@ -88,25 +117,20 @@ const handleReactionTime = async function(data) {
             gameResultat.loser = room.users[0].username;
             room.score.push(gameResultat);
         }
-        console.log(room);
+        // console.log(room);
         let data = {
             winnerPoints: gameResultat[gameResultat.winner],
             loserOrTiePoints: gameResultat[gameResultat.loser]
         }
 
-        // console.log(gameResultat)
-        // got this:
-        // { hh: 1, ss: 9, winner: 'ss', loser: 'hh' }
-
         // update recent games in lobby
-        // todo: save recent games on DB and show it to user from DB
         let game = {
                 user_1: room.users[0].username,
                 user_2: room.users[1].username,
                 points_1: room.users[0].pointsNow,
                 points_2: room.users[1].pointsNow,
                 winner: gameResultat.winner,
-                id: 'game_id_' + Date.now()
+                id: `${Date.now()}`
             }
             // save match in database
         try {
@@ -122,9 +146,9 @@ const handleReactionTime = async function(data) {
                 // this.emit('chat:notice', { message: "Could not save your message in the database." });
         }
         recent_games.unshift(game);
+        // debug(recent_games, 'games')
         io.emit('lobby:show_recent_games', recent_games);
 
-        // io.to(room.id).emit('game:end', gameResultat);
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
 
         room.rounds = 0;
@@ -132,23 +156,42 @@ const handleReactionTime = async function(data) {
     // console.log('room now', room.users)
 
     // get time on every click and compare it to highscore
-    // todo: save highscore in DB and show it to users from DB
-    if (highscore === 0) {
-        highscore = data.totalmilliseconds;
-        io.emit('lobby:show_highscore', data.username, data.paused_time);
-    } else if (data.totalmilliseconds < highscore) {
-        highscore = data.totalmilliseconds;
-        io.emit('lobby:show_highscore', data.username, data.paused_time);
+    if (data.totalmilliseconds < highscore.totalmilliseconds) {
+        highscore.min = data.paused_time[0];
+        highscore.sec = data.paused_time[1];
+        highscore.ms = data.paused_time[2];
+        highscore.totalmilliseconds = data.totalmilliseconds;
+        highscore.username = data.username;
+
+        // save match in database
+        try {
+            const highscore_db = new models.Highscore({
+                ...highscore,
+            });
+            await highscore_db.save();
+
+            debug("Successfully saved highscore in the database.", highscore);
+        } catch (e) {
+            debug("Could not save hidgscore in the database.", highscore);
+            debug(e)
+                // this.emit('chat:notice', { message: "Could not save your message in the database." });
+        }
+
+        io.emit('lobby:show_highscore', highscore.username, highscore.min, highscore.sec, highscore.ms);
     }
+
     io.emit('lobby:add_room_to_list', rooms);
-    room.users[0].pointsNow = 0;
-    room.users[1].pointsNow = 0;
+
 }
 
 module.exports = function(socket, _io) {
     io = _io; // it must be to be possible to emit
 
-    // debug('a new client has connected', socket.id);
+    // debug(recent_games, 'games')
+    // debug(highscore, 'highscore')
+
+    io.emit('lobby:show_highscore', highscore.username, highscore.min, highscore.sec, highscore.ms);
+    io.emit('lobby:show_recent_games', recent_games);
 
     // handle user disconnect
     socket.on('disconnect', function() {
@@ -192,6 +235,9 @@ module.exports = function(socket, _io) {
             play_again = null;
             this.broadcast.to(room.id).emit('users:ready_again');
         }
+
+        room.users[0].pointsNow = 0;
+        room.users[1].pointsNow = 0;
 
     });
 

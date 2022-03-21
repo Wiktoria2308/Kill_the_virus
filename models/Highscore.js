@@ -5,7 +5,11 @@ const mongoose = require('mongoose');
 
 // Declare Model Schema
 const highscoreSchema = new mongoose.Schema({
-    highscore: [Number, Number, Number],
+    min: String,
+    sec: String,
+    ms: String,
+    totalmilliseconds: String,
+    username: String
 });
 
 // Declare Model

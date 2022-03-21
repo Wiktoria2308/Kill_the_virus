@@ -6,6 +6,7 @@ const winnerEl = document.querySelector('#victory');
 const winnerMsgEl = document.querySelector('#winner-body');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
+const usernameFormInput = document.querySelector('#username');
 const start_button = document.querySelector('.btn-primary');
 const lobbyBtn = document.querySelector('#lobby-button');
 const lobbyBtnAgain = document.querySelector('#again-lobby-button');
@@ -20,7 +21,6 @@ const recent_games = document.querySelector('#recent_games');
 const play_again = document.querySelector('#play-again');
 const winner_heading = document.querySelector('#winner-heading');
 const virusImageEl = document.querySelector('#virus-image');
-// let virusImage = document.querySelector('#virus-image');
 
 let your_score = document.querySelector('#you-score');
 let opponent_score = document.querySelector('#opponent-score');
@@ -38,7 +38,6 @@ let highscore_ms = document.querySelector('#player-milliseconds');
 let highscore_username = document.querySelector('#player-badge');
 
 let username = null;
-// let room = null;
 let startTime;
 let elapsedTime = 0;
 let timerInterval;
@@ -64,13 +63,12 @@ function startTimer_opponent(user_min, user_sec, user_ms) {
 }
 
 //  pause timer 
-//  todo: take paused time as user reaction time
 function pauseTimer() {
     clearInterval(timerInterval);
     countReaction();
 }
 
-// todo:  reset timer after every round
+// reset timer after every round
 function resetTimer() {
     clearInterval(timerInterval);
     elapsedTime = 0;
@@ -126,6 +124,7 @@ function createTableRow(room, i) {
             <span>${room.users[0].pointsNow}</span> - <span>${room.users[1].pointsNow}</span>
         </td>`;
 }
+
 // listen for users names to add opponent name to game
 socket.on('users:names', (user1, user2) => {
     if (user1 === username) {
@@ -220,6 +219,7 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
 
     backBtn.classList.remove('hide');
     backToRoomBtn.classList.add('hide');
+    usernameFormInput.classList.remove('hide');
 });
 
 
@@ -244,11 +244,11 @@ socket.on('lobby:add_room_to_list', (rooms) => {
 
 // update fastest time in real time
 // todo: save highscore in DB and show it to users from DB
-socket.on('lobby:show_highscore', (username, highscore_time) => {
+socket.on('lobby:show_highscore', (username, min, sec, ms) => {
     highscore_username.innerHTML = username;
-    highscore_min.innerHTML = highscore_time[0];
-    highscore_sec.innerHTML = highscore_time[1];
-    highscore_ms.innerHTML = highscore_time[2];
+    highscore_min.innerHTML = min;
+    highscore_sec.innerHTML = sec;
+    highscore_ms.innerHTML = ms;
 });
 
 // update recent games in lobby
@@ -317,6 +317,7 @@ socket.on('users:ready_again', () => {
 
 socket.on('game:change_opponent', () => {
     play_again.classList.add('hide');
+
 })
 
 // send information that opponet wants to play again
@@ -348,6 +349,7 @@ usernameForm.addEventListener('submit', e => {
         // hiding start_button 'Play' and showing text that user needs to wait for another user
         start_button.classList.add('hide');
         waiting_label.classList.remove('hide');
+        usernameFormInput.classList.add('hide');
         opponent_disconnected_label.classList.add('hide');
         play_again.classList.remove('hide');
 
