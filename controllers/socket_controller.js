@@ -147,7 +147,7 @@ const handleReactionTime = async function(data) {
             const match = new models.Match({
                 ...game,
             });
-            // await match.save();
+            await match.save();
 
             debug("Successfully saved match in the database.", game);
         } catch (e) {
@@ -178,7 +178,7 @@ const handleReactionTime = async function(data) {
             const highscore_db = new models.Highscore({
                 ...highscore,
             });
-            // await highscore_db.save();
+            await highscore_db.save();
 
             debug("Successfully saved highscore in the database.", highscore);
         } catch (e) {
