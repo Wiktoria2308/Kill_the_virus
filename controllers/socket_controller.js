@@ -75,7 +75,7 @@ const handleReactionTime = async function(data) {
     user.totalmilliseconds.push(total);
 
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
         // if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
 
         room.rounds++;
@@ -98,8 +98,19 @@ const handleReactionTime = async function(data) {
             io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
             // console.log('rounds', room.rounds);
         }
+        else if (room.users[0].totalmillisecondsNow === room.users[1].totalmillisecondsNow) {
+            room.users[1].pointsNow++;
+            room.users[0].pointsNow++;
+            players = [{ username: room.users[0].username, points: room.users[0].pointsNow }, { username: room.users[1].username, points: room.users[1].pointsNow }];
+            io.in(room.id).emit('users:score', players);
+            room.users[0].totalmillisecondsNow = 0;
+            room.users[1].totalmillisecondsNow = 0;
+            // Emit to specific room
+            io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
+            // console.log('rounds', room.rounds);
+        }
     }
-    if (room.rounds === 10) {
+    if (room.rounds === 2) {
         // if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
