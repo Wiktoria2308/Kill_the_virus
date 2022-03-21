@@ -20,6 +20,7 @@ const recent_games = document.querySelector('#recent_games');
 
 const play_again = document.querySelector('#play-again');
 const winner_heading = document.querySelector('#winner-heading');
+
 const virusImageEl = document.querySelector('#virus-image');
 
 let your_score = document.querySelector('#you-score');
@@ -198,12 +199,19 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
 
 // Listen for when game is ready to start
 socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
+
+    // get random virus imaga in every game
+    virusImageEl.setAttribute("src", `./assets/images/virus_${Math.floor(Math.random() * 13) + 1}.png`);
+
     let timerTimeout = setTimeout(() => {
         resetTimer();
     }, 1000);
+
     // Position virus image on grid
+
     virusImageEl.style.gridRow = randomPositionX;
     virusImageEl.style.gridColumn = randomPositionY;
+
     // Display virus after delay
     let virusTimeout = setTimeout(() => {
         virusImageEl.classList.remove('hide');

@@ -269,8 +269,8 @@ module.exports = function(socket, _io) {
             return;
         }
         // debug('roomid', room.id)
-        // join user to this room
 
+        // join user to this room
         this.join(room.id);
 
         // associate socket id with username and store it in a room oject in the rooms array
