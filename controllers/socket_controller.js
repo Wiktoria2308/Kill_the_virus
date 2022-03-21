@@ -76,7 +76,6 @@ const handleReactionTime = async function(data) {
 
     // compare users time and send result
     if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
-        // if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
 
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
@@ -97,8 +96,7 @@ const handleReactionTime = async function(data) {
             // Emit to specific room
             io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
             // console.log('rounds', room.rounds);
-        }
-        else if (room.users[0].totalmillisecondsNow === room.users[1].totalmillisecondsNow) {
+        } else if (room.users[0].totalmillisecondsNow === room.users[1].totalmillisecondsNow) {
             room.users[1].pointsNow++;
             room.users[0].pointsNow++;
             players = [{ username: room.users[0].username, points: room.users[0].pointsNow }, { username: room.users[1].username, points: room.users[1].pointsNow }];
@@ -111,7 +109,6 @@ const handleReactionTime = async function(data) {
         }
     }
     if (room.rounds === 2) {
-        // if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
@@ -150,7 +147,7 @@ const handleReactionTime = async function(data) {
             const match = new models.Match({
                 ...game,
             });
-            await match.save();
+            // await match.save();
 
             debug("Successfully saved match in the database.", game);
         } catch (e) {
@@ -181,7 +178,7 @@ const handleReactionTime = async function(data) {
             const highscore_db = new models.Highscore({
                 ...highscore,
             });
-            await highscore_db.save();
+            // await highscore_db.save();
 
             debug("Successfully saved highscore in the database.", highscore);
         } catch (e) {
@@ -197,7 +194,7 @@ const handleReactionTime = async function(data) {
 
 }
 
-module.exports = function (socket, _io) {
+module.exports = function(socket, _io) {
     io = _io; // it must be to be possible to emit
 
     // debug(recent_games, 'games')
@@ -207,7 +204,7 @@ module.exports = function (socket, _io) {
     io.emit('lobby:show_recent_games', recent_games);
 
     // handle user disconnect
-    socket.on('disconnect', function () {
+    socket.on('disconnect', function() {
         // debug(`Client ${socket.id} disconnected :(`);
 
         // find the room that this socket is part of
@@ -229,10 +226,12 @@ module.exports = function (socket, _io) {
     // listen for user reaction time 
     socket.on('user:reaction', handleReactionTime);
 
-    socket.on('user:play_again', function (username, callback) {
+    socket.on('user:play_again', function(username, callback) {
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
-        // this.broadcast.to(room.id).emit('users:play_again');
-        // const user = room.users.find(user => user.id === this.id);
+        const user = room.users.find(user => user.id === this.id);
+
+        this.broadcast.to(room.id).emit('users:want_play_again', user.username);
+
         if (!play_again) {
             play_again = username;
         } else {
@@ -255,7 +254,7 @@ module.exports = function (socket, _io) {
     });
 
     // handle user joined
-    socket.on('user:joined', function (username, callback) {
+    socket.on('user:joined', function(username, callback) {
 
         // if there is no room creating a new room with id equal to the first users id
         if (!roomName) {
@@ -315,7 +314,7 @@ module.exports = function (socket, _io) {
         };
     });
 
-    socket.on('players:ready', function () {
+    socket.on('players:ready', function() {
         // Find room
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
 

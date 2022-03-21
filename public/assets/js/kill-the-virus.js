@@ -4,10 +4,11 @@ const startEl = document.querySelector('#start');
 const lobbyEl = document.querySelector('#lobby-wrapper');
 const winnerEl = document.querySelector('#victory');
 const winnerMsgEl = document.querySelector('#winner-body');
+
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
 const usernameFormInput = document.querySelector('#username');
-const start_button = document.querySelector('.btn-primary');
+const start_button = document.querySelector('#start-button');
 const lobbyBtn = document.querySelector('#lobby-button');
 const lobbyBtnAgain = document.querySelector('#again-lobby-button');
 const backBtn = document.querySelector('#back-button');
@@ -230,7 +231,6 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     usernameFormInput.classList.remove('hide');
 });
 
-
 // listen when our opponent will send us his time amd then update his time on our side
 socket.on('user:opponent_time', (paused_time_opponent) => {
     clearInterval(timerInterval_opponent);
@@ -289,6 +289,24 @@ socket.on('lobby:show_recent_games', (games) => {
     }
 });
 
+socket.on('users:ready_again', () => {
+    winnerEl.classList.add('hide');
+    your_score.innerHTML = 0;
+    opponent_score.innerHTML = 0;
+    waiting_label.classList.add('hide');
+    socket.emit('players:ready');
+});
+
+socket.on('game:change_opponent', () => {
+    play_again.classList.add('hide');
+})
+
+socket.on('users:want_play_again', (opponent_username) => {
+    let msg = document.createElement('p');
+    msg.innerHTML = `<b>${opponent_username} </b>wants to play with you one more time!`;
+    winnerMsgEl.appendChild(msg);
+})
+
 // send reaction time to server
 virusImageEl.addEventListener('click', e => {
     e.preventDefault();
@@ -313,20 +331,6 @@ virusImageEl.addEventListener('click', e => {
     // send reactionTime to server
     socket.emit('user:reaction', reactionTime);
 });
-
-
-socket.on('users:ready_again', () => {
-    winnerEl.classList.add('hide');
-    your_score.innerHTML = 0;
-    opponent_score.innerHTML = 0;
-    waiting_label.classList.add('hide');
-    socket.emit('players:ready');
-});
-
-socket.on('game:change_opponent', () => {
-    play_again.classList.add('hide');
-
-})
 
 // send information that opponet wants to play again
 play_again.addEventListener('click', e => {
