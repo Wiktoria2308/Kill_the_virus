@@ -75,7 +75,9 @@ const handleReactionTime = async function(data) {
     user.totalmilliseconds.push(total);
 
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
+    // if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
+
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
             room.users[0].pointsNow++;
@@ -97,8 +99,8 @@ const handleReactionTime = async function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    if (room.rounds === 10) {
-        // if (room.rounds === 2) {
+    // if (room.rounds === 10) {
+    if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
@@ -137,7 +139,7 @@ const handleReactionTime = async function(data) {
             const match = new models.Match({
                 ...game,
             });
-            await match.save();
+            // await match.save();
 
             debug("Successfully saved match in the database.", game);
         } catch (e) {
@@ -168,7 +170,7 @@ const handleReactionTime = async function(data) {
             const highscore_db = new models.Highscore({
                 ...highscore,
             });
-            await highscore_db.save();
+            // await highscore_db.save();
 
             debug("Successfully saved highscore in the database.", highscore);
         } catch (e) {

@@ -368,22 +368,24 @@ lobbyBtn.addEventListener('click', () => {
     lobbyEl.classList.remove('hide');
 });
 
-// Show start view when clicking on 'go back' button in lobby view
-backBtn.addEventListener('click', () => {
-    lobbyEl.classList.add('hide');
-    startEl.classList.remove('hide');
-});
-
 // Show lobby view when clicking on 'game lobby' button from game (if user wants to stay in the same room)
 lobbyBtnAgain.addEventListener('click', () => {
     startEl.classList.add('hide');
     lobbyEl.classList.remove('hide');
     backBtn.classList.add('hide');
     backToRoomBtn.classList.remove('hide');
+    gameWrapperEl.classList.add('hide');
+});
+
+// Show start view when clicking on 'go back' button in lobby view
+backBtn.addEventListener('click', () => {
+    lobbyEl.classList.add('hide');
+    startEl.classList.remove('hide');
 });
 
 backToRoomBtn.addEventListener('click', e => {
     lobbyEl.classList.add('hide');
+    gameWrapperEl.classList.remove('hide');
 });
 
 changeBtn.addEventListener('click', () => {
@@ -392,4 +394,7 @@ changeBtn.addEventListener('click', () => {
     start_button.classList.remove('hide');
     waiting_label.classList.add('hide');
     winnerEl.classList.add('hide');
+    gameWrapperEl.classList.add('hide');
+    backBtn.classList.remove('hide');
+    backToRoomBtn.classList.add('hide');
 });
