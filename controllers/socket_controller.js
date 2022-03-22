@@ -22,6 +22,7 @@ let playAgainOneUser = true;
 
 let highscore = {};
 let recent_games = [];
+let highscores = [];
 
 // Grid arena is set to be 5 x 5. This function returns a random number between 1 and 5.
 // Function will be called twice to get x/y position.
@@ -36,27 +37,14 @@ const getRandomDelay = () => {
 
 const getGames = async() => {
     const res = await models.Match.find();
-    res.forEach(match => {
-        recent_games.unshift({
-            user_1: match.user_1,
-            user_2: match.user_2,
-            points_1: match.points_1,
-            points_2: match.points_2,
-            winner: match.winner,
-            id: match.id,
-        });
-    })
+    res.forEach(match => recent_games.unshift(match));
+    recent_games.splice(11);
 }
 getGames();
 
 const getHighscore = async() => {
     const res = await models.Highscore.find();
-    let score = res[res.length - 1];
-    highscore.username = score.username;
-    highscore.min = score.min;
-    highscore.sec = score.sec;
-    highscore.ms = score.ms;
-    highscore.totalmilliseconds = score.totalmilliseconds;
+    highscore = res[res.length - 1];
 }
 getHighscore();
 
@@ -68,6 +56,12 @@ const calcAverage = (numArray) => {
     }, 0);
     return sum / rounds;
 }
+const getHighscores = async() => {
+    const res = await models.Highscore.find();
+    res.forEach(score => highscores.unshift(score));
+    highscores.splice(11);
+}
+getHighscores();
 
 const handleReactionTime = async function(data) {
 
@@ -227,8 +221,10 @@ const handleReactionTime = async function(data) {
                 // this.emit('chat:notice', { message: "Could not save your message in the database." });
         }
 
-        io.emit('lobby:show_highscore', highscore.username, highscore.min, highscore.sec, highscore.ms);
-    // }
+        recent_games.unshift(highscore);
+
+        io.emit('lobby:show_highscore', highscores);
+    }
 
     io.emit('lobby:add_room_to_list', rooms);
 
@@ -237,10 +233,7 @@ const handleReactionTime = async function(data) {
 module.exports = function(socket, _io) {
     io = _io; // it must be to be possible to emit
 
-    // debug(recent_games, 'games')
-    // debug(highscore, 'highscore')
-
-    io.emit('lobby:show_highscore', highscore.username, highscore.min, highscore.sec, highscore.ms);
+    io.emit('lobby:show_highscore', highscores);
     io.emit('lobby:show_recent_games', recent_games);
 
     // handle user disconnect
@@ -254,7 +247,7 @@ module.exports = function(socket, _io) {
         if (!room) {
             return;
         }
-        // debug('room id', room.id)
+
         // let everyone in the room know that this user has disconnected
         this.broadcast.to(room.id).emit('user:disconnected');
         // remove a room because we need to start a new game
@@ -318,7 +311,6 @@ module.exports = function(socket, _io) {
             debug('There is no such room');
             return;
         }
-        // debug('roomid', room.id)
 
         // join user to this room
         this.join(room.id);
@@ -333,8 +325,6 @@ module.exports = function(socket, _io) {
         }
 
         room.users.push(user);
-
-        // debug(`User ${username} with socket id ${socket.id} joined`);
 
         // confirm join
         callback({
