@@ -4,11 +4,16 @@ const startEl = document.querySelector('#start');
 const lobbyEl = document.querySelector('#lobby-wrapper');
 const winnerEl = document.querySelector('#victory');
 const winnerMsgEl = document.querySelector('#winner-body');
+
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
-const start_button = document.querySelector('.btn-primary');
+const usernameFormInput = document.querySelector('#username');
+const start_button = document.querySelector('#start-button');
 const lobbyBtn = document.querySelector('#lobby-button');
-const backBtn = document.querySelector('#back-button')
+const lobbyBtnAgain = document.querySelector('#again-lobby-button');
+const backBtn = document.querySelector('#back-button');
+const changeBtn = document.querySelector('#change-opponent');
+const backToRoomBtn = document.querySelector('#back-to-room-button');
 const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 const games_now = document.querySelector('#games_now');
@@ -16,8 +21,8 @@ const recent_games = document.querySelector('#recent_games');
 
 const play_again = document.querySelector('#play-again');
 const winner_heading = document.querySelector('#winner-heading');
+
 const virusImageEl = document.querySelector('#virus-image');
-// let virusImage = document.querySelector('#virus-image');
 
 let your_score = document.querySelector('#you-score');
 let opponent_score = document.querySelector('#opponent-score');
@@ -35,7 +40,6 @@ let highscore_ms = document.querySelector('#player-milliseconds');
 let highscore_username = document.querySelector('#player-badge');
 
 let username = null;
-let room = null;
 let startTime;
 let elapsedTime = 0;
 let timerInterval;
@@ -61,13 +65,12 @@ function startTimer_opponent(user_min, user_sec, user_ms) {
 }
 
 //  pause timer 
-//  todo: take paused time as user reaction time
 function pauseTimer() {
     clearInterval(timerInterval);
     countReaction();
 }
 
-// todo:  reset timer after every round
+// reset timer after every round
 function resetTimer() {
     clearInterval(timerInterval);
     elapsedTime = 0;
@@ -123,6 +126,7 @@ function createTableRow(room, i) {
             <span>${room.users[0].pointsNow}</span> - <span>${room.users[1].pointsNow}</span>
         </td>`;
 }
+
 // listen for users names to add opponent name to game
 socket.on('users:names', (user1, user2) => {
     if (user1 === username) {
@@ -196,12 +200,19 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
 
 // Listen for when game is ready to start
 socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
+
+    // get random virus imaga in every game
+    virusImageEl.setAttribute("src", `./assets/images/virus_${Math.floor(Math.random() * 13) + 1}.png`);
+
     let timerTimeout = setTimeout(() => {
         resetTimer();
     }, 1000);
+
     // Position virus image on grid
+
     virusImageEl.style.gridRow = randomPositionX;
     virusImageEl.style.gridColumn = randomPositionY;
+
     // Display virus after delay
     let virusTimeout = setTimeout(() => {
         virusImageEl.classList.remove('hide');
@@ -213,9 +224,12 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
     socket.on('game:end', () => {
         clearTimeout(virusTimeout)
         clearInterval(timerTimeout);
-    })
-});
+    });
 
+    backBtn.classList.remove('hide');
+    backToRoomBtn.classList.add('hide');
+    usernameFormInput.classList.remove('hide');
+});
 
 // listen when our opponent will send us his time amd then update his time on our side
 socket.on('user:opponent_time', (paused_time_opponent) => {
@@ -238,11 +252,11 @@ socket.on('lobby:add_room_to_list', (rooms) => {
 
 // update fastest time in real time
 // todo: save highscore in DB and show it to users from DB
-socket.on('lobby:show_highscore', (username, highscore_time) => {
+socket.on('lobby:show_highscore', (username, min, sec, ms) => {
     highscore_username.innerHTML = username;
-    highscore_min.innerHTML = highscore_time[0];
-    highscore_sec.innerHTML = highscore_time[1];
-    highscore_ms.innerHTML = highscore_time[2];
+    highscore_min.innerHTML = min;
+    highscore_sec.innerHTML = sec;
+    highscore_ms.innerHTML = ms;
 });
 
 // update recent games in lobby
@@ -275,6 +289,24 @@ socket.on('lobby:show_recent_games', (games) => {
     }
 });
 
+socket.on('users:ready_again', () => {
+    winnerEl.classList.add('hide');
+    your_score.innerHTML = 0;
+    opponent_score.innerHTML = 0;
+    waiting_label.classList.add('hide');
+    socket.emit('players:ready');
+});
+
+socket.on('game:change_opponent', () => {
+    play_again.classList.add('hide');
+})
+
+socket.on('users:want_play_again', (opponent_username) => {
+    let msg = document.createElement('p');
+    msg.innerHTML = `<b>${opponent_username} </b>wants to play with you one more time!`;
+    winnerMsgEl.appendChild(msg);
+})
+
 // send reaction time to server
 virusImageEl.addEventListener('click', e => {
     e.preventDefault();
@@ -300,15 +332,6 @@ virusImageEl.addEventListener('click', e => {
     socket.emit('user:reaction', reactionTime);
 });
 
-
-socket.on('users:ready_again', () => {
-    winnerEl.classList.add('hide');
-    your_score.innerHTML = 0;
-    opponent_score.innerHTML = 0;
-    waiting_label.classList.add('hide');
-    socket.emit('players:ready');
-});
-
 // send information that opponet wants to play again
 play_again.addEventListener('click', e => {
     socket.emit('user:play_again', username, (status) => {
@@ -324,7 +347,6 @@ play_again.addEventListener('click', e => {
     });
 });
 
-
 // get username from form and show chat
 usernameForm.addEventListener('submit', e => {
     e.preventDefault();
@@ -339,7 +361,9 @@ usernameForm.addEventListener('submit', e => {
         // hiding start_button 'Play' and showing text that user needs to wait for another user
         start_button.classList.add('hide');
         waiting_label.classList.remove('hide');
+        usernameFormInput.classList.add('hide');
         opponent_disconnected_label.classList.add('hide');
+        play_again.classList.remove('hide');
 
         // if it is the second user and we don't need to wait, we hiding the start screen
         if (!status.waiting_opponent) {
@@ -356,8 +380,33 @@ lobbyBtn.addEventListener('click', () => {
     lobbyEl.classList.remove('hide');
 });
 
+// Show lobby view when clicking on 'game lobby' button from game (if user wants to stay in the same room)
+lobbyBtnAgain.addEventListener('click', () => {
+    startEl.classList.add('hide');
+    lobbyEl.classList.remove('hide');
+    backBtn.classList.add('hide');
+    backToRoomBtn.classList.remove('hide');
+    gameWrapperEl.classList.add('hide');
+});
+
 // Show start view when clicking on 'go back' button in lobby view
 backBtn.addEventListener('click', () => {
     lobbyEl.classList.add('hide');
     startEl.classList.remove('hide');
+});
+
+backToRoomBtn.addEventListener('click', e => {
+    lobbyEl.classList.add('hide');
+    gameWrapperEl.classList.remove('hide');
+});
+
+changeBtn.addEventListener('click', () => {
+    socket.emit('game:leave');
+    startEl.classList.remove('hide');
+    start_button.classList.remove('hide');
+    waiting_label.classList.add('hide');
+    winnerEl.classList.add('hide');
+    gameWrapperEl.classList.add('hide');
+    backBtn.classList.remove('hide');
+    backToRoomBtn.classList.add('hide');
 });

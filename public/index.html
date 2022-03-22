@@ -20,13 +20,15 @@
     <div id="app">
 
         <div id="start" class="container">
+            <h1>Kill the Virus</h1>
+            <img src="./assets/images/virus_1.png" alt="virus animation" class="img-fluid" width="400px">
             <form id="username-form">
                 <div class="mb-3">
                     <input type="text" id="username" class="form-control form-control-lg" required placeholder="Enter username">
                 </div>
                 <p id="waiting" class="hide">Waiting for opponent ...</p>
                 <p id="opponent_disconnected" class="hide">Your opponent has been disconnected. Please log in again to join a new game.</p>
-                <button type="submit" class="btn btn-primary">Play</button>
+                <button type="submit" id="start-button" class="btn btn-primary">Play</button>
                 <button type="button" id="lobby-button" class="btn btn-secondary">Game Lobby</button>
             </form>
             <!-- /#username-form -->
@@ -39,6 +41,7 @@
                     <h2>Lobby</h2>
                     <div>
                         <button type="button" id="back-button" class="btn btn-primary">Go back</button>
+                        <button type="button" id="back-to-room-button" class="btn btn-primary hide">Go back</button>
                     </div>
 
                 </div>
@@ -97,14 +100,16 @@
                 <h2 id="game-title">Kill the Virus</h2>
                 <div id="arena-wrapper">
                     <!-- game arena will go here -->
-                    <img id="virus-image" src="./assets/images/virus.jpg" alt="virus image" width="50px" class="hide">
+                    <img id="virus-image" src="./assets/images/virus_1.png" alt="virus image" width="50px" class="hide">
                     <div id="victory" class="hide">
                         <h2 id="winner-heading">Winner</h2>
                         <div id="winner-body">
                             <!-- winner and points message will go here -->
                         </div>
                         <div id="winner-footer">
-                            <button type="button" class="btn btn-primary btn-lg" id="play-again">Play again</button>
+                            <button type="button" class="btn btn-warning btn-lg" id="play-again">Revenge</button>
+                            <button type="button" id="again-lobby-button" class="btn btn-secondary btn-lg">Game Lobby</button>
+                            <button type="button" class="btn btn-primary btn-lg" id="change-opponent">Change opponent</button>
                         </div>
                     </div>
                     <!-- /#victory -->
