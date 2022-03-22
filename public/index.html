@@ -45,53 +45,63 @@
                     </div>
 
                 </div>
-                <div id="games-wrapper">
-                    <!-- current games table will go here -->
-                    <h3 class="lobby-title">Current games</h3>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Players</th>
-                                <th scope="col">Score</th>
-                            </tr>
-                        </thead>
-                        <tbody id="games_now">
-                        </tbody>
-                    </table>
+
+                <div class="d-flex flex-column flex-md-row align-center justify-content-around">
+                    <div id="current-games-wrapper" class="col-12 col-md-4 p-3">
+                        <!-- current games table will go here -->
+                        <h3 class="lobby-title">Current games</h3>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Players</th>
+                                    <th scope="col">Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="games_now">
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /#games-wrapper -->
+
+                    <div id="highscore-wrapper" class="col-12 col-md-4 p-3 border border-top-0 border-bottom-0">
+                        <h3 class="lobby-title">Fastest average reaction time</h3>
+                        <table id="table-fastest-time" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Players</th>
+                                    <th scope="col">Fastest time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fastest_time">
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <!-- /#highscore -->
+
+                    <div id="recent-games-wrapper" class="col-12 col-md-4 p-3">
+                        <h3 class="lobby-title">Most recent games</h3>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Players</th>
+                                    <th scope="col">Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent_games">
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /#recent-games-wrapper -->
                 </div>
-                <!-- /#games-wrapper -->
+
             </div>
             <!-- /#lobby -->
 
-            <div id="highscore">
-                <h2>Highscore</h2>
-                <h3 class="lobby-title">Fastest average reaction time</h3>
-                <div id="highscore-reactiontime">
-                    <div id="player-reactiontime" class="mb-4">
-                        <div>
-                            <span id="player-badge">Username</span>
-                        </div>
-                        <div id="player-time">
-                            <span id="player-minutes">00</span>:<span id="player-seconds">00</span>:<span id="player-milliseconds">00</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- most recent games table will go here -->
-                <h3 class="lobby-title">Most recent games</h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Players</th>
-                            <th scope="col">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recent_games">
-                    </tbody>
-                </table>
-            </div>
-            <!-- /#highscore -->
+
         </div>
         <!-- /#lobby-wrapper -->
 
