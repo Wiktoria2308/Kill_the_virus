@@ -14,6 +14,10 @@
     display: none !important;
 }
 
+table {
+    border: 2px solid #979797;
+}
+
 #start {
     display: flex;
     flex-direction: column;
@@ -164,25 +168,10 @@
     margin: 0.5rem 0.75rem;
 }
 
-
-/* #games-wrapper {
-    border: 2px solid #979797;
-    margin: 1rem 1.5rem;
-    flex-grow: 1;
-    overflow-y: scroll;
-    background-color: #F5F5F5;
-    padding: 2px;
-} */
-
 #table-fastest-time>tbody>tr:nth-child(odd)>td,
 #table-fastest-time>tbody>tr:nth-child(odd)>th {
     background-color: #e8e7d4;
 }
-
-
-/* #highscore {
-    flex-basis: 30%;
-} */
 
 #highscore h2 {
     background-color: cornflowerblue;
@@ -212,12 +201,6 @@
     text-align: center;
     color: #c7b590
 }
-
-
-/* #highscore-reactiontime div {
-    background-color: #e8e7d4;
-    border: 1px solid #c7b590;
-} */
 
 #player-time {
     color: #cece13;
