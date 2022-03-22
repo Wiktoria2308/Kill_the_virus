@@ -1,101 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="./assets/icons/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./assets/icons/favicon.ico" type="image/x-icon">
 
-	<title>Kill the virus</title>
+    <title>Kill the virus</title>
 
-	<!-- Bootstrap 5 styles -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- Bootstrap 5 styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-	<!-- Styles -->
-	<link rel="stylesheet" href="./assets/css/style.css">
+    <!-- Styles -->
+    <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 
 <body>
-	<div id="app">
+    <div id="app">
 
-		<div id="start" class="container">
-			<form id="username-form">
-				<div class="mb-3">
-					<input type="text" id="username" class="form-control form-control-lg" required placeholder="Enter username">
-				</div>
+        <div id="start" class="container">
+            <h1>Kill the Virus</h1>
+            <img src="./assets/images/virus_1.png" alt="virus animation" class="img-fluid" width="400px">
+            <form id="username-form">
+                <div class="mb-3">
+                    <input type="text" id="username" class="form-control form-control-lg" required placeholder="Enter username">
+                </div>
+                <p id="waiting" class="hide">Waiting for opponent ...</p>
+                <p id="opponent_disconnected" class="hide">Your opponent has been disconnected. Please log in again to join a new game.</p>
+                <button type="submit" id="start-button" class="btn btn-primary">Play</button>
+                <button type="button" id="lobby-button" class="btn btn-secondary">Game Lobby</button>
+            </form>
+            <!-- /#username-form -->
+        </div>
+        <!-- /#start -->
 
-				<button type="submit" class="btn btn-primary">Play</button>
-			</form><!-- /#username-form -->
-		</div><!-- /#start -->
+        <div id="lobby-wrapper" class="hide">
+            <div id="lobby">
+                <div id="lobby-header">
+                    <h2>Lobby</h2>
+                    <div>
+                        <button type="button" id="back-button" class="btn btn-primary">Go back</button>
+                        <button type="button" id="back-to-room-button" class="btn btn-primary hide">Go back</button>
+                    </div>
 
-		<div id="game-wrapper" class="hide">
-			<div id="game">
-				<h2 id="game-title">Kill the Virus</h2>
-				<div id="arena-wrapper">
-					<!-- game arena will go here -->
-					<div class="grid-item">1</div>
-					<div class="grid-item">2</div>
-					<div class="grid-item">3</div>  
-					<div class="grid-item">4</div>
-					<div class="grid-item">5</div>
-					<div class="grid-item">6</div>  
-					<div class="grid-item">7</div>
-					<div class="grid-item">8</div>
-					<div class="grid-item">9</div>
-					<div class="grid-item">10</div>  
-					<div class="grid-item">11</div>
-					<div class="grid-item">12</div>
-					<div class="grid-item">13</div>
-					<div class="grid-item">14</div>  
-					<div class="grid-item">15</div>
-					<div class="grid-item">16</div>
-					<div class="grid-item">17</div> 
-					<div class="grid-item">18</div>  
-					<div class="grid-item">19</div>
-					<div class="grid-item">20</div>
-					<div class="grid-item">21</div>
-					<div class="grid-item">22</div> 
-					<div class="grid-item">23</div>  
-					<div class="grid-item">24</div>
-					<div class="grid-item">25</div>
-				</div><!-- /#arena-wrapper -->
-			</div><!-- /#game -->
+                </div>
+                <div id="games-wrapper">
+                    <!-- current games table will go here -->
+                    <h3 class="lobby-title">Current games</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Players</th>
+                                <th scope="col">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="games_now">
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /#games-wrapper -->
+            </div>
+            <!-- /#lobby -->
 
-			<div id="scoreboard">
-				<h2>Scoreboard</h2>
-				<div id="currentScore">
-					<span id="you-score">3</span> - <span id="opponent-score">1</span>
-				</div>
-				<div id="reactiontimes">
-					<div id="you-reactiontime" class="mb-4">
-						<div>
-							<span>You</span>
-						</div>
-						<div id="you-time">
-							<span id="you-minutes">00</span>:<span id="you-seconds">01</span>.<span id="you-milliseconds">532</span>
-						</div>
-					</div>
-					<div id="opponent-reactiontime">
-						<div>
-							<span>Bus-Bengan</span>
-						</div>
-						<div id="opponent-time">
-							<span id="opponent-minutes">00</span>:<span id="opponent-seconds">13</span>.<span id="opponent-milliseconds">370</span>
-						</div>
-					</div>
-				</div>
-			</div><!-- /#scoreboard -->
+            <div id="highscore">
+                <h2>Highscore</h2>
+                <h3 class="lobby-title">Fastest average reaction time</h3>
+                <div id="highscore-reactiontime">
+                    <div id="player-reactiontime" class="mb-4">
+                        <div>
+                            <span id="player-badge">Username</span>
+                        </div>
+                        <div id="player-time">
+                            <span id="player-minutes">00</span>:<span id="player-seconds">00</span>:<span id="player-milliseconds">00</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- most recent games table will go here -->
+                <h3 class="lobby-title">Most recent games</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Players</th>
+                            <th scope="col">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent_games">
+                    </tbody>
+                </table>
+            </div>
+            <!-- /#highscore -->
+        </div>
+        <!-- /#lobby-wrapper -->
 
-		</div><!-- /#game-wrapper -->
-	</div><!-- /#app -->
+        <div id="game-wrapper" class="hide">
+            <div id="game">
+                <h2 id="game-title">Kill the Virus</h2>
+                <div id="arena-wrapper">
+                    <!-- game arena will go here -->
+                    <img id="virus-image" src="./assets/images/virus_1.png" alt="virus image" width="50px" class="hide">
+                    <div id="victory" class="hide">
+                        <h2 id="winner-heading">Winner</h2>
+                        <div id="winner-body">
+                            <!-- winner and points message will go here -->
+                        </div>
+                        <div id="winner-footer">
+                            <button type="button" class="btn btn-warning btn-lg" id="play-again">Revenge</button>
+                            <button type="button" id="again-lobby-button" class="btn btn-secondary btn-lg">Game Lobby</button>
+                            <button type="button" class="btn btn-primary btn-lg" id="change-opponent">Change opponent</button>
+                        </div>
+                    </div>
+                    <!-- /#victory -->
+                </div>
+                <!-- /#arena-wrapper -->
+            </div>
+            <!-- /#game -->
 
-	<!-- Bootstrap 5 script -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+            <div id="scoreboard">
+                <h2>Scoreboard</h2>
+                <div id="currentScore">
+                    <span id="you-score">0</span> - <span id="opponent-score">0</span>
+                </div>
+                <div id="reactiontimes">
+                    <div id="you-reactiontime" class="mb-4">
+                        <div>
+                            <span id="username-badge">You</span>
+                        </div>
+                        <div id="you-time">
+                            <span id="you-minutes">00</span>:<span id="you-seconds">00</span>:<span id="you-milliseconds">00</span>
+                        </div>
+                    </div>
+                    <div id="opponent-reactiontime">
+                        <div>
+                            <span id="opponent-badge">Opponent</span>
+                        </div>
+                        <div id="opponent-time">
+                            <span id="opponent-minutes">00</span>:<span id="opponent-seconds">00</span>:<span id="opponent-milliseconds">00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#scoreboard -->
 
-	<!-- Socket.IO -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+        </div>
+        <!-- /#game-wrapper -->
+    </div>
+    <!-- /#app -->
 
-	<!-- Chat script -->
-	<script src="./assets/js/kill-the-virus.js"></script>
+    <!-- Bootstrap 5 script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+
+    <!-- Chat script -->
+    <script src="./assets/js/kill-the-virus.js"></script>
 </body>
+
 </html>

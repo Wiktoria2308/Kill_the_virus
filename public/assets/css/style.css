@@ -1,126 +1,225 @@
 #app,
 #start,
-#game-wrapper {
-	height: 100vh;
-	width: 100vw;
+#game-wrapper,
+#lobby-wrapper {
+    height: 100vh;
+    width: 100vw;
 }
+
 #app {
-	background-color: aliceblue;
+    background-color: aliceblue;
 }
 
 .hide {
-	display: none !important;
+    display: none !important;
 }
 
 #start {
-	display: flex;
-	align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 #username-form {
-	margin: 0 auto;
-	text-align: center;
+    margin: 0 auto;
+    text-align: center;
 }
 
-#game-wrapper {
-	display: flex;
+#game-wrapper,
+#lobby-wrapper {
+    display: flex;
 }
-#game {
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-	border-right: 1px solid #555;
+
+#game,
+#lobby {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    border-right: 1px solid #555;
 }
-#game h2 {
-	background-color: cornflowerblue;
-	padding: 0.5rem 0.75rem;
-	color: white;
+
+#game h2,
+#lobby h2 {
+    background-color: cornflowerblue;
+    padding: 0.5rem 0.75rem;
+    color: white;
+    margin: 0;
 }
+
 #arena-wrapper {
-	flex-grow: 1;
-	display: grid;
-	grid-template-rows: repeat(5, 1fr);
-	grid-template-columns: repeat(5, 1fr);
-  	background-color: #2196F3;
-  	padding: 10px;
-	/* overflow-y: scroll; */
-	/* height: calc(100vh - 2.25rem - 2px); */
+    cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🔫</text></svg>") 16 0,auto; /*!emojicursor.app*/
+    border: 2px solid #979797;
+    margin: 1rem 1.5rem;
+    flex-grow: 1;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    background-color: #F5F5F5;
+    padding: 2px;
+    /* overflow-y: scroll; */
+    /* height: calc(100vh - 2.25rem - 2px); */
 }
-#arena-wrapper > div {
-	background-color: rgba(255, 255, 255, 0.8);
-	border: 1px solid rgba(0, 0, 0, 0.8);
-	padding: 2rem;
-	font-size: 30px;
-	text-align: center;
+
+#virus-image {
+    grid-column: 1;
+    grid-row: 1;
 }
-#messages {
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: column;
-	list-style: none;
-	padding: 0;
-}
-#messages .message {
-	background-color: lightgray;
-	border-radius: 0.75rem;
-	margin: 0.1rem;
-	padding: 0.5rem 0.75rem;
-	align-self: flex-start;
-}
-#messages .message.you {
-	background-color: cornflowerblue;
-	color: white;
-	align-self: flex-end;
-}
-#messages .notice {
-	color: #555;
-}
+
 #scoreboard {
-	flex-basis: 20%;
+    flex-basis: 20%;
 }
+
 #scoreboard h2 {
-	background-color: cornflowerblue;
-	padding: 0.5rem 0.75rem;
-	color: white;
+    background-color: cornflowerblue;
+    padding: 0.5rem 0.75rem;
+    color: white;
 }
+
 #scoreboard ul {
-	margin: 0;
-	padding: 0.5rem 0.75rem;
-	list-style: none;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    list-style: none;
 }
 
 #currentScore {
-	text-align: center;
-	color: red;
-	font-size: xx-large;
-	font-weight: 600;
+    text-align: center;
+    color: red;
+    font-size: xx-large;
+    font-weight: 600;
 }
 
-#reactiontimes {
-	text-align: center;
-	margin: 0.5rem 0.75rem;
-	font-size: large;
+#reactiontimes,
+#highscore-reactiontime {
+    text-align: center;
+    margin: 0.5rem 0.75rem;
+    font-size: large;
 }
 
 #you-time {
-	color: #13CE13;
-	font-size: larger;
-	font-weight: 600;
+    color: #13CE13;
+    font-size: larger;
+    font-weight: 600;
 }
 
 #opponent-time {
-	color: #CD14CD;
-	font-size: larger;
-	font-weight: 600;
+    color: #CD14CD;
+    font-size: larger;
+    font-weight: 600;
 }
 
 #reactiontimes div {
-	background-color: #D5E8D4;
-	border: 1px solid #A2C790;
+    background-color: #D5E8D4;
+    border: 1px solid #A2C790;
 }
 
-#you-minutes, #you-seconds, #you-milliseconds {
-	/* important with this font family */
-	font-family: "Roboto Mono", monospace;	
-	font-size: larger;
+
+/* #you-minutes, #you-seconds, #you-milliseconds { */
+
+#you-time span,
+#opponent-time span,
+#player-time span {
+    /* important with this font family */
+    font-family: "Roboto Mono", monospace;
+    font-size: larger;
+}
+
+#victory {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #555;
+    grid-column: 2 / 5;
+    grid-row: 2 / 5;
+}
+
+#victory h2 {
+    background-color: cornflowerblue;
+    padding: 0.5rem 0.75rem;
+    color: white;
+}
+
+#games-wrapper {
+    border: 2px solid #979797;
+    margin: 1rem 1.5rem;
+    flex-grow: 1;
+    overflow-y: scroll;
+    background-color: #F5F5F5;
+    padding: 2px;
+}
+
+.lobby-title {
+    color: cornflowerblue;
+    font-weight: 600;
+    margin: 0.5rem 0.75rem;
+}
+
+#highscore {
+    flex-basis: 30%;
+}
+
+#highscore h2 {
+    background-color: cornflowerblue;
+    padding: 0.5rem 0.75rem;
+    color: white;
+}
+
+#winner-body {
+    text-align: center;
+    font-size: xx-large;
+    font-weight: 600;
+}
+
+#winner-body p {
+    margin: 0;
+}
+
+#winner-footer {
+    margin: 1rem 1.5rem;
+    text-align: center;
+}
+
+#highscore h3 {
+    text-align: center;
+}
+
+#highscore-reactiontime div {
+    background-color: #e8e7d4;
+    border: 1px solid #c7b590;
+}
+
+#player-time {
+    color: #cece13;
+    font-size: larger;
+    font-weight: 600;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+#lobby-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: cornflowerblue;
+}
+
+#lobby-header button {
+    margin: 0.5rem 0.75rem;
+}
+
+@media screen and (max-width: 810px) {
+    #game-wrapper {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    #lobby-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    #victory {
+        grid-column: 1 / span 5;
+        grid-row: 1 / span 5;
+    }
+
 }
