@@ -60,6 +60,15 @@ const getHighscore = async() => {
 }
 getHighscore();
 
+// Calculate a player's average reaction time (in milliseconds) per game
+const calcAverage = (numArray) => {
+    const rounds = 10;
+    const sum = numArray.reduce((x, y) => {
+        return x + y;
+    }, 0);
+    return sum / rounds;
+}
+
 const handleReactionTime = async function(data) {
 
     // find the room that this socket is part of
@@ -74,8 +83,29 @@ const handleReactionTime = async function(data) {
     user.totalmillisecondsNow = data.totalmilliseconds;
     user.totalmilliseconds.push(total);
 
+    // Get players' usernames
+    const playerOne = room.users[0].username;
+    const playerTwo = room.users[1].username;
+
+    // Get players' reaction times 
+    const playerOneAverages = room.users[0].totalmilliseconds;
+    const playerTwoAverages = room.users[1].totalmilliseconds;
+
+    // Calculate each player's average reaction time
+    const averageOne = calcAverage(playerOneAverages);
+    const averageTwo = calcAverage(playerTwoAverages);
+
+    // Find player with lowest reaction time
+    let averageGameBest = Math.min(averageOne, averageTwo);
+
+    // Set 'bestPlayer' to the player with the lowest reaction time
+    let bestPlayer = averageGameBest == averageOne ? playerOne : playerTwo;
+
+    /**
+     * @todo Change rounds back to 10
+     */
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
 
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
@@ -108,7 +138,10 @@ const handleReactionTime = async function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    if (room.rounds === 2) {
+    /**
+     * @todo Change rounds back to 10
+     */
+    if (room.rounds === 10) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
@@ -165,15 +198,22 @@ const handleReactionTime = async function(data) {
     }
     // console.log('room now', room.users)
 
-    // get time on every click and compare it to highscore
-    if (data.totalmilliseconds < highscore.totalmilliseconds) {
-        highscore.min = data.paused_time[0];
-        highscore.sec = data.paused_time[1];
-        highscore.ms = data.paused_time[2];
-        highscore.totalmilliseconds = data.totalmilliseconds;
-        highscore.username = data.username;
+    // // get time on every click and compare it to highscore
+    // if (data.totalmilliseconds < highscore.totalmilliseconds) {
+    //     highscore.min = data.paused_time[0];
+    //     highscore.sec = data.paused_time[1];
+    //     highscore.ms = data.paused_time[2];
+    //     highscore.totalmilliseconds = data.totalmilliseconds;
+    //     highscore.username = data.username;
 
-        // save match in database
+    // Update highscore values
+    highscore.min = data.paused_time[0];
+    highscore.sec = data.paused_time[1];
+    highscore.ms = data.paused_time[2];
+    highscore.totalmilliseconds = averageGameBest;
+    highscore.username = bestPlayer;
+
+        // save highscore in database
         try {
             const highscore_db = new models.Highscore({
                 ...highscore,
@@ -188,7 +228,7 @@ const handleReactionTime = async function(data) {
         }
 
         io.emit('lobby:show_highscore', highscore.username, highscore.min, highscore.sec, highscore.ms);
-    }
+    // }
 
     io.emit('lobby:add_room_to_list', rooms);
 
