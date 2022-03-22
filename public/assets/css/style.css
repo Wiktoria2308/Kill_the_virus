@@ -16,6 +16,8 @@
 
 #start {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
 }
 
@@ -46,6 +48,7 @@
 }
 
 #arena-wrapper {
+    cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🔫</text></svg>") 16 0,auto; /*!emojicursor.app*/
     border: 2px solid #979797;
     margin: 1rem 1.5rem;
     flex-grow: 1;
@@ -61,7 +64,6 @@
 #virus-image {
     grid-column: 1;
     grid-row: 1;
-    cursor: pointer;
 }
 
 #scoreboard {
@@ -204,4 +206,20 @@
 
 #lobby-header button {
     margin: 0.5rem 0.75rem;
+}
+
+@media screen and (max-width: 810px) {
+    #game-wrapper {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    #lobby-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    #victory {
+        grid-column: 1 / span 5;
+        grid-row: 1 / span 5;
+    }
+
 }
