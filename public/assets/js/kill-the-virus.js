@@ -264,13 +264,14 @@ socket.on('lobby:show_highscore', (highscores) => {
 
     fastest_time.innerHTML = '';
 
-    // // Format milliseconds to human readable time
-    // const seconds = Math.floor(totalmilliseconds / 1000)
-    // const milliseconds = Math.round((totalmilliseconds % 1000) / 10);
-    // const duration = `${seconds}:${milliseconds}`;
-
     for (let i = 0; i < 10; i++) {
         let score = highscores[i]
+
+        // Format milliseconds to human readable time
+        const seconds = Math.floor(score.totalmilliseconds / 1000)
+        const milliseconds = Math.round((score.totalmilliseconds % 1000) / 10);
+        const duration = `${seconds}:${milliseconds}`;
+
         if (!score) {
             return
         };
@@ -281,7 +282,7 @@ socket.on('lobby:show_highscore', (highscores) => {
             <span id="user1_${score.totalmilliseconds}">${score.username}</span> 
         </td>
         <td>
-            <span id="points1_${score.totalmilliseconds}">${score.totalmilliseconds}</span>
+            <span id="points1_${score.totalmilliseconds}">${duration}</span>
         </td>
     </tr>`;
         fastest_time.appendChild(scoreEl);
