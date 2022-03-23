@@ -20,7 +20,7 @@ let waiting_opponent = true;
 let play_again = null;
 let playAgainOneUser = true;
 
-let highscore = {};
+// let highscore = {};
 let recent_games = [];
 let highscores = [];
 
@@ -50,12 +50,12 @@ const getGames = async() => {
 }
 getGames();
 
-const getHighscore = async() => {
-    const res = await models.Highscore.find();
-    highscore = res[res.length - 1];
-    // console.log(highscore)
-}
-getHighscore();
+// const getHighscore = async() => {
+//     const res = await models.Highscore.find();
+//     highscore = res[res.length - 1];
+//     // console.log(highscore)
+// }
+// getHighscore();
 
 // Get 10 highscores from the database, sorted by fastest reaction time
 const getHighscores = async() => {
@@ -79,6 +79,131 @@ const calcAverage = (numArray) => {
         return x + y;
     }, 0);
     return Math.round(sum / rounds);
+}
+
+const handleDisconnect = function() {
+    // debug(`Client ${socket.id} disconnected :(`);
+
+    // find the room that this socket is part of
+    const room = rooms.find(room => room.users.find(user => user.id === this.id));
+
+    // if socket was not in a room, don't broadcast disconnect
+    if (!room) {
+        return;
+    }
+    // debug('room id', room.id)
+    // let everyone in the room know that this user has disconnected
+    this.broadcast.to(room.id).emit('user:disconnected');
+    // remove a room because we need to start a new game
+    rooms.splice(rooms.indexOf(room), 1);
+
+    io.emit('lobby:add_room_to_list', rooms);
+}
+
+const handleGameLeave = () => {
+    const room = rooms.find(room => room.users.find(user => user.id === socket.id));
+    if (!room) {
+        return;
+    }
+    io.in(room.id).emit('game:change_opponent');
+    rooms.splice(rooms.indexOf(room), 1);
+    io.emit('lobby:add_room_to_list', rooms);
+}
+
+const handleUserJoined = function(username, callback) {
+
+    // if there is no room creating a new room with id equal to the first users id
+    if (!roomName) {
+        roomName = 'room_' + this.id;
+        let room = {
+            id: roomName,
+            users: [],
+            rounds: 0,
+            score: [],
+        };
+        // push a new room to all rooms array
+        rooms.push(room);
+    } else {
+        waiting_opponent = false;
+    }
+
+    // looking for a room with a name from temporary variabel in the rooms array
+    const room = rooms.find(room => room.id === roomName);
+
+    if (!room) {
+        debug('There is no such room');
+        return;
+    }
+    // debug('roomid', room.id)
+
+    // join user to this room
+    this.join(room.id);
+
+    // associate socket id with username and store it in a room oject in the rooms array
+    let user = {
+        id: this.id,
+        username: username,
+        totalmillisecondsNow: 0,
+        totalmilliseconds: [],
+        pointsNow: 0,
+    }
+
+    room.users.push(user);
+
+    // debug(`User ${username} with socket id ${socket.id} joined`);
+
+    // confirm join
+    callback({
+        success: true,
+        waiting_opponent
+    });
+
+    // if we don't need to wait an opponent anymore:
+    if (!waiting_opponent) {
+        // emit that a second user is ready to the first user
+        this.broadcast.to(room.id).emit('user:ready');
+        // discard the temporary variables
+        waiting_opponent = true;
+        roomName = null;
+        // send users names to clients to show opponent user name 
+        io.in(room.id).emit('users:names', room.users[0].username, room.users[1].username);
+    };
+}
+
+const handlePlayAgain = function(username, callback) {
+    const room = rooms.find(room => room.users.find(user => user.id === this.id));
+    const user = room.users.find(user => user.id === this.id);
+
+    this.broadcast.to(room.id).emit('users:want_play_again', user.username);
+
+    if (!play_again) {
+        play_again = username;
+    } else {
+        playAgainOneUser = false;
+    }
+    callback({
+        success: true,
+        playAgainOneUser
+    });
+
+    if (!playAgainOneUser) {
+        playAgainOneUser = true;
+        play_again = null;
+        this.broadcast.to(room.id).emit('users:ready_again');
+    }
+
+    room.users[0].pointsNow = 0;
+    room.users[1].pointsNow = 0;
+
+}
+
+const handlePlayersReady = function() {
+    // Find room
+    const room = rooms.find(room => room.users.find(user => user.id === this.id));
+
+    io.emit('lobby:add_room_to_list', rooms);
+    // Emit to specific room
+    io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
 }
 
 const handleReactionTime = async function(data) {
@@ -236,138 +361,23 @@ module.exports = function(socket, _io) {
     io = _io; // it must be to be possible to emit
 
     // debug(recent_games, 'games')
-    debug(highscores, 'highscores')
+    // debug(highscores, 'highscores')
 
     io.emit('lobby:show_highscore', highscores);
     io.emit('lobby:show_recent_games', recent_games);
 
     // handle user disconnect
-    socket.on('disconnect', function() {
-        // debug(`Client ${socket.id} disconnected :(`);
-
-        // find the room that this socket is part of
-        const room = rooms.find(room => room.users.find(user => user.id === this.id));
-
-        // if socket was not in a room, don't broadcast disconnect
-        if (!room) {
-            return;
-        }
-        // debug('room id', room.id)
-        // let everyone in the room know that this user has disconnected
-        this.broadcast.to(room.id).emit('user:disconnected');
-        // remove a room because we need to start a new game
-        rooms.splice(rooms.indexOf(room), 1);
-
-        io.emit('lobby:add_room_to_list', rooms);
-    });
+    socket.on('disconnect', handleDisconnect);
 
     // listen for user reaction time 
     socket.on('user:reaction', handleReactionTime);
 
-    socket.on('user:play_again', function(username, callback) {
-        const room = rooms.find(room => room.users.find(user => user.id === this.id));
-        const user = room.users.find(user => user.id === this.id);
-
-        this.broadcast.to(room.id).emit('users:want_play_again', user.username);
-
-        if (!play_again) {
-            play_again = username;
-        } else {
-            playAgainOneUser = false;
-        }
-        callback({
-            success: true,
-            playAgainOneUser
-        });
-
-        if (!playAgainOneUser) {
-            playAgainOneUser = true;
-            play_again = null;
-            this.broadcast.to(room.id).emit('users:ready_again');
-        }
-
-        room.users[0].pointsNow = 0;
-        room.users[1].pointsNow = 0;
-
-    });
+    socket.on('user:play_again', handlePlayAgain);
 
     // handle user joined
-    socket.on('user:joined', function(username, callback) {
+    socket.on('user:joined', handleUserJoined);
 
-        // if there is no room creating a new room with id equal to the first users id
-        if (!roomName) {
-            roomName = 'room_' + this.id;
-            let room = {
-                id: roomName,
-                users: [],
-                rounds: 0,
-                score: [],
-            };
-            // push a new room to all rooms array
-            rooms.push(room);
-        } else {
-            waiting_opponent = false;
-        }
+    socket.on('players:ready', handlePlayersReady);
 
-        // looking for a room with a name from temporary variabel in the rooms array
-        const room = rooms.find(room => room.id === roomName);
-
-        if (!room) {
-            debug('There is no such room');
-            return;
-        }
-        // debug('roomid', room.id)
-
-        // join user to this room
-        this.join(room.id);
-
-        // associate socket id with username and store it in a room oject in the rooms array
-        let user = {
-            id: this.id,
-            username: username,
-            totalmillisecondsNow: 0,
-            totalmilliseconds: [],
-            pointsNow: 0,
-        }
-
-        room.users.push(user);
-
-        // debug(`User ${username} with socket id ${socket.id} joined`);
-
-        // confirm join
-        callback({
-            success: true,
-            waiting_opponent
-        });
-
-        // if we don't need to wait an opponent anymore:
-        if (!waiting_opponent) {
-            // emit that a second user is ready to the first user
-            this.broadcast.to(room.id).emit('user:ready');
-            // discard the temporary variables
-            waiting_opponent = true;
-            roomName = null;
-            // send users names to clients to show opponent user name 
-            io.in(room.id).emit('users:names', room.users[0].username, room.users[1].username);
-        };
-    });
-
-    socket.on('players:ready', function() {
-        // Find room
-        const room = rooms.find(room => room.users.find(user => user.id === this.id));
-
-        io.emit('lobby:add_room_to_list', rooms);
-        // Emit to specific room
-        io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
-    });
-
-    socket.on('game:leave', () => {
-        const room = rooms.find(room => room.users.find(user => user.id === socket.id));
-        if (!room) {
-            return;
-        }
-        io.in(room.id).emit('game:change_opponent');
-        rooms.splice(rooms.indexOf(room), 1);
-        io.emit('lobby:add_room_to_list', rooms);
-    })
+    socket.on('game:leave', handleGameLeave);
 }
