@@ -298,5 +298,13 @@ letter-spacing: 2px;
         grid-column: 1 / span 5;
         grid-row: 1 / span 5;
     }
+    #start h1 {
+        font-size: 70px;
+        text-align: center;
+    }
+    #start p{
+        font-size: 20px;
+        text-align: center;
+    }
 
 }
