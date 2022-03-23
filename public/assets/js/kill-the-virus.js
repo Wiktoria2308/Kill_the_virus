@@ -183,8 +183,8 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     winner_heading.innerHTML = "Winner";
     winnerMsgEl.innerHTML =
         `
-        <p>
-            The winner is ${winner} with ${winnerPoints} points!
+        <p id="winner-text">
+            The winner is<br> ${winner}<br> with ${winnerPoints} points!
         </p>
     `
         // The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!  
@@ -192,7 +192,7 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     if (winner == 'remis') {
         winnerMsgEl.innerHTML =
             `
-        <p>
+        <p id="winner-text">
             ${loserOrTiePoints}-${loserOrTiePoints}, it's a tie!
         </p>
     `
