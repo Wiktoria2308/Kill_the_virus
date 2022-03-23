@@ -45,6 +45,7 @@ getGames();
 const getHighscore = async() => {
     const res = await models.Highscore.find();
     highscore = res[res.length - 1];
+    console.log(highscore)
 }
 getHighscore();
 
@@ -160,8 +161,11 @@ const handleReactionTime = async function(data) {
     }
     // console.log('room now', room.users)
 
+
+
     // get time on every click and compare it to highscore
-    if (data.totalmilliseconds < highscore.totalmilliseconds) {
+    if (!highscore || data.totalmilliseconds < highscore.totalmilliseconds) {
+        highscore = {};
         highscore.min = data.paused_time[0];
         highscore.sec = data.paused_time[1];
         highscore.ms = data.paused_time[2];
@@ -182,7 +186,7 @@ const handleReactionTime = async function(data) {
                 // this.emit('chat:notice', { message: "Could not save your message in the database." });
         }
 
-        recent_games.unshift(highscore);
+        highscores.unshift(highscore);
 
         io.emit('lobby:show_highscore', highscores);
     }
