@@ -20,16 +20,17 @@
     <div id="app">
 
         <div id="start" class="container">
-            <h1>Kill the Virus</h1>
-            <img src="./assets/images/virus_1.png" alt="virus animation" class="img-fluid" width="400px">
+            <h1>Kill the virus</h1>
+            <p id="wanna-play" class="">Wanna play a game?</p>
+            <!-- <img src="./assets/images/virus_1.png" alt="virus animation" class="img-fluid" width="300px"> -->
             <form id="username-form">
                 <div class="mb-3">
                     <input type="text" id="username" class="form-control form-control-lg" required placeholder="Enter username">
                 </div>
                 <p id="waiting" class="hide">Waiting for opponent ...</p>
                 <p id="opponent_disconnected" class="hide">Your opponent has been disconnected. Please log in again to join a new game.</p>
-                <button type="submit" id="start-button" class="btn btn-primary">Play</button>
-                <button type="button" id="lobby-button" class="btn btn-secondary">Game Lobby</button>
+                <button type="submit" id="start-button" class="btn">Play</button>
+                <button type="button" id="lobby-button" class="btn">Game Lobby</button>
             </form>
             <!-- /#username-form -->
         </div>

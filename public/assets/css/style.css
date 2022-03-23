@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+body {
+font-family: 'Orbitron', sans-serif;
+}
 #app,
 #start,
 #game-wrapper,
@@ -7,7 +12,9 @@
 }
 
 #app {
-    background-color: aliceblue;
+    background-image: url('../images/background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .hide {
@@ -21,6 +28,76 @@
     align-items: center;
 }
 
+#start h1 {
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: 100px;
+    cursor:pointer;
+    color: rgba(255, 255, 255, 0);
+    text-shadow: 0em 0em 3em #83ff00,
+                 0em 0em 2em #83ff00,
+                 1px 1px 5px #83ff00,
+                 0px 0px 15px #83ff00,
+                 1px 0px 0px white,
+                -1px 0px 2px rgba(0, 0, 0, .5);
+    margin-bottom: 40px;
+}
+
+#start p{
+font-size: 30px;
+color: #70d800;
+margin-bottom: 40px;
+text-shadow: 1px 1px 2px #000000;
+letter-spacing: 2px;
+}
+
+#start-button, #lobby-button {
+    position: relative;
+    width: 180px;
+    margin: 20px;
+    line-height: 40px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    color: white;
+    transition: 0.5s;
+}
+
+#start-button {
+    border: 2px solid #83ff00;
+}
+#start-button:hover {
+    border: 2px solid #70d800;
+  box-shadow: inset 180px 0 0 0 #70d800;
+  text-shadow: 1px 1px 2px #000000;
+}
+
+#lobby-button {
+    border: 2px solid #7a18ec;
+}
+
+#lobby-button:hover {
+      border: 1px solid #7a18ec;
+      background: url(https://i.postimg.cc/FzBWFtKM/pixel2.png);
+      transition-delay: 0.8s;
+      background-size: 180px;
+      animation: animate 0.8s steps(8) forwards;
+    }
+
+@keyframes animate {
+    0% {
+      background-position-y: 0;
+    }
+    100% {
+      background-position-y: -480px;
+    }
+  }
+#username {
+   background-color: rgb(227, 253, 224);
+   border: 0;
+   margin-bottom: 30px;
+}
 #username-form {
     margin: 0 auto;
     text-align: center;
