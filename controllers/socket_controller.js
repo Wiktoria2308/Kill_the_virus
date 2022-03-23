@@ -223,6 +223,7 @@ const handleReactionTime = async function(data) {
         }
 
         highscores.unshift(highscore);
+        recent_games.unshift(highscore);
 
         io.emit('lobby:show_highscore', highscores);
 
@@ -235,9 +236,9 @@ module.exports = function(socket, _io) {
     io = _io; // it must be to be possible to emit
 
     // debug(recent_games, 'games')
-    debug(highscore, 'highscore')
+    debug(highscores, 'highscores')
 
-    io.emit('lobby:show_highscore', highscore.username, highscore.totalmilliseconds);
+    io.emit('lobby:show_highscore', highscores);
     io.emit('lobby:show_recent_games', recent_games);
 
     // handle user disconnect

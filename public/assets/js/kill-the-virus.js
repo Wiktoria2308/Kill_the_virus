@@ -18,6 +18,7 @@ const waiting_label = document.querySelector('#waiting');
 const opponent_disconnected_label = document.querySelector('#opponent_disconnected');
 const games_now = document.querySelector('#games_now');
 const recent_games = document.querySelector('#recent_games');
+const fastest_time = document.querySelector('#fastest_time');
 
 const play_again = document.querySelector('#play-again');
 const winner_heading = document.querySelector('#winner-heading');
@@ -37,8 +38,8 @@ let opponent_milliseconds = document.querySelector('#opponent-milliseconds');
 // let highscore_min = document.querySelector('#player-minutes');
 // let highscore_sec = document.querySelector('#player-seconds');
 // let highscore_ms = document.querySelector('#player-milliseconds');
-let highscore_username = document.querySelector('#player-badge');
-const highscore_time = document.querySelector('#player-duration');
+// let highscore_username = document.querySelector('#player-badge');
+// const highscore_time = document.querySelector('#player-duration');
 
 let username = null;
 let startTime;
@@ -118,15 +119,15 @@ function countTime(time, user_min, user_sec, user_ms) {
 }
 
 // creating row for games in lobby
-function createTableRow(room, i) {
-    return `<th scope="row">${i}</th>
-        <td>
-            <span>${room.users[0].username}</span> vs. <span>${room.users[1].username}</span>
-        </td>
-        <td id='points_${room.id}'>
-            <span>${room.users[0].pointsNow}</span> - <span>${room.users[1].pointsNow}</span>
-        </td>`;
-}
+// function createTableRow(room, i) {
+//     return `<th scope="row">${i}</th>
+//         <td>
+//             <span>${room.users[0].username}</span> vs. <span>${room.users[1].username}</span>
+//         </td>
+//         <td id='points_${room.id}'>
+//             <span>${room.users[0].pointsNow}</span> - <span>${room.users[1].pointsNow}</span>
+//         </td>`;
+// }
 
 // listen for users names to add opponent name to game
 socket.on('users:names', (user1, user2) => {
@@ -184,7 +185,7 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     winnerMsgEl.innerHTML =
         `
         <p>
-            The winner is ${winner} with ${winnerPoints} points!
+            The winner is <b>${winner}</b> with <b>${winnerPoints}</b> points!
         </p>
     `
         // The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!  
@@ -246,23 +247,45 @@ socket.on('lobby:add_room_to_list', (rooms) => {
     for (let i = 0; i < rooms.length; i++) {
         const roomEl = document.createElement('tr');
         roomEl.setAttribute('id', `${rooms[i].id}`);
-        roomEl.innerHTML = createTableRow(rooms[i], i + 1);
+        roomEl.innerHTML = `<th scope="row">${i}</th>
+        <td>
+            <span>${rooms[i].users[0].username}</span> vs. <span>${rooms[i].users[1].username}</span>
+        </td>
+        <td id='points_${rooms[i].id}'>
+            <span>${rooms[i].users[0].pointsNow}</span> - <span>${rooms[i].users[1].pointsNow}</span>
+        </td>`;
         games_now.appendChild(roomEl);
     }
 })
 
 // update fastest time in real time
 // todo: save highscore in DB and show it to users from DB
-socket.on('lobby:show_highscore', (username, totalmilliseconds) => {
+socket.on('lobby:show_highscore', (highscores) => {
 
-    // Format milliseconds to human readable time
-    const seconds = Math.floor(totalmilliseconds / 1000)
-    const milliseconds = Math.round((totalmilliseconds % 1000) / 10);
-    const duration = `${seconds}:${milliseconds}`;
+    fastest_time.innerHTML = '';
 
-    // Set highscore content
-    highscore_username.innerHTML = username;
-    highscore_time.innerHTML = duration;
+    // // Format milliseconds to human readable time
+    // const seconds = Math.floor(totalmilliseconds / 1000)
+    // const milliseconds = Math.round((totalmilliseconds % 1000) / 10);
+    // const duration = `${seconds}:${milliseconds}`;
+
+    for (let i = 0; i < 10; i++) {
+        let score = highscores[i]
+        if (!score) {
+            return
+        };
+        const scoreEl = document.createElement('tr');
+        scoreEl.innerHTML = `<tr>
+        <th scope="row">${i+1}</th>
+        <td>
+            <span id="user1_${score.totalmilliseconds}">${score.username}</span> 
+        </td>
+        <td>
+            <span id="points1_${score.totalmilliseconds}">${score.totalmilliseconds}</span>
+        </td>
+    </tr>`;
+        fastest_time.appendChild(scoreEl);
+    }
 });
 
 // update recent games in lobby

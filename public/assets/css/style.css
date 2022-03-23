@@ -14,6 +14,10 @@
     display: none !important;
 }
 
+table {
+    border: 2px solid #979797;
+}
+
 #start {
     display: flex;
     flex-direction: column;
@@ -48,7 +52,8 @@
 }
 
 #arena-wrapper {
-    cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🔫</text></svg>") 16 0,auto; /*!emojicursor.app*/
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🔫</text></svg>") 16 0, auto;
+    /*!emojicursor.app*/
     border: 2px solid #979797;
     margin: 1rem 1.5rem;
     flex-grow: 1;
@@ -139,59 +144,14 @@
     color: white;
 }
 
-#games-wrapper {
-    border: 2px solid #979797;
-    margin: 1rem 1.5rem;
-    flex-grow: 1;
-    overflow-y: scroll;
-    background-color: #F5F5F5;
-    padding: 2px;
-}
+
+/* Lobby */
 
 .lobby-title {
     color: cornflowerblue;
     font-weight: 600;
     margin: 0.5rem 0.75rem;
-}
-
-#highscore {
-    flex-basis: 30%;
-}
-
-#highscore h2 {
-    background-color: cornflowerblue;
-    padding: 0.5rem 0.75rem;
-    color: white;
-}
-
-#winner-body {
     text-align: center;
-    font-size: xx-large;
-    font-weight: 600;
-}
-
-#winner-body p {
-    margin: 0;
-}
-
-#winner-footer {
-    margin: 1rem 1.5rem;
-    text-align: center;
-}
-
-#highscore h3 {
-    text-align: center;
-}
-
-#highscore-reactiontime div {
-    background-color: #e8e7d4;
-    border: 1px solid #c7b590;
-}
-
-#player-time {
-    color: #cece13;
-    font-size: larger;
-    font-weight: 600;
 }
 
 .bold {
@@ -208,6 +168,46 @@
     margin: 0.5rem 0.75rem;
 }
 
+#table-fastest-time>tbody>tr:nth-child(odd)>td,
+#table-fastest-time>tbody>tr:nth-child(odd)>th {
+    background-color: #e8e7d4;
+}
+
+#highscore h2 {
+    background-color: cornflowerblue;
+    padding: 0.5rem 0.75rem;
+    color: white;
+}
+
+
+/* Winner screen */
+
+#winner-body {
+    text-align: center;
+    font-size: xx-large;
+    font-weight: 600;
+}
+
+#winner-body p {
+    margin: 0;
+}
+
+#winner-footer {
+    margin: 1rem 1.5rem;
+    text-align: center;
+}
+
+#highscore-wrapper h3 {
+    text-align: center;
+    color: #c7b590
+}
+
+#player-time {
+    color: #cece13;
+    font-size: larger;
+    font-weight: 600;
+}
+
 @media screen and (max-width: 810px) {
     #game-wrapper {
         display: flex;
@@ -221,5 +221,4 @@
         grid-column: 1 / span 5;
         grid-row: 1 / span 5;
     }
-
 }
