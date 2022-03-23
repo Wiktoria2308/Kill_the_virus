@@ -22,6 +22,7 @@ let playAgainOneUser = true;
 
 let highscore = {};
 let recent_games = [];
+let highscores = [];
 
 // Grid arena is set to be 5 x 5. This function returns a random number between 1 and 5.
 // Function will be called twice to get x/y position.
@@ -51,12 +52,8 @@ getGames();
 
 const getHighscore = async() => {
     const res = await models.Highscore.find();
-    let score = res[res.length - 1];
-    highscore.username = score.username;
-    highscore.min = score.min;
-    highscore.sec = score.sec;
-    highscore.ms = score.ms;
-    highscore.totalmilliseconds = score.totalmilliseconds;
+    highscore = res[res.length - 1];
+    // console.log(highscore)
 }
 getHighscore();
 
@@ -105,7 +102,7 @@ const handleReactionTime = async function(data) {
      * @todo Change rounds back to 10
      */
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 3) {
 
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
@@ -141,7 +138,7 @@ const handleReactionTime = async function(data) {
     /**
      * @todo Change rounds back to 10
      */
-    if (room.rounds === 10) {
+    if (room.rounds === 3) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
@@ -195,23 +192,11 @@ const handleReactionTime = async function(data) {
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
 
         room.rounds = 0;
-    }
-    // console.log('room now', room.users)
 
-    // // get time on every click and compare it to highscore
-    // if (data.totalmilliseconds < highscore.totalmilliseconds) {
-    //     highscore.min = data.paused_time[0];
-    //     highscore.sec = data.paused_time[1];
-    //     highscore.ms = data.paused_time[2];
-    //     highscore.totalmilliseconds = data.totalmilliseconds;
-    //     highscore.username = data.username;
-
-    // Update highscore values
-    highscore.min = data.paused_time[0];
-    highscore.sec = data.paused_time[1];
-    highscore.ms = data.paused_time[2];
-    highscore.totalmilliseconds = averageGameBest;
-    highscore.username = bestPlayer;
+        let highscore = {
+            totalmilliseconds: averageGameBest,
+            username: bestPlayer,
+        };
 
         // save highscore in database
         try {
@@ -227,10 +212,12 @@ const handleReactionTime = async function(data) {
                 // this.emit('chat:notice', { message: "Could not save your message in the database." });
         }
 
-        io.emit('lobby:show_highscore', highscore.username, highscore.min, highscore.sec, highscore.ms);
-    // }
+        highscores.unshift(highscore);
 
-    io.emit('lobby:add_room_to_list', rooms);
+        io.emit('lobby:show_highscore', highscores);
+
+        io.emit('lobby:add_room_to_list', rooms);
+    }
 
 }
 
@@ -238,9 +225,9 @@ module.exports = function(socket, _io) {
     io = _io; // it must be to be possible to emit
 
     // debug(recent_games, 'games')
-    // debug(highscore, 'highscore')
+    debug(highscore, 'highscore')
 
-    io.emit('lobby:show_highscore', highscore.username, highscore.min, highscore.sec, highscore.ms);
+    io.emit('lobby:show_highscore', highscore.username, highscore.totalmilliseconds);
     io.emit('lobby:show_recent_games', recent_games);
 
     // handle user disconnect
