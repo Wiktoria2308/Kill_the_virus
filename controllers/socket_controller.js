@@ -6,10 +6,6 @@ const debug = require('debug')('kill-the-virus:socket_controller');
 const models = require('../models');
 
 let io = null; // socket.io server instance
-<<<<<<< HEAD
-
-=======
->>>>>>> 3c44ebd23823ce3fc0f09e1487905efa5de99679
 // list of socket-ids and their username
 const rooms = [];
 
@@ -52,7 +48,6 @@ const getGames = async() => {
 }
 getGames();
 
-<<<<<<< HEAD
 const getHighscore = async() => {
     const res = await models.Highscore.find();
     let score = res[res.length - 1];
@@ -94,62 +89,6 @@ const handleReactionTime = async function(data) {
         } else if (room.users[0].totalmillisecondsNow > room.users[1].totalmillisecondsNow) {
             room.users[1].pointsNow++;
             players = [{ username: room.users[0].username, points: room.users[0].pointsNow }, { username: room.users[1].username, points: room.users[1].pointsNow }];
-=======
-// who wins ?
-const handleReactionTime = function(data) {
-
-    // find the room that this socket is part of
-	 const room = rooms.find(chatroom => chatroom.users.hasOwnProperty(this.id));
-    
-     // add user data to room
-    if(room.player_1 === undefined) {
-        data.score = 0;
-        room.player_1 = data;
-    }
-    // add second user data to room , check if user is not already asigned
-    if(room.player_1 && room.player_2 === undefined && room.player_1.username !== data.username){
-        data.score = 0;
-        room.player_2 = data;
-    }
-    
-
-    // temporary storage for users data
-    let players = [];
-    let player1 = {};
-    let player2 = {};
-
-    // if two users clicked on virus then check which one was faster 
-    if(room.player_1 !== undefined && room.player_2 !== undefined){
-        console.log('room', room);  // it works yuupppi!!!
-        if(room.player_1.totalmilliseconds < room.player_2.totalmilliseconds){
-            room.player_1.score++;
-            //  save users score information in array and send it to users
-            player1.username = room.player_1.username;
-            player1.score = room.player_1.score;
-            players.push(player1);
-            player1 = {};
-            player2.username = room.player_2.username;
-            player2.score = room.player_2.score;
-            players.push(player2);
-            player2 = {};
-            // send score to both users
-            io.in(room.id).emit('users:score', players);
-            console.log('players', players);
-            players = [];
-        }
-        else if(room.player_1.totalmilliseconds > room.player_2.totalmilliseconds) {
-            room.player_2.score ++;
-             //  save users score information in array and send it to users
-            player1.username = room.player_1.username;
-            player1.score = room.player_1.score;
-            players.push(player1);
-            player1 = {};
-            player2.username = room.player_2.username;
-            player2.score = room.player_2.score;
-            players.push(player2);
-            player2 = {};
-            // send score to both users
->>>>>>> 3c44ebd23823ce3fc0f09e1487905efa5de99679
             io.in(room.id).emit('users:score', players);
             room.users[0].totalmillisecondsNow = 0;
             room.users[1].totalmillisecondsNow = 0;
