@@ -22,7 +22,6 @@
         <div id="start" class="container">
             <h1>Kill the virus</h1>
             <p id="wanna-play" class="">Wanna play a game?</p>
-            <!-- <img src="./assets/images/virus_1.png" alt="virus animation" class="img-fluid" width="300px"> -->
             <form id="username-form">
                 <div class="mb-3">
                     <input type="text" id="username" class="form-control form-control-lg" required placeholder="Enter username">
@@ -32,8 +31,7 @@
                 <button type="submit" id="start-button" class="btn">Play</button>
                 <button type="button" id="lobby-button" class="btn">Game Lobby</button>
             </form>
-            <!-- /#username-form -->
-        </div>
+      </div> 
         <!-- /#start -->
 
         <div id="lobby-wrapper" class="hide">
@@ -126,7 +124,7 @@
                 </div>
                 <div id="reactiontimes">
                     <div id="you-reactiontime" class="mb-4">
-                        <div>
+                        <div id="username-badge-container">
                             <span id="username-badge">You</span>
                         </div>
                         <div id="you-time">
@@ -134,7 +132,7 @@
                         </div>
                     </div>
                     <div id="opponent-reactiontime">
-                        <div>
+                        <div id="username-badge-container">
                             <span id="opponent-badge">Opponent</span>
                         </div>
                         <div id="opponent-time">

@@ -68,7 +68,7 @@ letter-spacing: 2px;
     border: 2px solid #83ff00;
 }
 #start-button:hover {
-    border: 2px solid #70d800;
+  border: 2px solid #70d800;
   box-shadow: inset 180px 0 0 0 #70d800;
   text-shadow: 1px 1px 2px #000000;
 }
@@ -118,21 +118,22 @@ letter-spacing: 2px;
 
 #game h2,
 #lobby h2 {
-    background-color: cornflowerblue;
-    padding: 0.5rem 0.75rem;
-    color: white;
+    color: #83ff00;
     margin: 0;
+    padding-left: 30px;
+    padding-top: 20px;
+    letter-spacing: 1px;
 }
 
 #arena-wrapper {
-    cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🔫</text></svg>") 16 0,auto; /*!emojicursor.app*/
-    border: 2px solid #979797;
+    cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='67' height='80' viewport='0 0 100 100' style='fill:black;font-size:40px;'><text y='50%'>🔫</text></svg>") 16 0,auto; /*!emojicursor.app*/
     margin: 1rem 1.5rem;
     flex-grow: 1;
     display: grid;
     grid-template-rows: repeat(5, 1fr);
     grid-template-columns: repeat(5, 1fr);
-    background-color: #F5F5F5;
+    /* background-color: #F5F5F5; */
+    border: 4px solid #83ff00;
     padding: 2px;
     /* overflow-y: scroll; */
     /* height: calc(100vh - 2.25rem - 2px); */
@@ -148,9 +149,12 @@ letter-spacing: 2px;
 }
 
 #scoreboard h2 {
-    background-color: cornflowerblue;
-    padding: 0.5rem 0.75rem;
-    color: white;
+    color: #83ff00;
+    font-weight: 200;
+    margin: 0;
+    text-align: center;
+    padding-top: 25px;
+    padding-bottom: 20px;
 }
 
 #scoreboard ul {
@@ -161,13 +165,21 @@ letter-spacing: 2px;
 
 #currentScore {
     text-align: center;
-    color: red;
-    font-size: xx-large;
-    font-weight: 600;
+    color: #7a18ec;
+    font-size: 60px;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+#username-badge-container {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    letter-spacing: 1px;
 }
 
 #reactiontimes,
 #highscore-reactiontime {
+    color: white;
     text-align: center;
     margin: 0.5rem 0.75rem;
     font-size: large;
@@ -177,19 +189,23 @@ letter-spacing: 2px;
     color: #13CE13;
     font-size: larger;
     font-weight: 600;
+    letter-spacing: 1px;
 }
 
 #opponent-time {
     color: #CD14CD;
     font-size: larger;
     font-weight: 600;
+    letter-spacing: 1px;
 }
 
 #reactiontimes div {
-    background-color: #D5E8D4;
-    border: 1px solid #A2C790;
+    border: 2px solid #234500;
 }
-
+#username-badge {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
 
 /* #you-minutes, #you-seconds, #you-milliseconds { */
 
