@@ -6,7 +6,6 @@ const debug = require('debug')('kill-the-virus:socket_controller');
 const models = require('../models');
 
 let io = null; // socket.io server instance
-
 // list of socket-ids and their username
 const rooms = [];
 
