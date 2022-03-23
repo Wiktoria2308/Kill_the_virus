@@ -34,10 +34,11 @@ let you_milliseconds = document.querySelector('#you-milliseconds');
 let opponent_minutes = document.querySelector('#opponent-minutes');
 let opponent_seconds = document.querySelector('#opponent-seconds');
 let opponent_milliseconds = document.querySelector('#opponent-milliseconds');
-let highscore_min = document.querySelector('#player-minutes');
-let highscore_sec = document.querySelector('#player-seconds');
-let highscore_ms = document.querySelector('#player-milliseconds');
+// let highscore_min = document.querySelector('#player-minutes');
+// let highscore_sec = document.querySelector('#player-seconds');
+// let highscore_ms = document.querySelector('#player-milliseconds');
 let highscore_username = document.querySelector('#player-badge');
+const highscore_time = document.querySelector('#player-duration');
 
 let username = null;
 let startTime;
@@ -252,11 +253,16 @@ socket.on('lobby:add_room_to_list', (rooms) => {
 
 // update fastest time in real time
 // todo: save highscore in DB and show it to users from DB
-socket.on('lobby:show_highscore', (username, min, sec, ms) => {
+socket.on('lobby:show_highscore', (username, totalmilliseconds) => {
+
+    // Format milliseconds to human readable time
+    const seconds = Math.floor(totalmilliseconds / 1000)
+    const milliseconds = Math.round((totalmilliseconds % 1000) / 10);
+    const duration = `${seconds}:${milliseconds}`;
+
+    // Set highscore content
     highscore_username.innerHTML = username;
-    highscore_min.innerHTML = min;
-    highscore_sec.innerHTML = sec;
-    highscore_ms.innerHTML = ms;
+    highscore_time.innerHTML = duration;
 });
 
 // update recent games in lobby

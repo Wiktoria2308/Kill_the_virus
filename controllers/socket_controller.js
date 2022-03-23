@@ -57,13 +57,28 @@ const getHighscore = async() => {
 }
 getHighscore();
 
+// Get 10 highscores from the database, sorted by fastest reaction time
+const getHighscores = async() => {
+    const res = await models.Highscore
+		.find()
+		.sort({totalmilliseconds: 'desc'})
+		.limit(10);
+	res.forEach(score => {
+		highscores.unshift({
+			totalmilliseconds: score.totalmilliseconds,
+			username: score.username,
+		})
+	})
+}
+getHighscores();
+
 // Calculate a player's average reaction time (in milliseconds) per game
 const calcAverage = (numArray) => {
     const rounds = 10;
     const sum = numArray.reduce((x, y) => {
         return x + y;
     }, 0);
-    return sum / rounds;
+    return Math.round(sum / rounds);
 }
 
 const handleReactionTime = async function(data) {
@@ -98,11 +113,8 @@ const handleReactionTime = async function(data) {
     // Set 'bestPlayer' to the player with the lowest reaction time
     let bestPlayer = averageGameBest == averageOne ? playerOne : playerTwo;
 
-    /**
-     * @todo Change rounds back to 10
-     */
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 3) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
 
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
@@ -135,10 +147,8 @@ const handleReactionTime = async function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    /**
-     * @todo Change rounds back to 10
-     */
-    if (room.rounds === 3) {
+
+    if (room.rounds === 10) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
