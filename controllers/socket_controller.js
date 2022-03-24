@@ -64,28 +64,18 @@ const getGames = async() => {
 }
 getGames();
 
+
 const getHighscore = async() => {
-    const res = await models.Highscore.find();
-    highscore = res[res.length - 1];
+    const res = await models.Highscore.find()
+    .sort({totalmilliseconds: 'desc'});
+    highscore = res[0];
     // console.log(highscore)
 }
 getHighscore();
 
 const getHighscores = async() => {
-    const res = await models.Highscore.find()
-    // res.forEach(score => highscores.unshift(score));
-    // highscores.splice(11);
-    .sort({totalmilliseconds: 'desc'})
-    .limit(10);
-    res.forEach(score => {
-		highscores.unshift({
-            min: score.min,
-            sec: score.sec,
-            ms: score.ms,
-			totalmilliseconds: score.totalmilliseconds,
-			username: score.username,
-		})
-	})
+    highscores = await models.Highscore.find()
+    .sort({totalmilliseconds: 'desc'});
 }
 getHighscores();
 
@@ -226,7 +216,8 @@ const handleReactionTime = async function(data) {
         let bestPlayer = averageGameBest == averageOne ? playerOne : playerTwo;
 
         // Create highscore object using retrieved data
-        // Format milliseconds to minutes, seconds and centiseconds and use zeropad so that 0 min, 1 sec and 35 ms will be stored
+        // Format milliseconds to minutes, seconds and centiseconds
+        // Use zeropad so that eg. 0 min, 1 sec and 5 ms are stored as 00 min 01 sec and 05 ms
         const highscore = {
             min: zeropad(Math.trunc(averageGameBest / 1000 / 60)),
             sec: zeropad(Math.trunc(averageGameBest / 1000)),
@@ -248,13 +239,11 @@ const handleReactionTime = async function(data) {
             debug(e)
         }
 
-        // Add highscore to array
-        highscores.unshift(highscore);
-
-        // Make sure highscore ends up in the correct position
-        highscores.sort((a, b) => {
-            return a.totalmilliseconds - b.totalmilliseconds
-        });
+        // Get updated highscores but limit result to top 10
+        highscores = await models.Highscore
+            .find()
+            .sort({totalmilliseconds: 'desc'})
+            .limit(10);
 
         io.emit('lobby:show_highscore', highscores);
 
