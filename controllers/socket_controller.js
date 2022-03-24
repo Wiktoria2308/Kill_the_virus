@@ -189,10 +189,9 @@ const handleReactionTime = async function(data) {
         } catch (e) {
             debug("Could not save match in the database.", game);
             debug(e)
-                // this.emit('chat:notice', { message: "Could not save your message in the database." });
         }
         recent_games.unshift(game);
-        // debug(recent_games, 'games')
+
         io.emit('lobby:show_recent_games', recent_games);
 
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
@@ -262,7 +261,6 @@ module.exports = function (socket, _io) {
 
     // handle user disconnect
     socket.on('disconnect', function () {
-        // debug(`Client ${socket.id} disconnected :(`);
 
         // find the room that this socket is part of
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
@@ -285,8 +283,7 @@ module.exports = function (socket, _io) {
 
     socket.on('user:play_again', function (username, callback) {
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
-        // this.broadcast.to(room.id).emit('users:play_again');
-        // const user = room.users.find(user => user.id === this.id);
+        
         if (!play_again) {
             play_again = username;
         } else {

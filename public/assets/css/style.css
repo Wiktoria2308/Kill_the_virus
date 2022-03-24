@@ -187,8 +187,6 @@ letter-spacing: 2px;
     inset 0 0 .1rem #fff,
     0 0 0.5rem #83ff00,
     inset 0 0 0.5rem #83ff00;
-    /* overflow-y: scroll; */
-    /* height: calc(100vh - 2.25rem - 2px); */
 }
 
 #virus-image {
@@ -257,8 +255,6 @@ letter-spacing: 2px;
     padding-top: 40px;
     padding-bottom: 40px;
 }
-
-/* #you-minutes, #you-seconds, #you-milliseconds { */
 
 #you-time span,
 #opponent-time span,
@@ -348,8 +344,6 @@ table {
 
 
 /* Winner screen */
-
-
 #victory {
     display: flex;
     flex-direction: column;
@@ -386,12 +380,10 @@ table {
     color: #83ff00;
 }
 
-
 #winner-footer {
     margin: 1rem 1.5rem;
     text-align: center;
 }
-
 
 #player-time {
     color: #cece13;
