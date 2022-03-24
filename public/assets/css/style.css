@@ -326,7 +326,7 @@ letter-spacing: 2px;
 .col-name{
 font-size: 18px;
 }
-table {
+.table-container {
     min-height: 450px;
     box-shadow: 0 0 2px 4px rgba(200, 230, 255, 0.5),
       0 -2px 2px 3px rgba(200, 230, 255, 0.5) inset,
