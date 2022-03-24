@@ -19,6 +19,7 @@ const opponent_disconnected_label = document.querySelector('#opponent_disconnect
 const games_now = document.querySelector('#games_now');
 const recent_games = document.querySelector('#recent_games');
 const fastest_time = document.querySelector('#fastest_time');
+const wanna_play = document.querySelector('#wanna-play');
 
 const play_again = document.querySelector('#play-again');
 const winner_heading = document.querySelector('#winner-heading');
@@ -168,8 +169,8 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     winner_heading.innerHTML = "Winner";
     winnerMsgEl.innerHTML =
         `
-        <p>
-            The winner is <b>${winner}</b> with <b>${winnerPoints}</b> points!
+        <p id="winner-text">
+            The winner is<br> ${winner}<br> with ${winnerPoints} points!
         </p>
     `
         // The winner is ${winner} with ${winnerPoints}-${loserOrTiePoints} points!  
@@ -177,7 +178,7 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     if (winner == 'remis') {
         winnerMsgEl.innerHTML =
             `
-        <p>
+        <p id="winner-text">
             ${loserOrTiePoints}-${loserOrTiePoints}, it's a tie!
         </p>
     `
@@ -365,6 +366,7 @@ usernameForm.addEventListener('submit', e => {
 
         // hiding start_button 'Play' and showing text that user needs to wait for another user
         start_button.classList.add('hide');
+        wanna_play.classList.add('hide');
         waiting_label.classList.remove('hide');
         usernameFormInput.classList.add('hide');
         opponent_disconnected_label.classList.add('hide');

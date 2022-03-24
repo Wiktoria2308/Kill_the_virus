@@ -20,47 +20,60 @@
     <div id="app">
 
         <div id="start" class="container">
-            <h1>Kill the Virus</h1>
-            <img src="./assets/images/virus_1.png" alt="virus animation" class="img-fluid" width="400px">
+            <h1>Kill the virus</h1>
+            <p id="wanna-play" class="">Wanna play a game?</p>
             <form id="username-form">
                 <div class="mb-3">
                     <input type="text" id="username" class="form-control form-control-lg" required placeholder="Enter username">
                 </div>
                 <p id="waiting" class="hide">Waiting for opponent ...</p>
-                <p id="opponent_disconnected" class="hide">Your opponent has been disconnected. Please log in again to join a new game.</p>
-                <button type="submit" id="start-button" class="btn btn-primary">Play</button>
-                <button type="button" id="lobby-button" class="btn btn-secondary">Game Lobby</button>
+                <p id="opponent_disconnected" class="hide">Your opponent has been disconnected.<br>Please log in again to join a new game.</p>
+                <button type="submit" id="start-button" class="btn">Play</button>
+                <button type="button" id="lobby-button" class="btn">Game Lobby</button>
             </form>
-            <!-- /#username-form -->
-        </div>
+      </div> 
         <!-- /#start -->
 
         <div id="lobby-wrapper" class="hide">
             <div id="lobby">
                 <div id="lobby-header">
                     <h2>Lobby</h2>
-                    <div>
-                        <button type="button" id="back-button" class="btn btn-primary">Go back</button>
-                        <button type="button" id="back-to-room-button" class="btn btn-primary hide">Go back</button>
+                    <div style="margin-top: 10px;">
+                        <button type="button" id="back-button" class="btn">Go back</button>
+                        <button type="button" id="back-to-room-button" class="btn hide">Go back</button>
                     </div>
 
                 </div>
+                <div id="games-wrapper">
+                    <!-- current games table will go here -->
+                    <h3 class="lobby-title">Current games</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" id="col-name">#</th>
+                                <th scope="col" id="col-name">Players</th>
+                                <th scope="col" id="col-name">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="games_now">
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /#games-wrapper -->
+            </div>
+            <!-- /#lobby -->
 
-                <div class="d-flex flex-column flex-md-row align-center justify-content-around">
-                    <div id="current-games-wrapper" class="col-12 col-md-4 p-3">
-                        <!-- current games table will go here -->
-                        <h3 class="lobby-title">Current games</h3>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Players</th>
-                                    <th scope="col">Score</th>
-                                </tr>
-                            </thead>
-                            <tbody id="games_now">
-                            </tbody>
-                        </table>
+            <div id="highscore">
+                <h2>Highscore</h2>
+                <h3 class="lobby-title">Fastest average reaction time</h3>
+                <div id="highscore-reactiontime">
+                    <div id="player-reactiontime" class="mb-4">
+                        <div id="username-badge-container">
+                            <span id="player-badge">Username</span>
+                        </div>
+                        <div id="player-time">
+                            <span id="player-minutes">00</span>:<span id="player-seconds">00</span>:<span id="player-milliseconds">00</span>
+                        </div>
                     </div>
                     <!-- /#games-wrapper -->
 
@@ -97,7 +110,19 @@
                     </div>
                     <!-- /#recent-games-wrapper -->
                 </div>
-
+                <!-- most recent games table will go here -->
+                <h3 class="lobby-title">Most recent games</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" id="col-name">#</th>
+                            <th scope="col" id="col-name">Players</th>
+                            <th scope="col" id="col-name">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent_games">
+                    </tbody>
+                </table>
             </div>
             <!-- /#lobby -->
 
@@ -117,9 +142,9 @@
                             <!-- winner and points message will go here -->
                         </div>
                         <div id="winner-footer">
-                            <button type="button" class="btn btn-warning btn-lg" id="play-again">Revenge</button>
-                            <button type="button" id="again-lobby-button" class="btn btn-secondary btn-lg">Game Lobby</button>
-                            <button type="button" class="btn btn-primary btn-lg" id="change-opponent">Change opponent</button>
+                            <button type="button" class="btn" id="play-again">Revenge</button>
+                            <button type="button" id="again-lobby-button" class="btn">Game Lobby</button>
+                            <button type="button" class="btn" id="change-opponent">Change opponent</button>
                         </div>
                     </div>
                     <!-- /#victory -->
@@ -135,7 +160,7 @@
                 </div>
                 <div id="reactiontimes">
                     <div id="you-reactiontime" class="mb-4">
-                        <div>
+                        <div id="username-badge-container">
                             <span id="username-badge">You</span>
                         </div>
                         <div id="you-time">
@@ -143,7 +168,7 @@
                         </div>
                     </div>
                     <div id="opponent-reactiontime">
-                        <div>
+                        <div id="username-badge-container">
                             <span id="opponent-badge">Opponent</span>
                         </div>
                         <div id="opponent-time">
