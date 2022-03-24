@@ -35,11 +35,6 @@ let you_milliseconds = document.querySelector('#you-milliseconds');
 let opponent_minutes = document.querySelector('#opponent-minutes');
 let opponent_seconds = document.querySelector('#opponent-seconds');
 let opponent_milliseconds = document.querySelector('#opponent-milliseconds');
-// let highscore_min = document.querySelector('#player-minutes');
-// let highscore_sec = document.querySelector('#player-seconds');
-// let highscore_ms = document.querySelector('#player-milliseconds');
-// let highscore_username = document.querySelector('#player-badge');
-// const highscore_time = document.querySelector('#player-duration');
 
 let username = null;
 let startTime;
@@ -117,17 +112,6 @@ function countTime(time, user_min, user_sec, user_ms) {
     user_ms.innerHTML = formattedMS;
 
 }
-
-// creating row for games in lobby
-// function createTableRow(room, i) {
-//     return `<th scope="row">${i}</th>
-//         <td>
-//             <span>${room.users[0].username}</span> vs. <span>${room.users[1].username}</span>
-//         </td>
-//         <td id='points_${room.id}'>
-//             <span>${room.users[0].pointsNow}</span> - <span>${room.users[1].pointsNow}</span>
-//         </td>`;
-// }
 
 // listen for users names to add opponent name to game
 socket.on('users:names', (user1, user2) => {
@@ -259,19 +243,11 @@ socket.on('lobby:add_room_to_list', (rooms) => {
 })
 
 // update fastest time in real time
-// todo: save highscore in DB and show it to users from DB
 socket.on('lobby:show_highscore', (highscores) => {
 
     fastest_time.innerHTML = '';
-
     for (let i = 0; i < 10; i++) {
         let score = highscores[i]
-
-        // Format milliseconds to human readable time
-        const seconds = Math.floor(score.totalmilliseconds / 1000)
-        const milliseconds = Math.round((score.totalmilliseconds % 1000) / 10);
-        const duration = `${seconds}:${milliseconds}`;
-
         if (!score) {
             return
         };
@@ -282,7 +258,7 @@ socket.on('lobby:show_highscore', (highscores) => {
             <span id="user1_${score.totalmilliseconds}">${score.username}</span> 
         </td>
         <td>
-            <span id="points1_${score.totalmilliseconds}">${duration}</span>
+            <span id="points1_${score.totalmilliseconds}">${score.min}:${score.sec}:${score.ms}</span>
         </td>
     </tr>`;
         fastest_time.appendChild(scoreEl);
@@ -290,7 +266,6 @@ socket.on('lobby:show_highscore', (highscores) => {
 });
 
 // update recent games in lobby
-// todo: save recent games on DB and show it to user from DB
 socket.on('lobby:show_recent_games', (games) => {
     recent_games.innerHTML = '';
     for (let i = 0; i < 10; i++) {
