@@ -13,6 +13,7 @@ font-family: 'Orbitron', sans-serif;
 
 #lobby-wrapper {
     width: 100vw;
+    height: 100vh;
 }
 
 
@@ -402,5 +403,8 @@ letter-spacing: 2px;
     #currentScore {
         font-size: 40px;
         margin-bottom: 10px;
+    }
+    #lobby-wrapper {
+        height: max-content;
     }
 }
