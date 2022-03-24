@@ -70,7 +70,7 @@ const handleReactionTime = async function(data) {
     user.totalmilliseconds.push(total);
 
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
         // if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
 
         room.rounds++;
@@ -105,7 +105,7 @@ const handleReactionTime = async function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    if (room.rounds === 2) {
+    if (room.rounds === 10) {
         // if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
