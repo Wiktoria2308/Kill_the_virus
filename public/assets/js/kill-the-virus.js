@@ -4,7 +4,7 @@ const startEl = document.querySelector('#start');
 const lobbyEl = document.querySelector('#lobby-wrapper');
 const winnerEl = document.querySelector('#victory');
 const winnerMsgEl = document.querySelector('#winner-body');
-
+const bodyApp = document.querySelector('#app');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const usernameForm = document.querySelector('#username-form');
 const usernameFormInput = document.querySelector('#username');
@@ -20,7 +20,7 @@ const games_now = document.querySelector('#games_now');
 const recent_games = document.querySelector('#recent_games');
 const fastest_time = document.querySelector('#fastest_time');
 const wanna_play = document.querySelector('#wanna-play');
-
+const game_title = document.querySelector('#game-title');
 const play_again = document.querySelector('#play-again');
 const winner_heading = document.querySelector('#winner-heading');
 
@@ -166,7 +166,7 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     play_again.classList.remove('hide');
     virusImageEl.classList.add('hide');
     winnerEl.classList.remove('hide');
-    winner_heading.innerHTML = "Winner";
+    game_title.innerHTML = "Winner";
     winnerMsgEl.innerHTML =
         `
         <p id="winner-text">
@@ -232,7 +232,7 @@ socket.on('lobby:add_room_to_list', (rooms) => {
     for (let i = 0; i < rooms.length; i++) {
         const roomEl = document.createElement('tr');
         roomEl.setAttribute('id', `${rooms[i].id}`);
-        roomEl.innerHTML = `<th scope="row">${i}</th>
+        roomEl.innerHTML = `<th scope="row">${i+1}</th>
         <td>
             <span>${rooms[i].users[0].username}</span> vs. <span>${rooms[i].users[1].username}</span>
         </td>
@@ -385,6 +385,7 @@ usernameForm.addEventListener('submit', e => {
 lobbyBtn.addEventListener('click', () => {
     startEl.classList.add('hide');
     lobbyEl.classList.remove('hide');
+
 });
 
 // Show lobby view when clicking on 'game lobby' button from game (if user wants to stay in the same room)

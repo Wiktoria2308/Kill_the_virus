@@ -21,12 +21,12 @@
 
         <div id="start" class="container">
             <h1>Kill the virus</h1>
-            <p id="wanna-play" class="">Wanna play a game?</p>
+            <p id="wanna-play" class="wanna-play">Wanna play a game?</p>
             <form id="username-form">
                 <div class="mb-3">
                     <input type="text" id="username" class="form-control form-control-lg" required placeholder="Enter username">
                 </div>
-                <p id="waiting" class="hide">Waiting for opponent ...</p>
+                <p id="waiting" class="wanna-play hide">Waiting for opponent ...</p>
                 <p id="opponent_disconnected" class="hide">Your opponent has been disconnected.<br>Please log in again to join a new game.</p>
                 <button type="submit" id="start-button" class="btn">Play</button>
                 <button type="button" id="lobby-button" class="btn">Game Lobby</button>
@@ -44,7 +44,8 @@
                     </div>
 
                 </div>
-                <div id="games-wrapper">
+                <div class="d-flex flex-column flex-md-row align-center justify-content-around">
+                    <div id="current-games-wrapper" class="col-12 col-md-4 p-3">
                     <!-- current games table will go here -->
                     <h3 class="lobby-title">Current games</h3>
                     <table class="table table-striped">
@@ -60,31 +61,16 @@
                     </table>
                 </div>
                 <!-- /#games-wrapper -->
-            </div>
-            <!-- /#lobby -->
-
-            <div id="highscore">
-                <h2>Highscore</h2>
-                <h3 class="lobby-title">Fastest average reaction time</h3>
-                <div id="highscore-reactiontime">
-                    <div id="player-reactiontime" class="mb-4">
-                        <div id="username-badge-container">
-                            <span id="player-badge">Username</span>
-                        </div>
-                        <div id="player-time">
-                            <span id="player-minutes">00</span>:<span id="player-seconds">00</span>:<span id="player-milliseconds">00</span>
-                        </div>
-                    </div>
-                    <!-- /#games-wrapper -->
+           
 
                     <div id="highscore-wrapper" class="col-12 col-md-4 p-3">
                         <h3 class="lobby-title">Fastest average reaction time</h3>
                         <table id="table-fastest-time" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Players</th>
-                                    <th scope="col">Fastest time</th>
+                                    <th scope="col" id="col-name">#</th>
+                                    <th scope="col" id="col-name">Players</th>
+                                    <th scope="col" id="col-name">Fastest time</th>
                                 </tr>
                             </thead>
                             <tbody id="fastest_time">
@@ -99,9 +85,9 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Players</th>
-                                    <th scope="col">Score</th>
+                                    <th scope="col" id="col-name">#</th>
+                                    <th scope="col" id="col-name">Players</th>
+                                    <th scope="col" id="col-name">Score</th>
                                 </tr>
                             </thead>
                             <tbody id="recent_games">
@@ -110,23 +96,8 @@
                     </div>
                     <!-- /#recent-games-wrapper -->
                 </div>
-                <!-- most recent games table will go here -->
-                <h3 class="lobby-title">Most recent games</h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col" id="col-name">#</th>
-                            <th scope="col" id="col-name">Players</th>
-                            <th scope="col" id="col-name">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recent_games">
-                    </tbody>
-                </table>
             </div>
             <!-- /#lobby -->
-
-
         </div>
         <!-- /#lobby-wrapper -->
 
@@ -137,7 +108,6 @@
                     <!-- game arena will go here -->
                     <img id="virus-image" src="./assets/images/virus_1.png" alt="virus image" width="50px" class="hide">
                     <div id="victory" class="hide">
-                        <h2 id="winner-heading">Winner</h2>
                         <div id="winner-body">
                             <!-- winner and points message will go here -->
                         </div>

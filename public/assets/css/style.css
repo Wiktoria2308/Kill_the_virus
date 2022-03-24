@@ -3,13 +3,18 @@
 body {
 font-family: 'Orbitron', sans-serif;
 }
+
 #app,
 #start,
-#game-wrapper,
-#lobby-wrapper {
+#game-wrapper{
     height: 100vh;
     width: 100vw;
 }
+
+#lobby-wrapper {
+    width: 100vw;
+}
+
 
 #app {
     background-image: url('../images/background.jpg');
@@ -21,9 +26,6 @@ font-family: 'Orbitron', sans-serif;
     display: none !important;
 }
 
-table {
-    border: 2px solid #979797;
-}
 
 #start {
     display: flex;
@@ -47,7 +49,7 @@ table {
     margin-bottom: 40px;
 }
 
-#start p{
+#start p, .wanna-play{
 font-size: 30px;
 color: #70d800;
 margin-bottom: 40px;
@@ -70,7 +72,7 @@ letter-spacing: 2px;
 
 #back-button, #back-to-room-button {
     margin-top: 20px;
-    font-size: 20px;
+    font-size: 15px;
     color: white;
     border: 1px solid white;
 }
@@ -135,9 +137,17 @@ letter-spacing: 2px;
     text-align: center;
 }
 
-#game-wrapper,
+#game-wrapper{
+    display: flex;
+    background-image: url('../images/game.jpeg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 #lobby-wrapper {
     display: flex;
+    background-image: url('../images/wall.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 #game,
@@ -145,12 +155,18 @@ letter-spacing: 2px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    border-right: 1px solid #555;
+    border-right:1px solid #234500
 }
 
-#game h2,
-#lobby h2 {
-    color: #83ff00;
+#game h2 {
+    font-size: 40px;
+    color: rgba(255, 255, 255, 0);
+    text-shadow: 0em 0em 3em #83ff00,
+                 0em 0em 2em #83ff00,
+                 1px 1px 5px #83ff00,
+                 0px 0px 15px #83ff00,
+                 1px 0px 0px white,
+                -1px 0px 2px rgba(0, 0, 0, .5);
     margin: 0;
     padding-left: 30px;
     padding-top: 20px;
@@ -164,9 +180,12 @@ letter-spacing: 2px;
     display: grid;
     grid-template-rows: repeat(5, 1fr);
     grid-template-columns: repeat(5, 1fr);
-    /* background-color: #F5F5F5; */
-    border: 4px solid #83ff00;
     padding: 2px;
+    box-shadow:
+    0 0 .1rem #fff,
+    inset 0 0 .1rem #fff,
+    0 0 0.5rem #83ff00,
+    inset 0 0 0.5rem #83ff00;
     /* overflow-y: scroll; */
     /* height: calc(100vh - 2.25rem - 2px); */
 }
@@ -181,12 +200,12 @@ letter-spacing: 2px;
 }
 
 #scoreboard h2 {
-    color: #83ff00;
-    font-weight: 200;
+    color: #7a18ec;
     margin: 0;
     text-align: center;
     padding-top: 25px;
     padding-bottom: 20px;
+    letter-spacing: 1px;
 }
 
 #scoreboard ul {
@@ -199,7 +218,6 @@ letter-spacing: 2px;
     text-align: center;
     color: #7a18ec;
     font-size: 60px;
-    font-weight: 400;
     margin-bottom: 30px;
 }
 
@@ -232,7 +250,7 @@ letter-spacing: 2px;
 }
 
 #reactiontimes div, #highscore-reactiontime div {
-    border: 2px solid #234500;
+    border: 1px solid #234500;
 }
 #username-badge {
     padding-top: 40px;
@@ -253,24 +271,32 @@ letter-spacing: 2px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-image: url('../images/winner.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
     grid-column: 1 / 6;
     grid-row: 1 / 6;
-}
-
-#victory h2 {
-    text-align: center;
-    font-size: 50px;
-    font-weight: 600;
-    padding: 0.5rem 0.75rem;
-    color: #7700ff;
-    text-shadow: 1px 1px 2px #000000;
+    background-image: url('../images/winner.jpeg');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 
 /* Lobby */
+#lobby h2 {
+    font-size: 40px;
+    color: #fff;
+    text-shadow:
+        0 0 7px #fff,
+        0 0 10px #fff,
+        0 0 21px #fff,
+        0 0 42px #5271ff,
+        0 0 82px #5271ff,
+        0 0 92px #5271ff,
+        0 0 102px #5271ff,
+        0 0 151px #5271ff;
+    margin: 0;
+    padding-left: 30px;
+    padding-top: 20px;
+    letter-spacing: 1px;
+}
 
 #games-wrapper {
     margin: 1rem 1.5rem;
@@ -282,18 +308,13 @@ letter-spacing: 2px;
 #col-name {
     color: white;
 }
-tr {
-    color: white;
-}
-#winner-text {
-    font-size: 35px;
-    color: white;
-}
-.lobby-title {
-    color: #7a18ec;
+
+.lobby-title, #highscore-wrapper h3{
+    color: #426DFB;
     font-weight: 600;
     margin: 0.5rem 0.75rem;
     text-align: center;
+    text-shadow: 0 0 .5vw #082180, 0 0 1.5vw #082180, 0 0 5vw #082180, 0 0 5vw #082180, 0 0 .2vw #082180, .2vw .2vw .1vw #0A3940;
 }
 
 .bold {
@@ -303,7 +324,6 @@ tr {
 #lobby-header {
     display: flex;
     justify-content: space-between;
-    background-color: cornflowerblue;
 }
 
 #lobby-header button {
@@ -311,9 +331,8 @@ tr {
     letter-spacing: 1px;
 }
 
-#table-fastest-time>tbody>tr:nth-child(odd)>td,
-#table-fastest-time>tbody>tr:nth-child(odd)>th {
-    background-color: #e8e7d4;
+.table>tbody>tr {
+    background-color: #edf6fc;
 }
 
 #highscore h2 {
@@ -327,25 +346,21 @@ tr {
 
 
 /* Winner screen */
-
+#winner-text {
+    font-size: 35px;
+    color: white;
+    margin-top: 100px;
+}
 #winner-body {
     text-align: center;
     font-size: xx-large;
     font-weight: 600;
 }
 
-#winner-body p {
-    margin: 0;
-}
 
 #winner-footer {
     margin: 1rem 1.5rem;
     text-align: center;
-}
-
-#highscore-wrapper h3 {
-    text-align: center;
-    color: #c7b590
 }
 
 
@@ -357,15 +372,6 @@ tr {
 
 .bold {
     font-weight: bold;
-}
-
-#lobby-header {
-    display: flex;
-    justify-content: space-between;
-}
-
-#lobby-header button {
-    margin: 0.5rem 0.75rem;
 }
 
 @media screen and (max-width: 810px) {
@@ -388,5 +394,13 @@ tr {
     #start p{
         font-size: 20px;
         text-align: center;
+    }
+    #scoreboard h2 {
+        padding-top: 10px;
+        padding-bottom: 5px;
+    }
+    #currentScore {
+        font-size: 40px;
+        margin-bottom: 10px;
     }
 }
