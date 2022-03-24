@@ -166,7 +166,6 @@ socket.on('game:end', (winner, winnerPoints, loserOrTiePoints) => {
     play_again.classList.remove('hide');
     virusImageEl.classList.add('hide');
     winnerEl.classList.remove('hide');
-    game_title.innerHTML = "Winner";
     winnerMsgEl.innerHTML =
         `
         <p id="winner-text">

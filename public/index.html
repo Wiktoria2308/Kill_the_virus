@@ -48,12 +48,12 @@
                     <div id="current-games-wrapper" class="col-12 col-md-4 p-3">
                     <!-- current games table will go here -->
                     <h3 class="lobby-title">Current games</h3>
-                    <table class="table table-striped">
+                    <table class="table table-borderless text-light">
                         <thead>
                             <tr>
-                                <th scope="col" id="col-name">#</th>
-                                <th scope="col" id="col-name">Players</th>
-                                <th scope="col" id="col-name">Score</th>
+                                <th scope="col" class="col-name" >#</th>
+                                <th scope="col" class="col-name">Players</th>
+                                <th scope="col" class="col-name">Score</th>
                             </tr>
                         </thead>
                         <tbody id="games_now">
@@ -64,13 +64,13 @@
            
 
                     <div id="highscore-wrapper" class="col-12 col-md-4 p-3">
-                        <h3 class="lobby-title">Fastest average reaction time</h3>
-                        <table id="table-fastest-time" class="table table-striped">
+                        <h3 class="lobby-title-long">Fastest average reaction time</h3>
+                        <table id="table-fastest-time" class="table table-borderless text-light">
                             <thead>
                                 <tr>
-                                    <th scope="col" id="col-name">#</th>
-                                    <th scope="col" id="col-name">Players</th>
-                                    <th scope="col" id="col-name">Fastest time</th>
+                                    <th scope="col" class="col-name" >#</th>
+                                    <th scope="col" class="col-name">Players</th>
+                                    <th scope="col" class="col-name">Fastest time</th>
                                 </tr>
                             </thead>
                             <tbody id="fastest_time">
@@ -82,12 +82,12 @@
 
                     <div id="recent-games-wrapper" class="col-12 col-md-4 p-3">
                         <h3 class="lobby-title">Most recent games</h3>
-                        <table class="table table-striped">
+                        <table class="table table-borderless text-light">
                             <thead>
                                 <tr>
-                                    <th scope="col" id="col-name">#</th>
-                                    <th scope="col" id="col-name">Players</th>
-                                    <th scope="col" id="col-name">Score</th>
+                                    <th scope="col" class="col-name">#</th>
+                                    <th scope="col" class="col-name">Players</th>
+                                    <th scope="col" class="col-name">Score</th>
                                 </tr>
                             </thead>
                             <tbody id="recent_games">
@@ -108,6 +108,7 @@
                     <!-- game arena will go here -->
                     <img id="virus-image" src="./assets/images/virus_1.png" alt="virus image" width="50px" class="hide">
                     <div id="victory" class="hide">
+                        <h2 id="winner-heading">Winner</h2>
                         <div id="winner-body">
                             <!-- winner and points message will go here -->
                         </div>
