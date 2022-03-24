@@ -8,7 +8,7 @@ const highscoreSchema = new mongoose.Schema({
     min: String,
     sec: String,
     ms: String,
-    totalmilliseconds: String,
+    totalmilliseconds: Number,
     username: String
 });
 

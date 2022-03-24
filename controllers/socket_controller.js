@@ -19,17 +19,40 @@ let waiting_opponent = true;
 let play_again = null;
 let playAgainOneUser = true;
 
-let highscore = {};
+// let highscore = {};
 let recent_games = [];
 let highscores = [];
 
-// Grid arena is set to be 5 x 5. This function returns a random number between 1 and 5.
-// Function will be called twice to get x/y position.
+/** 
+ * Calculate a player's average reaction time (in milliseconds) per game
+ * 
+ * @param {array} numArray Each element represents a player's reaction time in milliseconds eg. [4322, 1326, 6534, ...]
+ * @param {number} gameRounds Number of rounds played in one game
+ * @returns Average reactiontime per game
+ */
+const calcAverage = (numArray, gameRounds) => {
+    const rounds = gameRounds;
+    const sum = numArray.reduce((x, y) => {
+        return x + y;
+    }, 0);
+    return (sum / rounds);
+}
+
+/**
+ * Grid arena is set to be 5 x 5 items.
+ * Function will be called twice to get x/y position of virus image.
+ * 
+ * @returns Random number between 1 and 5
+ */
 const getRandomGridPosition = () => {
     return Math.floor(Math.random() * 5) + 1;
 }
 
-// Virus image is set to appear anytime between 1 and 5 seconds. This function returns a random number between 1000 and 5000 (1 second = 1000 milliseconds).
+/**
+ * Virus image is set to appear anytime between 1 and 5 seconds.
+ * 
+ * @returns Random number between 1000 and 5000 (1 second = 1000 milliseconds)
+ */
 const getRandomDelay = () => {
     return Math.floor(Math.random() * (5000 - 1000)) + 1000;
 }
@@ -41,19 +64,34 @@ const getGames = async() => {
 }
 getGames();
 
+
 const getHighscore = async() => {
-    const res = await models.Highscore.find();
-    highscore = res[res.length - 1];
-    console.log(highscore)
+    const res = await models.Highscore.find()
+    .sort({totalmilliseconds: 'desc'});
+    highscore = res[0];
+    // console.log(highscore)
 }
 getHighscore();
 
 const getHighscores = async() => {
-    const res = await models.Highscore.find();
-    res.forEach(score => highscores.unshift(score));
-    highscores.splice(11);
+    highscores = await models.Highscore.find()
+    .sort({totalmilliseconds: 'desc'});
 }
 getHighscores();
+
+/**
+ * zeropad function that puts 0 in front of num if it's less than 10
+ * 
+ * @param {Number} num 
+ * @returns 
+ */
+const zeropad = num => {
+    if (num < 10) {
+        return '0' + num;
+    } else {
+        return num;
+    }
+}
 
 const handleReactionTime = async function(data) {
 
@@ -70,7 +108,7 @@ const handleReactionTime = async function(data) {
     user.totalmilliseconds.push(total);
 
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
         // if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
 
         room.rounds++;
@@ -105,7 +143,7 @@ const handleReactionTime = async function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    if (room.rounds === 2) {
+    if (room.rounds === 10) {
         // if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
@@ -159,22 +197,36 @@ const handleReactionTime = async function(data) {
 
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
 
-        room.rounds = 0;
-    }
-    // console.log('room now', room.users)
+        // Get players' usernames
+        const playerOne = room.users[0].username;
+        const playerTwo = room.users[1].username;
 
+        // Get players' reaction times 
+        const playerOneAverages = room.users[0].totalmilliseconds;
+        const playerTwoAverages = room.users[1].totalmilliseconds;
 
+        // Calculate each player's average reaction time
+        const averageOne = calcAverage(playerOneAverages, room.rounds);
+        const averageTwo = calcAverage(playerTwoAverages, room.rounds);
 
-    // get time on every click and compare it to highscore
-    if (!highscore || data.totalmilliseconds < highscore.totalmilliseconds) {
-        highscore = {};
-        highscore.min = data.paused_time[0];
-        highscore.sec = data.paused_time[1];
-        highscore.ms = data.paused_time[2];
-        highscore.totalmilliseconds = data.totalmilliseconds;
-        highscore.username = data.username;
+        // Find player with lowest reaction time
+        let averageGameBest = Math.min(averageOne, averageTwo);
 
-        // save match in database
+        // Set 'bestPlayer' to the player with the lowest reaction time
+        let bestPlayer = averageGameBest == averageOne ? playerOne : playerTwo;
+
+        // Create highscore object using retrieved data
+        // Format milliseconds to minutes, seconds and centiseconds
+        // Use zeropad so that eg. 0 min, 1 sec and 5 ms are stored as 00 min 01 sec and 05 ms
+        const highscore = {
+            min: zeropad(Math.trunc(averageGameBest / 1000 / 60)),
+            sec: zeropad(Math.trunc(averageGameBest / 1000)),
+            ms: zeropad(Math.trunc(averageGameBest % 1000 / 10)),
+            totalmilliseconds: averageGameBest,
+            username: bestPlayer
+        }
+
+        // save highscore in database
         try {
             const highscore_db = new models.Highscore({
                 ...highscore,
@@ -183,14 +235,19 @@ const handleReactionTime = async function(data) {
 
             debug("Successfully saved highscore in the database.", highscore);
         } catch (e) {
-            debug("Could not save hidgscore in the database.", highscore);
+            debug("Could not save highscore in the database.", highscore);
             debug(e)
-                // this.emit('chat:notice', { message: "Could not save your message in the database." });
         }
 
-        highscores.unshift(highscore);
+        // Get updated highscores but limit result to top 10
+        highscores = await models.Highscore
+            .find()
+            .sort({totalmilliseconds: 'desc'})
+            .limit(10);
 
         io.emit('lobby:show_highscore', highscores);
+
+        room.rounds = 0;
     }
 
     io.emit('lobby:add_room_to_list', rooms);
