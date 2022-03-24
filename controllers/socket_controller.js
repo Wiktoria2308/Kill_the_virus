@@ -15,11 +15,9 @@ let roomName = null;
 // a 'toggler' for a status of a waiting opponent 
 let waiting_opponent = true;
 
-// let recent_games = [];
 let play_again = null;
 let playAgainOneUser = true;
 
-// let highscore = {};
 let recent_games = [];
 let highscores = [];
 
@@ -58,24 +56,16 @@ const getRandomDelay = () => {
 }
 
 const getGames = async() => {
-    const res = await models.Match.find();
-    res.forEach(match => recent_games.unshift(match));
-    recent_games.splice(11);
+    recent_games = await models.Match.find()
+        .sort({ id: 'desc' })
+        .limit(10);
 }
 getGames();
 
 
-const getHighscore = async() => {
-    const res = await models.Highscore.find()
-    .sort({totalmilliseconds: 'desc'});
-    highscore = res[0];
-    // console.log(highscore)
-}
-getHighscore();
-
 const getHighscores = async() => {
     highscores = await models.Highscore.find()
-    .sort({totalmilliseconds: 'desc'});
+        .sort({ totalmilliseconds: 'desc' });
 }
 getHighscores();
 
@@ -130,8 +120,7 @@ const handleReactionTime = async function(data) {
             // Emit to specific room
             io.to(room.id).emit('game:start', getRandomDelay(), getRandomGridPosition(), getRandomGridPosition());
             // console.log('rounds', room.rounds);
-        }
-        else if (room.users[0].totalmillisecondsNow === room.users[1].totalmillisecondsNow) {
+        } else if (room.users[0].totalmillisecondsNow === room.users[1].totalmillisecondsNow) {
             room.users[1].pointsNow++;
             room.users[0].pointsNow++;
             players = [{ username: room.users[0].username, points: room.users[0].pointsNow }, { username: room.users[1].username, points: room.users[1].pointsNow }];
@@ -191,8 +180,11 @@ const handleReactionTime = async function(data) {
             debug(e)
                 // this.emit('chat:notice', { message: "Could not save your message in the database." });
         }
-        recent_games.unshift(game);
-        // debug(recent_games, 'games')
+
+        recent_games = await models.Match.find()
+            .sort({ id: 'desc' })
+            .limit(10);
+
         io.emit('lobby:show_recent_games', recent_games);
 
         io.to(room.id).emit('game:end', gameResultat.winner, data.winnerPoints, data.loserOrTiePoints);
@@ -242,7 +234,7 @@ const handleReactionTime = async function(data) {
         // Get updated highscores but limit result to top 10
         highscores = await models.Highscore
             .find()
-            .sort({totalmilliseconds: 'desc'})
+            .sort({ totalmilliseconds: 'desc' })
             .limit(10);
 
         io.emit('lobby:show_highscore', highscores);
@@ -254,15 +246,14 @@ const handleReactionTime = async function(data) {
 
 }
 
-module.exports = function (socket, _io) {
+module.exports = function(socket, _io) {
     io = _io; // it must be to be possible to emit
 
     io.emit('lobby:show_highscore', highscores);
     io.emit('lobby:show_recent_games', recent_games);
 
     // handle user disconnect
-    socket.on('disconnect', function () {
-        // debug(`Client ${socket.id} disconnected :(`);
+    socket.on('disconnect', function() {
 
         // find the room that this socket is part of
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
@@ -283,7 +274,7 @@ module.exports = function (socket, _io) {
     // listen for user reaction time 
     socket.on('user:reaction', handleReactionTime);
 
-    socket.on('user:play_again', function (username, callback) {
+    socket.on('user:play_again', function(username, callback) {
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
         // this.broadcast.to(room.id).emit('users:play_again');
         // const user = room.users.find(user => user.id === this.id);
@@ -309,7 +300,7 @@ module.exports = function (socket, _io) {
     });
 
     // handle user joined
-    socket.on('user:joined', function (username, callback) {
+    socket.on('user:joined', function(username, callback) {
 
         // if there is no room creating a new room with id equal to the first users id
         if (!roomName) {
@@ -366,7 +357,7 @@ module.exports = function (socket, _io) {
         };
     });
 
-    socket.on('players:ready', function () {
+    socket.on('players:ready', function() {
         // Find room
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
 
