@@ -47,12 +47,12 @@ const getRandomGridPosition = () => {
 }
 
 /**
- * Virus image is set to appear anytime between 1 and 5 seconds.
+ * Virus image is set to appear anytime between 1 and 3 seconds.
  * 
- * @returns Random number between 1000 and 5000 (1 second = 1000 milliseconds)
+ * @returns Random number between 1000 and 3000 (1 second = 1000 milliseconds)
  */
 const getRandomDelay = () => {
-    return Math.floor(Math.random() * (5000 - 1000)) + 1000;
+    return Math.floor(Math.random() * (3000 - 1000)) + 1000;
 }
 
 const getGames = async() => {
