@@ -187,6 +187,12 @@ body {
     /* height: calc(100vh - 2.25rem - 2px); */
 }
 
+#virus-image-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #virus-image {
     grid-column: 1;
     grid-row: 1;

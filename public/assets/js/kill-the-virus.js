@@ -25,6 +25,7 @@ const play_again = document.querySelector('#play-again');
 const winner_heading = document.querySelector('#winner-heading');
 
 const virusImageEl = document.querySelector('#virus-image');
+const virusImageWrapperEl = document.querySelector('#virus-image-wrapper');
 
 let your_score = document.querySelector('#you-score');
 let opponent_score = document.querySelector('#opponent-score');
@@ -194,10 +195,10 @@ socket.on('game:start', (randomDelay, randomPositionX, randomPositionY) => {
         resetTimer();
     }, 1000);
 
-    // Position virus image on grid
+    // Position virus image wrapper on grid
 
-    virusImageEl.style.gridRow = randomPositionX;
-    virusImageEl.style.gridColumn = randomPositionY;
+    virusImageWrapperEl.style.gridRow = randomPositionX;
+    virusImageWrapperEl.style.gridColumn = randomPositionY;
 
     // Display virus after delay
     let virusTimeout = setTimeout(() => {
