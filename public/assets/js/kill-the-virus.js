@@ -303,8 +303,10 @@ socket.on('users:ready_again', () => {
 });
 
 socket.on('game:change_opponent', () => {
+    your_score.innerHTML = 0;
+    opponent_score.innerHTML = 0;
     play_again.classList.add('hide');
-})
+});
 
 socket.on('users:want_play_again', (opponent_username) => {
     let msg = document.createElement('p');
