@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
-
 body {
-font-family: 'Orbitron', sans-serif;
+    font-family: 'Orbitron', sans-serif;
 }
 
 #app,
 #start,
-#game-wrapper{
+#game-wrapper {
     height: 100vh;
     width: 100vw;
 }
@@ -15,7 +14,6 @@ font-family: 'Orbitron', sans-serif;
     width: 100vw;
     height: 100vh;
 }
-
 
 #app {
     background-image: url('../images/background.jpg');
@@ -26,7 +24,6 @@ font-family: 'Orbitron', sans-serif;
 .hide {
     display: none !important;
 }
-
 
 #start {
     display: flex;
@@ -39,26 +36,25 @@ font-family: 'Orbitron', sans-serif;
     font-weight: 600;
     letter-spacing: 2px;
     font-size: 100px;
-    cursor:pointer;
+    cursor: pointer;
     color: rgba(255, 255, 255, 0);
-    text-shadow: 0em 0em 3em #83ff00,
-                 0em 0em 2em #83ff00,
-                 1px 1px 5px #83ff00,
-                 0px 0px 15px #83ff00,
-                 1px 0px 0px white,
-                -1px 0px 2px rgba(0, 0, 0, .5);
+    text-shadow: 0em 0em 3em #83ff00, 0em 0em 2em #83ff00, 1px 1px 5px #83ff00, 0px 0px 15px #83ff00, 1px 0px 0px white, -1px 0px 2px rgba(0, 0, 0, .5);
     margin-bottom: 40px;
 }
 
-#start p, .wanna-play{
-font-size: 30px;
-color: #70d800;
-margin-bottom: 40px;
-text-shadow: 1px 1px 2px #000000;
-letter-spacing: 2px;
+#start p,
+.wanna-play {
+    font-size: 30px;
+    color: #70d800;
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 2px #000000;
+    letter-spacing: 2px;
 }
 
-#start-button, #lobby-button, #play-again, #again-lobby-button {
+#start-button,
+#lobby-button,
+#play-again,
+#again-lobby-button {
     position: relative;
     width: 180px;
     margin: 20px;
@@ -71,14 +67,15 @@ letter-spacing: 2px;
     transition: 0.5s;
 }
 
-#back-button, #back-to-room-button {
+#back-button,
+#back-to-room-button {
     margin-top: 20px;
     font-size: 15px;
     color: white;
     border: 1px solid white;
 }
 
-#change-opponent { 
+#change-opponent {
     position: relative;
     width: 250px;
     margin: 20px;
@@ -92,58 +89,65 @@ letter-spacing: 2px;
     border: 2px solid #ec1840;
 }
 
-#change-opponent:hover { 
+#change-opponent:hover {
     background: url(https://i.postimg.cc/wBXGXbWN/pixel.png);
     transition-delay: 0.8s;
     background-size: 180px;
     animation: animate 0.8s steps(8) forwards;
 }
 
-#start-button, #play-again {
+#start-button,
+#play-again {
     border: 2px solid #83ff00;
 }
-#start-button:hover, #play-again:hover {
-  border: 2px solid #70d800;
-  box-shadow: inset 180px 0 0 0 #70d800;
-  text-shadow: 1px 1px 2px #000000;
+
+#start-button:hover,
+#play-again:hover {
+    border: 2px solid #70d800;
+    box-shadow: inset 180px 0 0 0 #70d800;
+    text-shadow: 1px 1px 2px #000000;
 }
 
-
-#lobby-button, #again-lobby-button {
+#lobby-button,
+#again-lobby-button {
     border: 2px solid #7a18ec;
 }
 
-#lobby-button:hover, #again-lobby-button:hover {
-      background: url(https://i.postimg.cc/FzBWFtKM/pixel2.png);
-      transition-delay: 0.8s;
-      background-size: 180px;
-      animation: animate 0.8s steps(8) forwards;
-    }
+#lobby-button:hover,
+#again-lobby-button:hover {
+    background: url(https://i.postimg.cc/FzBWFtKM/pixel2.png);
+    transition-delay: 0.8s;
+    background-size: 180px;
+    animation: animate 0.8s steps(8) forwards;
+}
 
 @keyframes animate {
     0% {
-      background-position-y: 0;
+        background-position-y: 0;
     }
     100% {
-      background-position-y: -480px;
+        background-position-y: -480px;
     }
-  }
-#username {
-   background-color: rgb(227, 253, 224);
-   border: 0;
-   margin-bottom: 30px;
 }
+
+#username {
+    background-color: rgb(227, 253, 224);
+    border: 0;
+    margin-bottom: 30px;
+}
+
 #username-form {
     margin: 0 auto;
     text-align: center;
 }
 
-#game-wrapper{
+#game-wrapper {
     display: flex;
     background-image: url('../images/game.jpeg');
     background-repeat: no-repeat;
     background-size: cover;
 }
+
 #lobby-wrapper {
     display: flex;
     background-image: url('../images/wall.jpg');
@@ -156,18 +160,13 @@ letter-spacing: 2px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    border-right:1px solid #234500
+    border-right: 1px solid #234500
 }
 
 #game-title {
     font-size: 40px;
     color: rgba(255, 255, 255, 0);
-    text-shadow: 0em 0em 3em #83ff00,
-                 0em 0em 2em #83ff00,
-                 1px 1px 5px #83ff00,
-                 0px 0px 15px #83ff00,
-                 1px 0px 0px white,
-                -1px 0px 2px rgba(0, 0, 0, .5);
+    text-shadow: 0em 0em 3em #83ff00, 0em 0em 2em #83ff00, 1px 1px 5px #83ff00, 0px 0px 15px #83ff00, 1px 0px 0px white, -1px 0px 2px rgba(0, 0, 0, .5);
     margin: 0;
     padding-left: 30px;
     padding-top: 20px;
@@ -175,18 +174,23 @@ letter-spacing: 2px;
 }
 
 #arena-wrapper {
-    cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='67' height='80' viewport='0 0 100 100' style='fill:black;font-size:40px;'><text y='50%'>🔫</text></svg>") 16 0,auto; /*!emojicursor.app*/
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='67' height='80' viewport='0 0 100 100' style='fill:black;font-size:40px;'><text y='50%'>💥</text></svg>") 16 0, auto;
+    /*!emojicursor.app*/
     margin: 1rem 1.5rem;
     flex-grow: 1;
     display: grid;
     grid-template-rows: repeat(5, 1fr);
     grid-template-columns: repeat(5, 1fr);
     padding: 2px;
-    box-shadow:
-    0 0 .1rem #fff,
-    inset 0 0 .1rem #fff,
-    0 0 0.5rem #83ff00,
-    inset 0 0 0.5rem #83ff00;
+    box-shadow: 0 0 .1rem #fff, inset 0 0 .1rem #fff, 0 0 0.5rem #83ff00, inset 0 0 0.5rem #83ff00;
+    /* overflow-y: scroll; */
+    /* height: calc(100vh - 2.25rem - 2px); */
+}
+
+#virus-image-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #virus-image {
@@ -248,9 +252,11 @@ letter-spacing: 2px;
     letter-spacing: 1px;
 }
 
-#reactiontimes div, #highscore-reactiontime div {
+#reactiontimes div,
+#highscore-reactiontime div {
     border: 1px solid #234500;
 }
+
 #username-badge {
     padding-top: 40px;
     padding-bottom: 40px;
@@ -264,19 +270,13 @@ letter-spacing: 2px;
     font-size: larger;
 }
 
+
 /* Lobby */
+
 #lobby h2 {
     font-size: 40px;
     color: #fff;
-    text-shadow:
-        0 0 7px #fff,
-        0 0 10px #fff,
-        0 0 21px #fff,
-        0 0 42px #5271ff,
-        0 0 82px #5271ff,
-        0 0 92px #5271ff,
-        0 0 102px #5271ff,
-        0 0 151px #5271ff;
+    text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #5271ff, 0 0 82px #5271ff, 0 0 92px #5271ff, 0 0 102px #5271ff, 0 0 151px #5271ff;
     margin: 0;
     padding-left: 30px;
     padding-top: 20px;
@@ -291,7 +291,7 @@ letter-spacing: 2px;
     border: 4px solid #234500;
 }
 
-.lobby-title{
+.lobby-title {
     padding-bottom: 34px;
     color: #426DFB;
     font-weight: 600;
@@ -299,6 +299,7 @@ letter-spacing: 2px;
     text-align: center;
     text-shadow: 0 0 .5vw #082180, 0 0 1.5vw #082180, 0 0 5vw #082180, 0 0 5vw #082180, 0 0 .2vw #082180, .2vw .2vw .1vw #0A3940;
 }
+
 .lobby-title-long {
     color: #426DFB;
     font-weight: 600;
@@ -306,6 +307,7 @@ letter-spacing: 2px;
     text-align: center;
     text-shadow: 0 0 .5vw #082180, 0 0 1.5vw #082180, 0 0 5vw #082180, 0 0 5vw #082180, 0 0 .2vw #082180, .2vw .2vw .1vw #0A3940;
 }
+
 .bold {
     font-weight: bold;
 }
@@ -317,21 +319,17 @@ letter-spacing: 2px;
 
 #lobby-header button {
     margin: 0.5rem 0.75rem;
-    letter-spacing: 1px;}
-
-.col-name{
-font-size: 18px;
+    letter-spacing: 1px;
 }
-table {
+
+.col-name {
+    font-size: 18px;
+}
+
+.table-container {
     min-height: 450px;
-    box-shadow: 0 0 2px 4px rgba(200, 230, 255, 0.5),
-      0 -2px 2px 3px rgba(200, 230, 255, 0.5) inset,
-      0 0 0px 3px rgba(100, 150, 255, 0.9),
-      0 0 0px 0px rgba(100, 150, 255, 1) inset,
-      0 0 10px 11px rgba(0, 50, 255, 0.9),
-      0 0 10px 9px rgba(0, 50, 255, 0.7) inset,
-      0 6px 28px 16px rgba(0, 0, 0, 0.8), 0 8px 25px 12px rgba(0, 0, 0, 0.7) inset;
-  }
+    box-shadow: 0 0 2px 4px rgba(200, 230, 255, 0.5), 0 -2px 2px 3px rgba(200, 230, 255, 0.5) inset, 0 0 0px 3px rgba(100, 150, 255, 0.9), 0 0 0px 0px rgba(100, 150, 255, 1) inset, 0 0 10px 11px rgba(0, 50, 255, 0.9), 0 0 10px 9px rgba(0, 50, 255, 0.7) inset, 0 6px 28px 16px rgba(0, 0, 0, 0.8), 0 8px 25px 12px rgba(0, 0, 0, 0.7) inset;
+}
 
 #highscore h2 {
     font-weight: 200;
@@ -354,25 +352,21 @@ table {
     background-repeat: no-repeat;
     background-size: cover;
 }
+
 #victory h2 {
     text-align: center;
     font-size: 60px;
     margin-top: 30px;
     letter-spacing: 2px;
     color: #fff;
-    text-shadow:
-      0 0 1px #fff,
-      0 0 5px #fff,
-      0 0 11px #fff,
-      0 0 22px #7a18ec,
-      0 0 42px #7a18ec,
-      0 0 82px #7a18ec,
-      0 0 92px #7a18ec;
+    text-shadow: 0 0 1px #fff, 0 0 5px #fff, 0 0 11px #fff, 0 0 22px #7a18ec, 0 0 42px #7a18ec, 0 0 82px #7a18ec, 0 0 92px #7a18ec;
 }
+
 #winner-text {
     font-size: 35px;
     color: #fff;
 }
+
 #winner-body {
     text-align: center;
     font-size: xx-large;
@@ -412,7 +406,7 @@ table {
         font-size: 70px;
         text-align: center;
     }
-    #start p{
+    #start p {
         font-size: 20px;
         text-align: center;
     }
@@ -433,7 +427,8 @@ table {
     #winner-text {
         font-size: 25px;
     }
-    .lobby-title-long, .lobby-title {
+    .lobby-title-long,
+    .lobby-title {
         padding-bottom: 20px;
     }
 }
