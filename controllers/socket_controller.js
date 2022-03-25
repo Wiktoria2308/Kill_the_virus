@@ -98,7 +98,7 @@ const handleReactionTime = async function(data) {
 
     // compare users time and send result
     //   if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 4) {
 
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
@@ -132,7 +132,7 @@ const handleReactionTime = async function(data) {
         }
     }
     // if (room.rounds === 10) {
-    if (room.rounds === 2) {
+    if (room.rounds === 4) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
