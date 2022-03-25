@@ -233,8 +233,10 @@ const handleReactionTime = async function(data) {
         // Get updated highscores but limit result to top 10
         highscores = await models.Highscore
             .find()
-            .sort({ totalmilliseconds: 'desc' })
+            .sort({ totalmilliseconds: 'asc' })
             .limit(10);
+
+        console.log("highscores", highscores)
 
         io.emit('lobby:show_highscore', highscores);
 
