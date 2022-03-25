@@ -64,7 +64,7 @@ getGames();
 
 const getHighscores = async() => {
     highscores = await models.Highscore.find()
-        .sort({ totalmilliseconds: 'desc' });
+        .sort({ totalmilliseconds: 'asc' });
 }
 getHighscores();
 
