@@ -318,6 +318,9 @@ socket.on('users:want_play_again', (opponent_username) => {
 virusImageEl.addEventListener('click', e => {
     e.preventDefault();
 
+    let audio = new Audio("../assets/sounds/kill_virus.mp3");
+    audio.play();
+
     //hide image when clicked
     virusImageEl.classList.add('hide');
 
