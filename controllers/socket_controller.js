@@ -97,8 +97,8 @@ const handleReactionTime = async function(data) {
     user.totalmilliseconds.push(total);
 
     // compare users time and send result
-    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
-        // if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
+    //   if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 10) {
+    if (room.users[0].totalmillisecondsNow !== 0 && room.users[1].totalmillisecondsNow !== 0 && room.rounds !== 2) {
 
         room.rounds++;
         if (room.users[0].totalmillisecondsNow < room.users[1].totalmillisecondsNow) {
@@ -131,8 +131,8 @@ const handleReactionTime = async function(data) {
             // console.log('rounds', room.rounds);
         }
     }
-    if (room.rounds === 10) {
-        // if (room.rounds === 2) {
+    // if (room.rounds === 10) {
+    if (room.rounds === 2) {
         let gameResultat = {};
         gameResultat[room.users[0].username] = room.users[0].pointsNow;
         gameResultat[room.users[1].username] = room.users[1].pointsNow;
@@ -279,7 +279,10 @@ module.exports = function(socket, _io) {
     socket.on('user:play_again', function(username, callback) {
         const room = rooms.find(room => room.users.find(user => user.id === this.id));
         // this.broadcast.to(room.id).emit('users:play_again');
-        // const user = room.users.find(user => user.id === this.id);
+
+        const user = room.users.find(user => user.id === this.id);
+        this.broadcast.to(room.id).emit('users:want_play_again', user.username);
+
         if (!play_again) {
             play_again = username;
         } else {
